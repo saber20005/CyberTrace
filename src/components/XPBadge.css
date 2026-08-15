@@ -1,0 +1,52 @@
+.xp-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 150px;
+  padding: 7px 14px;
+  border: 1px solid #26313d;
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.xp-badge-text {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.xp-badge-level {
+  color: #64748b;
+  font-size: 10px;
+  font-family: monospace;
+}
+
+.xp-badge-title {
+  color: #00ffaa;
+  font-size: 12px;
+}
+
+.xp-badge-bar {
+  height: 4px;
+  background: #1b2631;
+  overflow: hidden;
+}
+
+.xp-badge-fill {
+  height: 100%;
+  background: #00ffaa;
+  box-shadow: 0 0 6px rgba(0, 255, 170, 0.6);
+  transition: width 0.4s ease;
+}
+
+.xp-badge-count {
+  color: #475569;
+  font-size: 10px;
+  font-family: monospace;
+}
+
+@media (max-width: 900px) {
+  .xp-badge {
+    display: none;
+  }
+}

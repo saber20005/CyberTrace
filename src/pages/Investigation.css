@@ -1,0 +1,376 @@
+.inv-screen {
+  min-height: 100vh;
+  padding: 90px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background:
+    radial-gradient(circle at 75% 15%, rgba(0, 255, 170, 0.08), transparent 28%),
+    radial-gradient(circle at 15% 40%, rgba(0, 120, 255, 0.06), transparent 25%),
+    #05080d;
+}
+
+.inv-back {
+  position: absolute;
+  top: 28px;
+  right: 7%;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s;
+}
+
+.inv-back:hover {
+  color: #00ffaa;
+}
+
+.inv-wrapper {
+  width: 100%;
+  max-width: 700px;
+}
+
+.inv-progress {
+  display: flex;
+  border: 1px solid #1b2631;
+  margin-bottom: 18px;
+}
+
+.inv-progress-step {
+  flex: 1;
+  padding: 12px 10px;
+  text-align: center;
+  color: #334155;
+  font-size: 12px;
+  font-family: monospace;
+  border-left: 1px solid #1b2631;
+  transition: 0.2s;
+}
+
+.inv-progress-step:last-child {
+  border-left: none;
+}
+
+.inv-progress-step span {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.inv-progress-step.active {
+  color: #00ffaa;
+}
+
+.inv-card {
+  direction: ltr;
+  border: 1px solid #26313d;
+  background: #080d13;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.inv-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid rgba(0, 255, 170, 0.08);
+  pointer-events: none;
+}
+
+.inv-card .terminal-header {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 17px;
+  border-bottom: 1px solid #1b2631;
+  color: #64748b;
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.inv-card .terminal-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.inv-card .terminal-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #334155;
+}
+
+.inv-body {
+  direction: rtl;
+  padding: 32px;
+  min-height: 420px;
+}
+
+.inv-line {
+  font-family: monospace;
+  font-size: 13px;
+  color: #cbd5e1;
+  margin-bottom: 22px;
+}
+
+.inv-line .green {
+  color: #00ffaa;
+}
+
+.incident-box {
+  border-left: 2px solid #ef4444;
+  background: rgba(239, 68, 68, 0.04);
+  padding: 18px;
+  margin-bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.incident-label {
+  color: #ef4444;
+  font-size: 10px;
+  font-family: monospace;
+}
+
+.incident-box strong {
+  color: #e2e8f0;
+  font-size: 17px;
+}
+
+.incident-box small {
+  color: #64748b;
+  font-family: monospace;
+}
+
+.inv-description {
+  color: #94a3b8;
+  line-height: 2;
+  font-size: 15px;
+  margin-bottom: 28px;
+}
+
+.inv-log {
+  background: #05080d;
+  border: 1px solid #1b2631;
+  padding: 16px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+.inv-log-line {
+  font-family: monospace;
+  font-size: 12px;
+  color: #64748b;
+  direction: ltr;
+  text-align: left;
+  white-space: nowrap;
+  padding: 3px 0;
+}
+
+.inv-question {
+  font-size: 14px;
+  color: #e2e8f0;
+  margin-bottom: 16px;
+}
+
+.inv-question .yellow {
+  color: #facc15;
+  margin-left: 6px;
+}
+
+.inv-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.inv-option {
+  text-align: right;
+  background: transparent;
+  border: 1px solid #1b2631;
+  color: #cbd5e1;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.7;
+  transition: 0.2s;
+}
+
+.inv-option:hover {
+  border-color: #64748b;
+}
+
+.inv-option.selected {
+  border-color: #00ffaa;
+  background: rgba(0, 255, 170, 0.05);
+}
+
+.inv-option.correct {
+  border-color: #00ffaa;
+  background: rgba(0, 255, 170, 0.08);
+}
+
+.inv-option.incorrect {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.inv-feedback {
+  font-size: 14px;
+  color: #94a3b8;
+  line-height: 1.9;
+  margin-bottom: 22px;
+}
+
+.inv-score-box {
+  border-left: 2px solid #00ffaa;
+  background: rgba(0, 255, 170, 0.04);
+  padding: 20px;
+  margin-bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.inv-score-box strong {
+  color: #00ffaa;
+  font-size: 24px;
+}
+
+.inv-score-box small {
+  color: #64748b;
+  font-family: monospace;
+}
+
+.inv-outcome {
+  color: #94a3b8;
+  line-height: 2;
+  font-size: 15px;
+  margin-bottom: 22px;
+}
+
+.inv-levelup {
+  border: 1px solid rgba(0, 255, 170, 0.35);
+  background: rgba(0, 255, 170, 0.06);
+  padding: 16px 18px;
+  margin-bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inv-levelup span {
+  font-size: 13px;
+  color: #7eeac7;
+}
+
+.inv-levelup strong {
+  color: #00ffaa;
+  font-size: 16px;
+}
+
+.inv-total-xp {
+  border: 1px solid #1b2631;
+  padding: 16px 18px;
+  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inv-total-xp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.inv-total-xp-row span {
+  color: #64748b;
+  font-size: 12px;
+  font-family: monospace;
+}
+
+.inv-total-xp-row strong {
+  color: #e2e8f0;
+  font-size: 13px;
+}
+
+.inv-total-bar {
+  height: 5px;
+  background: #1b2631;
+  overflow: hidden;
+}
+
+.inv-total-bar div {
+  height: 100%;
+  background: #00ffaa;
+  box-shadow: 0 0 6px rgba(0, 255, 170, 0.6);
+  transition: width 0.4s ease;
+}
+
+.inv-total-count {
+  color: #475569;
+  font-size: 11px;
+  font-family: monospace;
+}
+
+.inv-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.primary-button {
+  border: none;
+  background: #00ffaa;
+  color: #03110c;
+  padding: 13px 24px;
+  border-radius: 5px;
+  font-weight: 800;
+  transition: 0.2s;
+}
+
+.primary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 255, 170, 0.2);
+}
+
+.primary-button span {
+  margin-right: 12px;
+}
+
+.secondary-button {
+  background: transparent;
+  border: 1px solid #26313d;
+  color: #cbd5e1;
+  padding: 13px 24px;
+  border-radius: 5px;
+}
+
+.secondary-button:hover {
+  border-color: #64748b;
+}
+
+@media (max-width: 600px) {
+  .inv-back {
+    right: 5%;
+    top: 20px;
+  }
+
+  .inv-body {
+    padding: 22px;
+  }
+
+  .inv-progress-step {
+    font-size: 10px;
+    padding: 10px 4px;
+  }
+
+  .inv-actions {
+    flex-direction: column;
+  }
+}
