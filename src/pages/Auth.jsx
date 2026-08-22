@@ -1,5 +1,21 @@
 import { useState } from "react";
 import "./Auth.css";
+import { auth } from "../firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+
+const ERROR_MESSAGES = {
+  "auth/email-already-in-use": "هذا البريد الإلكتروني مسجّل مسبقًا",
+  "auth/invalid-email": "البريد الإلكتروني غير صالح",
+  "auth/weak-password": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+  "auth/user-not-found": "لا يوجد حساب بهذا البريد الإلكتروني",
+  "auth/wrong-password": "كلمة المرور غير صحيحة",
+  "auth/invalid-credential": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+  "auth/too-many-requests": "محاولات كثيرة جدًا، حاول لاحقًا",
+};
 
 function Auth({ onBack }) {
   const [mode, setMode] = useState("login"); // 'login' | 'signup'
@@ -10,7 +26,9 @@ function Auth({ onBack }) {
     confirmPassword: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [displayName, setDisplayName] = useState("");
 
   const isSignup = mode === "signup";
 
@@ -26,7 +44,7 @@ function Auth({ onBack }) {
     setForm({ name: "", email: "", password: "", confirmPassword: "" });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (isSignup && !form.name.trim()) {
@@ -46,8 +64,32 @@ function Auth({ onBack }) {
       return;
     }
 
-    // No backend wired up yet — simulate a successful auth handshake.
-    setSuccess(true);
+    setLoading(true);
+    try {
+      if (isSignup) {
+        const credential = await createUserWithEmailAndPassword(
+          auth,
+          form.email.trim(),
+          form.password
+        );
+        await updateProfile(credential.user, { displayName: form.name.trim() });
+        setDisplayName(form.name.trim());
+      } else {
+        const credential = await signInWithEmailAndPassword(
+          auth,
+          form.email.trim(),
+          form.password
+        );
+        setDisplayName(
+          credential.user.displayName || credential.user.email.split("@")[0]
+        );
+      }
+      setSuccess(true);
+    } catch (err) {
+      setError(ERROR_MESSAGES[err.code] || "حدث خطأ، حاول مرة أخرى");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -74,7 +116,7 @@ function Auth({ onBack }) {
                 {isSignup ? "تم إنشاء الحساب بنجاح" : "تم تسجيل الدخول بنجاح"}
               </strong>
               <p>
-                مرحبًا بك في CyberTrace{form.name ? `، ${form.name}` : ""}. جاهز
+                مرحبًا بك في CyberTrace{displayName ? `، ${displayName}` : ""}. جاهز
                 لبدء أول تحقيق؟
               </p>
               <button className="primary-button" onClick={onBack}>
@@ -152,8 +194,13 @@ function Auth({ onBack }) {
 
                 {error && <p className="auth-error">! {error}</p>}
 
-                <button className="primary-button auth-submit" type="submit">
-                  {isSignup ? "إنشاء الحساب" : "دخول"} <span>←</span>
+                <button
+                  className="primary-button auth-submit"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? "جارٍ التحقق..." : isSignup ? "إنشاء الحساب" : "دخول"}{" "}
+                  <span>←</span>
                 </button>
               </form>
             </>

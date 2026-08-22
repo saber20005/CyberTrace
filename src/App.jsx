@@ -1,16 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import Auth from "./pages/Auth";
 import Investigation from "./pages/Investigation";
 import XPBadge from "./components/XPBadge";
 import { CASES } from "./data/cases";
 import { pickRandomCase } from "./utils/caseProgress";
+import { auth } from "./firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import logo from "./assets/logo.svg";
 
 function App() {
   const [view, setView] = useState("home"); // 'home' | 'auth' | 'investigation'
   const [selectedCase, setSelectedCase] = useState(null);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+    });
+    return unsubscribe;
+  }, []);
 
   const goHome = () => setView("home");
+
+  const handleLogout = () => {
+    signOut(auth);
+  };
 
   const startInvestigation = () => {
     setSelectedCase(pickRandomCase(CASES));
@@ -35,7 +50,7 @@ function App() {
     <div className="app" dir="rtl">
       <nav className="navbar">
         <div className="logo" onClick={goHome} style={{ cursor: "pointer" }}>
-          <span className="logo-mark">CT</span>
+          <img src={logo} alt="CyberTrace" className="logo-mark" />
           <span>CyberTrace</span>
         </div>
 
@@ -46,9 +61,18 @@ function App() {
 
         <div className="nav-right">
           <XPBadge />
-          <button className="nav-button" onClick={() => setView("auth")}>
-            تسجيل الدخول
-          </button>
+          {user ? (
+            <div className="nav-user">
+              <span>مرحبًا، {user.displayName || user.email.split("@")[0]}</span>
+              <button className="nav-logout" onClick={handleLogout}>
+                خروج
+              </button>
+            </div>
+          ) : (
+            <button className="nav-button" onClick={() => setView("auth")}>
+              تسجيل الدخول
+            </button>
+          )}
         </div>
       </nav>
 
@@ -211,7 +235,7 @@ function App() {
 
       <footer>
         <div className="logo">
-          <span className="logo-mark">CT</span>
+          <img src={logo} alt="CyberTrace" className="logo-mark" />
           <span>CyberTrace</span>
         </div>
 
