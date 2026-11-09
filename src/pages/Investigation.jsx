@@ -3,6 +3,9 @@ import { addXP } from "../utils/xp";
 import { shuffleArray } from "../utils/shuffle";
 import { recordCaseResult } from "../utils/caseProgress";
 import { getCaseDetails } from "../data/caseCatalog";
+import ShareLink from "../components/ShareLink";
+import { getBlackBoxLearningLink, getShareURL } from "../utils/routes";
+import { trackEvent } from "../utils/analytics";
 import "./Investigation.css";
 
 function Investigation({ caseData, onBack, onNext, backLabel = "العودة لمكتبة التحقيقات" }) {
@@ -14,6 +17,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
   const [resultInfo, setResultInfo] = useState(null);
   const awarded = useRef(false);
   const details = getCaseDetails(caseData);
+  const partner = getBlackBoxLearningLink(caseData.id);
   const [evidenceOptions, setEvidenceOptions] = useState(() =>
     shuffleArray(caseData.evidenceOptions)
   );
@@ -30,6 +34,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
     awarded.current = true;
     setAwardInfo(addXP(totalScore));
     setResultInfo(recordCaseResult(caseData.id, totalScore));
+    trackEvent("training_complete", { case_id: caseData.id, score: totalScore });
     setStep(3);
   };
 
@@ -43,6 +48,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
     awarded.current = false;
     setEvidenceOptions(shuffleArray(caseData.evidenceOptions));
     setDecisionOptions(shuffleArray(caseData.decisions));
+    trackEvent("training_start", { case_id: caseData.id, difficulty: details.difficulty, source: "retry" });
   };
 
   return (
@@ -50,6 +56,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
       <button className="inv-back" onClick={onBack}>
         <span aria-hidden="true">→</span> {backLabel}
       </button>
+      <div className="inv-share"><ShareLink url={getShareURL({ view: "investigation", caseId: caseData.id })} label="نسخ رابط هذا التحقيق" /></div>
 
       <div className="inv-wrapper">
         <nav className="inv-progress" aria-label="مراحل التحقيق">
@@ -250,6 +257,12 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                     تحقيق آخر <span aria-hidden="true">←</span>
                   </button>
                 </div>
+                <aside className="launch-partner inv-next-skill" aria-labelledby="next-skill-title">
+                  <h2 id="next-skill-title">خطوة عملية بعد التحليل</h2>
+                  <p>حوّل ما تعلّمته إلى تدريب منظّم، ووثّق النتائج والملاحظات في BlackBox-Lab.</p>
+                  <a href={partner.url} target="_blank" rel="noopener" onClick={() => trackEvent("partner_click", { destination: "blackbox", context: "case_result" })}>{partner.label} ↗</a>
+                  <small>تنفيذ الأدوات يتم في مختبرك المحلي؛ الموقع ينظّم خطوات التدريب.</small>
+                </aside>
               </div>
             )}
           </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import Auth from "./pages/Auth";
 import Investigation from "./pages/Investigation";
@@ -6,16 +6,34 @@ import InvestigationLibrary from "./pages/InvestigationLibrary";
 import XPBadge from "./components/XPBadge";
 import { CASES } from "./data/cases";
 import { pickRandomCase } from "./utils/caseProgress";
+import { getCaseDetails } from "./data/caseCatalog";
+import { createRouteURL, getBlackBoxLearningLink, readRoute } from "./utils/routes";
+import { applyPageMetadata, describePage } from "./utils/pageMetadata";
+import { trackEvent, trackPageView } from "./utils/analytics";
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import logo from "./assets/logo.svg";
 
+function routeAtLocation() {
+  return {
+    ...readRoute(window.location.href, CASES),
+    returnView: window.history.state?.cybertraceReturn === "home" ? "home" : "library",
+  };
+}
+
+function trackStart(route, source) {
+  const caseData = CASES.find(item => item.id === route.caseId);
+  if (caseData) trackEvent("training_start", { case_id: caseData.id, difficulty: getCaseDetails(caseData).difficulty, source });
+}
+
 function App() {
-  const [view, setView] = useState("home");
-  const [returnView, setReturnView] = useState("home");
-  const [selectedCase, setSelectedCase] = useState(null);
+  const [route, setRoute] = useState(routeAtLocation);
   const [investigationRun, setInvestigationRun] = useState(0);
   const [user, setUser] = useState(null);
+  const initialVisitTracked = useRef(false);
+  const { view, returnView } = route;
+  const selectedCase = CASES.find(item => item.id === route.caseId);
+  const partner = getBlackBoxLearningLink();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -24,21 +42,49 @@ function App() {
     return unsubscribe;
   }, []);
 
-  const goHome = () => { setView("home"); window.scrollTo(0, 0); };
-  const goLibrary = () => { setView("library"); window.scrollTo(0, 0); };
+  useEffect(() => {
+    const initial = routeAtLocation();
+    window.history.replaceState(window.history.state, "", createRouteURL(initial, window.location.href, { preserveHash: true }));
+    if (initial.view === "investigation" && !initialVisitTracked.current) {
+      initialVisitTracked.current = true;
+      trackStart(initial, "direct_link");
+    }
+    const restore = () => {
+      const next = routeAtLocation();
+      window.history.replaceState(window.history.state, "", createRouteURL(next, window.location.href, { preserveHash: true }));
+      setRoute(next);
+      setInvestigationRun(run => run + 1);
+      if (next.view === "investigation") trackStart(next, "history");
+      if (!window.location.hash) window.scrollTo(0, 0);
+    };
+    window.addEventListener("popstate", restore);
+    return () => window.removeEventListener("popstate", restore);
+  }, []);
+
+  useEffect(() => {
+    applyPageMetadata(describePage(route, CASES));
+    trackPageView();
+  }, [route]);
+
+  const navigate = next => {
+    window.history.pushState({ cybertraceReturn: next.returnView || "library" }, "", createRouteURL(next, window.location.href));
+    setRoute(next);
+    setInvestigationRun(run => run + 1);
+    window.scrollTo(0, 0);
+  };
+  const goHome = () => navigate({ view: "home" });
+  const goLibrary = () => navigate({ view: "library" });
 
   const handleLogout = () => {
     signOut(auth);
   };
 
-  const startInvestigation = (caseData = null, origin = "library") => {
+  const startInvestigation = (caseData = null, origin = "library", source = origin) => {
     const nextCase = caseData ?? pickRandomCase(CASES);
     if (!nextCase) return;
-    setSelectedCase(nextCase);
-    setReturnView(origin);
-    setInvestigationRun((run) => run + 1);
-    setView("investigation");
-    window.scrollTo(0, 0);
+    const next = { view: "investigation", caseId: nextCase.id, returnView: origin };
+    navigate(next);
+    trackStart(next, source);
   };
 
   if (view === "auth") {
@@ -56,7 +102,7 @@ function App() {
         caseData={selectedCase}
         onBack={returnView === "library" ? goLibrary : goHome}
         backLabel={returnView === "library" ? "العودة لمكتبة التحقيقات" : "العودة للرئيسية"}
-        onNext={() => startInvestigation(null, returnView)}
+        onNext={() => startInvestigation(null, returnView, "next_case")}
       />
     );
   }
@@ -85,7 +131,7 @@ function App() {
               </button>
             </div>
           ) : (
-            <button className="nav-button" onClick={() => setView("auth")}>
+            <button className="nav-button" onClick={() => navigate({ view: "auth" })}>
               تسجيل الدخول
             </button>
           )}
@@ -249,6 +295,12 @@ function App() {
               <p>حدد الإجراء الصحيح واحصل على تقييم لأدائك.</p>
             </div>
           </div>
+        </section>
+        <section className="launch-partner" aria-labelledby="partner-title">
+          <h2 id="partner-title">من تحليل الحادثة إلى تنظيم التدريب</h2>
+          <p>واصل رحلتك في BlackBox-Lab: مسارات تدريب عملية، وملاحظات محفوظة، وتقارير تجمع ما تعلّمته.</p>
+          <a href={partner.url} target="_blank" rel="noopener" onClick={() => trackEvent("partner_click", { destination: "blackbox", context: "home" })}>{partner.label} ↗</a>
+          <small>تعليمات المختبر والأدوات تُنفّذ في بيئتك المحلية.</small>
         </section>
       </main>
 
