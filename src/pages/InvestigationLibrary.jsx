@@ -4,6 +4,9 @@ import { getCaseResults, getCompletedCaseIds } from "../utils/caseProgress";
 import { getLevelInfo, getXP } from "../utils/xp";
 import XPBadge from "../components/XPBadge";
 import logo from "../assets/logo.svg";
+import ShareLink from "../components/ShareLink";
+import { getBlackBoxLearningLink, getShareURL } from "../utils/routes";
+import { trackEvent } from "../utils/analytics";
 import "./InvestigationLibrary.css";
 
 const dateFormat = new Intl.DateTimeFormat("ar", { day: "numeric", month: "short", year: "numeric" });
@@ -26,6 +29,7 @@ function InvestigationLibrary({ cases, onStart, onHome }) {
   const attempts = recordedResults.reduce((sum, result) => sum + result.attempts, 0);
   const best = recordedResults.length ? Math.max(...recordedResults.map(result => result.bestScore)) : null;
   const progress = cases.length ? Math.round(completedCount / cases.length * 100) : 0;
+  const partner = getBlackBoxLearningLink();
   const normalizedQuery = query.trim().toLocaleLowerCase("ar");
   const visibleCases = cases.filter(c => {
     const details = getCaseDetails(c);
@@ -54,6 +58,7 @@ function InvestigationLibrary({ cases, onStart, onHome }) {
             <p className="library-eyebrow"><span aria-hidden="true">●</span> مركز تدريب محلّل الأمن</p>
             <h1 id="library-title" ref={heading} tabIndex={-1}>مكتبة التحقيقات<span>.</span></h1>
             <p className="library-intro">اختر الحادثة التي تريد حلّها، أو ابدأ مهمة عشوائية من دورتك الحالية. كل قرار فرصة لتطوير مهاراتك.</p>
+            <div className="library-share"><ShareLink url={getShareURL({ view: "library" })} label="نسخ رابط المكتبة" /></div>
           </div>
           <button className="primary-button library-random" onClick={() => onStart(null)}>ابدأ تحقيقًا عشوائيًا <span aria-hidden="true">←</span></button>
         </section>
@@ -89,13 +94,16 @@ function InvestigationLibrary({ cases, onStart, onHome }) {
                 <div className="case-record">
                   {result ? <><dl><div><dt>أفضل نتيجة</dt><dd>{result.bestScore} / 70</dd></div><div><dt>آخر نتيجة</dt><dd>{result.lastScore} / 70</dd></div><div><dt>المحاولات</dt><dd>{result.attempts}</dd></div></dl><p>آخر إكمال: <time dateTime={result.lastCompletedAt}>{dateFormat.format(new Date(result.lastCompletedAt))}</time></p></> : <p>{isCompleted ? "مكتملة سابقًا. أعد التحقيق لتسجيل نتيجتك وتتبّع تحسّنك." : "حلّل السجلات، حدّد الدليل، ثم اتخذ قرارك."}</p>}
                 </div>
-                <button className="case-start" onClick={() => onStart(caseData)} aria-label={`${isCompleted ? "إعادة" : "بدء"} تحقيق: ${details.title}`}>{isCompleted ? "أعد التحقيق" : "ابدأ التحقيق"}<span aria-hidden="true">←</span></button>
+                <div className="case-actions">
+                  <button className="case-start" onClick={() => onStart(caseData)} aria-label={`${isCompleted ? "إعادة" : "بدء"} تحقيق: ${details.title}`}>{isCompleted ? "أعد التحقيق" : "ابدأ التحقيق"}<span aria-hidden="true">←</span></button>
+                  <ShareLink url={getShareURL({ view: "investigation", caseId: caseData.id })} label={`نسخ رابط ${caseData.id}`} />
+                </div>
               </article>;
             })}
           </div> : <div className="library-empty" role="status"><span aria-hidden="true">⌕</span><h3>لا توجد تحقيقات تطابق بحثك</h3><p>جرّب كلمة أخرى أو وسّع خيارات التصفية.</p><button className="secondary-button" onClick={clearFilters}>مسح البحث والتصفية</button></div>}
         </section>
       </main>
-      <footer className="library-footer"><span>CyberTrace / Training Operations</span><p>تدرّب. حقّق. اتخذ القرار.</p></footer>
+      <footer className="library-footer"><span>CyberTrace / Training Operations</span><a className="library-partner-link" href={partner.url} target="_blank" rel="noopener" onClick={() => trackEvent("partner_click", { destination: "blackbox", context: "library" })}>مسارات التدريب العملي في BlackBox-Lab ↗</a><p>تدرّب. حقّق. اتخذ القرار.</p></footer>
     </div>
   );
 }
