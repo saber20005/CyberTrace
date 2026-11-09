@@ -117,7 +117,7 @@ function App() {
 
             <div className="hero-stats">
               <div>
-                <strong>01</strong>
+                <strong>{String(CASES.length).padStart(2, "0")}</strong>
                 <span>تحقيقات واقعية</span>
               </div>
 
