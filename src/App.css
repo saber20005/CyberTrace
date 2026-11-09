@@ -508,3 +508,16 @@ footer p {
     gap: 15px;
   }
 }
+/* Training navigation */
+.logo-button { border: 0; padding: 0; color: #f1f5f9; background: transparent; }
+.nav-library { border: 1px solid #28513f; border-radius: 6px; color: #a6f4d8; background: rgba(0,255,170,.04); font-size: 12px; padding: 9px 13px; white-space: nowrap; }
+.nav-library:hover { border-color: #00ffaa; }
+@media (max-width: 600px) {
+  .navbar { gap: 10px; height: auto; min-height: 76px; flex-wrap: wrap; padding-top: 12px; padding-bottom: 12px; }
+  .navbar .logo { font-size: 17px; gap: 7px; }
+  .navbar .logo-mark { width: 29px; height: 29px; }
+  .nav-right { gap: 8px; }
+  .nav-button { display: inline-flex; padding: 8px 9px; font-size: 10px; }
+  .nav-library { font-size: 10px; padding: 8px 9px; }
+  .nav-user { font-size: 10px; max-width: 160px; overflow-wrap: anywhere; }
+}

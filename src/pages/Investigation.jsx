@@ -1,15 +1,19 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { addXP } from "../utils/xp";
 import { shuffleArray } from "../utils/shuffle";
-import { markCaseSeen } from "../utils/caseProgress";
+import { recordCaseResult } from "../utils/caseProgress";
+import { getCaseDetails } from "../data/caseCatalog";
 import "./Investigation.css";
 
-function Investigation({ caseData, onBack }) {
+function Investigation({ caseData, onBack, onNext, backLabel = "العودة لمكتبة التحقيقات" }) {
   const [step, setStep] = useState(0); // 0: brief, 1: evidence, 2: decision, 3: result
   const [selectedEvidence, setSelectedEvidence] = useState(null);
   const [evidenceChecked, setEvidenceChecked] = useState(false);
   const [selectedDecision, setSelectedDecision] = useState(null);
   const [awardInfo, setAwardInfo] = useState(null);
+  const [resultInfo, setResultInfo] = useState(null);
+  const awarded = useRef(false);
+  const details = getCaseDetails(caseData);
   const [evidenceOptions, setEvidenceOptions] = useState(() =>
     shuffleArray(caseData.evidenceOptions)
   );
@@ -22,9 +26,10 @@ function Investigation({ caseData, onBack }) {
   const totalScore = evidencePoints + decisionPoints;
 
   const completeInvestigation = () => {
-    if (awardInfo) return;
+    if (awarded.current || !selectedEvidence || !evidenceChecked || !selectedDecision) return;
+    awarded.current = true;
     setAwardInfo(addXP(totalScore));
-    markCaseSeen(caseData.id);
+    setResultInfo(recordCaseResult(caseData.id, totalScore));
     setStep(3);
   };
 
@@ -34,6 +39,8 @@ function Investigation({ caseData, onBack }) {
     setEvidenceChecked(false);
     setSelectedDecision(null);
     setAwardInfo(null);
+    setResultInfo(null);
+    awarded.current = false;
     setEvidenceOptions(shuffleArray(caseData.evidenceOptions));
     setDecisionOptions(shuffleArray(caseData.decisions));
   };
@@ -41,18 +48,18 @@ function Investigation({ caseData, onBack }) {
   return (
     <div className="inv-screen" dir="rtl">
       <button className="inv-back" onClick={onBack}>
-        <span>→</span> العودة لقائمة التحقيقات
+        <span aria-hidden="true">→</span> {backLabel}
       </button>
 
       <div className="inv-wrapper">
-        <div className="inv-progress">
+        <nav className="inv-progress" aria-label="مراحل التحقيق">
           {["الحادثة", "الأدلة", "القرار", "النتيجة"].map((label, i) => (
-            <div key={label} className={`inv-progress-step ${i <= step ? "active" : ""}`}>
+            <div key={label} className={`inv-progress-step ${i <= step ? "active" : ""}`} aria-current={i === step ? "step" : undefined}>
               <span>{String(i + 1).padStart(2, "0")}</span>
               {label}
             </div>
           ))}
-        </div>
+        </nav>
 
         <div className="inv-card">
           <div className="terminal-header">
@@ -73,10 +80,11 @@ function Investigation({ caseData, onBack }) {
 
                 <div className="incident-box">
                   <span className="incident-label">INCIDENT</span>
-                  <strong>{caseData.incidentTitle}</strong>
+                  <h1 className="inv-title">{details.title}</h1>
                   <small>
-                    Severity: {caseData.severity} · {caseData.meta}
+                    {details.categoryLabel} · المستوى: {details.difficultyLabel} · {caseData.id}
                   </small>
+                  <small className="inv-context" dir="auto">Severity: {caseData.severity} · {caseData.meta}</small>
                 </div>
 
                 <p className="inv-description">{caseData.brief}</p>
@@ -118,6 +126,7 @@ function Investigation({ caseData, onBack }) {
                             : "incorrect"
                           : ""
                       }`}
+                      aria-pressed={selectedEvidence?.id === opt.id}
                       onClick={() => {
                         setSelectedEvidence(opt);
                         setEvidenceChecked(false);
@@ -139,7 +148,7 @@ function Investigation({ caseData, onBack }) {
 
                 {evidenceChecked && (
                   <>
-                    <p className="inv-feedback">
+                    <p className="inv-feedback" role="status">
                       {selectedEvidence.correct
                         ? caseData.evidenceFeedbackCorrect
                         : caseData.evidenceFeedbackIncorrect}
@@ -169,6 +178,7 @@ function Investigation({ caseData, onBack }) {
                       className={`inv-option ${
                         selectedDecision?.id === d.id ? "selected" : ""
                       }`}
+                      aria-pressed={selectedDecision?.id === d.id}
                       onClick={() => setSelectedDecision(d)}
                     >
                       {d.label}
@@ -197,6 +207,11 @@ function Investigation({ caseData, onBack }) {
                 </div>
 
                 <p className="inv-outcome">{selectedDecision.outcome}</p>
+
+                {resultInfo && <div className="inv-personal-record" aria-label="سجل هذه القضية">
+                  <div><span>أفضل نتيجة</span><strong>{resultInfo.bestScore} / 70</strong></div>
+                  <div><span>المحاولات المسجّلة</span><strong>{resultInfo.attempts}</strong></div>
+                </div>}
 
                 {awardInfo?.leveledUp && (
                   <div className="inv-levelup">
@@ -231,8 +246,8 @@ function Investigation({ caseData, onBack }) {
                   <button className="secondary-button" onClick={restart}>
                     إعادة المحاولة
                   </button>
-                  <button className="primary-button" onClick={onBack}>
-                    تحقيق آخر <span>←</span>
+                  <button className="primary-button" onClick={onNext}>
+                    تحقيق آخر <span aria-hidden="true">←</span>
                   </button>
                 </div>
               </div>

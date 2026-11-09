@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import Auth from "./pages/Auth";
 import Investigation from "./pages/Investigation";
+import InvestigationLibrary from "./pages/InvestigationLibrary";
 import XPBadge from "./components/XPBadge";
 import { CASES } from "./data/cases";
 import { pickRandomCase } from "./utils/caseProgress";
@@ -10,7 +11,8 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import logo from "./assets/logo.svg";
 
 function App() {
-  const [view, setView] = useState("home"); // 'home' | 'auth' | 'investigation'
+  const [view, setView] = useState("home");
+  const [returnView, setReturnView] = useState("home");
   const [selectedCase, setSelectedCase] = useState(null);
   const [investigationRun, setInvestigationRun] = useState(0);
   const [user, setUser] = useState(null);
@@ -22,20 +24,29 @@ function App() {
     return unsubscribe;
   }, []);
 
-  const goHome = () => setView("home");
+  const goHome = () => { setView("home"); window.scrollTo(0, 0); };
+  const goLibrary = () => { setView("library"); window.scrollTo(0, 0); };
 
   const handleLogout = () => {
     signOut(auth);
   };
 
-  const startInvestigation = () => {
-    setSelectedCase(pickRandomCase(CASES));
+  const startInvestigation = (caseData = null, origin = "library") => {
+    const nextCase = caseData ?? pickRandomCase(CASES);
+    if (!nextCase) return;
+    setSelectedCase(nextCase);
+    setReturnView(origin);
     setInvestigationRun((run) => run + 1);
     setView("investigation");
+    window.scrollTo(0, 0);
   };
 
   if (view === "auth") {
     return <Auth onBack={goHome} />;
+  }
+
+  if (view === "library") {
+    return <InvestigationLibrary cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} />;
   }
 
   if (view === "investigation" && selectedCase) {
@@ -43,8 +54,9 @@ function App() {
       <Investigation
         key={investigationRun}
         caseData={selectedCase}
-        onBack={goHome}
-        onNext={startInvestigation}
+        onBack={returnView === "library" ? goLibrary : goHome}
+        backLabel={returnView === "library" ? "العودة لمكتبة التحقيقات" : "العودة للرئيسية"}
+        onNext={() => startInvestigation(null, returnView)}
       />
     );
   }
@@ -52,10 +64,10 @@ function App() {
   return (
     <div className="app" dir="rtl">
       <nav className="navbar">
-        <div className="logo" onClick={goHome} style={{ cursor: "pointer" }}>
+        <button className="logo logo-button" onClick={goHome} aria-label="CyberTrace — الرئيسية">
           <img src={logo} alt="CyberTrace" className="logo-mark" />
           <span>CyberTrace</span>
-        </div>
+        </button>
 
         <div className="nav-links">
           <a href="#about">عن المنصة</a>
@@ -64,6 +76,7 @@ function App() {
 
         <div className="nav-right">
           <XPBadge />
+          <button className="nav-library" onClick={goLibrary}>مكتبة التحقيقات</button>
           {user ? (
             <div className="nav-user">
               <span>مرحبًا، {user.displayName || user.email.split("@")[0]}</span>
@@ -101,17 +114,17 @@ function App() {
             <div className="hero-actions">
               <button
                 className="primary-button"
-                onClick={startInvestigation}
+                onClick={goLibrary}
               >
-                ابدأ أول تحقيق
+                استكشف مكتبة التحقيقات
                 <span>←</span>
               </button>
 
               <button
                 className="secondary-button"
-                onClick={() => document.getElementById("how")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() => startInvestigation(null, "home")}
               >
-                اكتشف كيف تعمل
+                ابدأ تحقيقًا عشوائيًا
               </button>
             </div>
 

@@ -1,16 +1,32 @@
-# React + Vite
+# CyberTrace
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+منصة تدريب عربية على التحقيق في الحوادث الأمنية وتحليل السجلات واتخاذ قرارات الاستجابة.
 
-Currently, two official plugins are available:
+## ما توفره المنصة
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- مكتبة تضم 16 تحقيقًا مع البحث والتصفية حسب المستوى والمجال وحالة الإنجاز.
+- اختيار قضية محددة أو تحقيق عشوائي من القضايا غير المكتملة في الدورة الحالية.
+- رحلة من أربع مراحل: الحادثة، تحليل الأدلة، اتخاذ القرار، والنتيجة؛ حتى 70 XP لكل محاولة.
+- لوحة تقدّم تعرض القضايا المكتملة والرصيد والمحاولات المسجّلة وأفضل نتيجة.
+- سجل لكل قضية يتضمن أفضل وآخر نتيجة وعدد المحاولات وتاريخ آخر إكمال.
+- واجهة RTL متجاوبة مع الهاتف، مع الإبقاء على تسجيل الدخول الحالي عبر Firebase.
 
-## React Compiler
+## التشغيل المحلي
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+يتطلب المشروع Node.js المتوافق مع Vite 8 (الإصدار المستخدم في النشر: Node.js 24).
 
-## Expanding the ESLint configuration
+```sh
+npm ci
+npm run dev
+npm run build
+npm run lint
+npm test
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## حفظ التقدّم
+
+النتائج والنقاط محفوظة في متصفح الجهاز، ولا تتزامن تلقائيًا مع حساب Firebase أو الأجهزة الأخرى. يحتفظ التحديث بمفاتيح `cybertrace_xp` و`cybertrace_seen_cases` القديمة، ويضيف تاريخ الإكمال الدائم وسجل النتائج. تظهر القضايا القديمة كمكتملة دون اختراع نتائج أو عدد محاولات لم يكن محفوظًا سابقًا.
+
+بعد إكمال كل القضايا تبدأ دورة عشوائية جديدة، مع بقاء تاريخ الإنجاز وأفضل النتائج. إذا منع المتصفح التخزين يستمر التقدّم خلال الجلسة الحالية فقط.
+
+تغطي اختبارات Node ترحيل التقدّم القديم، وحفظ تاريخ الإنجاز عبر الدورات، وأفضل وآخر نتيجة والمحاولات، ومعالجة التخزين المعطّل أو الممتلئ دون فقدان تقدّم الجلسة.
