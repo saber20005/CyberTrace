@@ -1,4 +1,6 @@
 const STORAGE_KEY = "cybertrace_xp";
+let sessionXP = 0;
+let pendingWrite = false;
 
 // Career-ladder levels for a security analyst. Adjust thresholds as more
 // investigations get added — these assume ~30-70 XP per case.
@@ -12,21 +14,25 @@ export const LEVELS = [
 ];
 
 export function getXP() {
+  if (pendingWrite) return sessionXP;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    const value = raw ? parseInt(raw, 10) : 0;
-    return Number.isFinite(value) && value >= 0 ? value : 0;
+    const value = raw === null ? 0 : Number(raw);
+    sessionXP = Number.isSafeInteger(value) && value >= 0 ? value : 0;
+    return sessionXP;
   } catch {
-    // localStorage unavailable (private mode, etc.) — fall back to 0
-    return 0;
+    // Keep the current session usable when browser storage is unavailable.
+    return sessionXP;
   }
 }
 
 function setXP(value) {
+  sessionXP = value;
   try {
     localStorage.setItem(STORAGE_KEY, String(value));
+    pendingWrite = false;
   } catch {
-    // XP just won't persist across sessions — non-fatal
+    pendingWrite = true;
   }
 }
 
@@ -61,7 +67,8 @@ export function getLevelInfo(xp) {
 // Adds XP, persists it, and reports whether the user crossed a level threshold.
 export function addXP(amount) {
   const previousXP = getXP();
-  const newXP = previousXP + Math.max(0, amount);
+  const points = Number.isFinite(amount) ? Math.max(0, Math.round(amount)) : 0;
+  const newXP = Math.min(Number.MAX_SAFE_INTEGER, previousXP + points);
   setXP(newXP);
 
   const previousLevel = getLevelInfo(previousXP);
