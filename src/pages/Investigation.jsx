@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { addXP } from "../utils/xp";
+import { shuffleArray } from "../utils/shuffle";
+import { markCaseSeen } from "../utils/caseProgress";
 import "./Investigation.css";
 
 function Investigation({ caseData, onBack }) {
@@ -8,17 +10,23 @@ function Investigation({ caseData, onBack }) {
   const [evidenceChecked, setEvidenceChecked] = useState(false);
   const [selectedDecision, setSelectedDecision] = useState(null);
   const [awardInfo, setAwardInfo] = useState(null);
+  const [evidenceOptions, setEvidenceOptions] = useState(() =>
+    shuffleArray(caseData.evidenceOptions)
+  );
+  const [decisionOptions, setDecisionOptions] = useState(() =>
+    shuffleArray(caseData.decisions)
+  );
 
   const evidencePoints = selectedEvidence?.correct ? 30 : 10;
   const decisionPoints = selectedDecision?.points ?? 0;
   const totalScore = evidencePoints + decisionPoints;
 
-  // Award XP exactly once, the moment the result screen is reached.
-  useEffect(() => {
-    if (step === 3 && !awardInfo) {
-      setAwardInfo(addXP(totalScore));
-    }
-  }, [step, awardInfo, totalScore]);
+  const completeInvestigation = () => {
+    if (awardInfo) return;
+    setAwardInfo(addXP(totalScore));
+    markCaseSeen(caseData.id);
+    setStep(3);
+  };
 
   const restart = () => {
     setStep(0);
@@ -26,6 +34,8 @@ function Investigation({ caseData, onBack }) {
     setEvidenceChecked(false);
     setSelectedDecision(null);
     setAwardInfo(null);
+    setEvidenceOptions(shuffleArray(caseData.evidenceOptions));
+    setDecisionOptions(shuffleArray(caseData.decisions));
   };
 
   return (
@@ -96,7 +106,7 @@ function Investigation({ caseData, onBack }) {
                 </p>
 
                 <div className="inv-options">
-                  {caseData.evidenceOptions.map((opt) => (
+                  {evidenceOptions.map((opt) => (
                     <button
                       key={opt.id}
                       className={`inv-option ${
@@ -153,7 +163,7 @@ function Investigation({ caseData, onBack }) {
                 </p>
 
                 <div className="inv-options">
-                  {caseData.decisions.map((d) => (
+                  {decisionOptions.map((d) => (
                     <button
                       key={d.id}
                       className={`inv-option ${
@@ -167,7 +177,7 @@ function Investigation({ caseData, onBack }) {
                 </div>
 
                 {selectedDecision && (
-                  <button className="primary-button" onClick={() => setStep(3)}>
+                  <button className="primary-button" onClick={completeInvestigation}>
                     تنفيذ القرار <span>←</span>
                   </button>
                 )}

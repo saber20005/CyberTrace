@@ -12,6 +12,7 @@ import logo from "./assets/logo.svg";
 function App() {
   const [view, setView] = useState("home"); // 'home' | 'auth' | 'investigation'
   const [selectedCase, setSelectedCase] = useState(null);
+  const [investigationRun, setInvestigationRun] = useState(0);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -29,6 +30,7 @@ function App() {
 
   const startInvestigation = () => {
     setSelectedCase(pickRandomCase(CASES));
+    setInvestigationRun((run) => run + 1);
     setView("investigation");
   };
 
@@ -39,6 +41,7 @@ function App() {
   if (view === "investigation" && selectedCase) {
     return (
       <Investigation
+        key={investigationRun}
         caseData={selectedCase}
         onBack={goHome}
         onNext={startInvestigation}
@@ -104,7 +107,10 @@ function App() {
                 <span>←</span>
               </button>
 
-              <button className="secondary-button">
+              <button
+                className="secondary-button"
+                onClick={() => document.getElementById("how")?.scrollIntoView({ behavior: "smooth" })}
+              >
                 اكتشف كيف تعمل
               </button>
             </div>
