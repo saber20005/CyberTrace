@@ -13,6 +13,7 @@ import { trackEvent, trackPageView } from "./utils/analytics";
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import logo from "./assets/logo.svg";
+import { useBlackBox } from "./blackbox/useBlackBox";
 
 function routeAtLocation() {
   return {
@@ -27,6 +28,7 @@ function trackStart(route, source) {
 }
 
 function App() {
+  const blackBox = useBlackBox();
   const [route, setRoute] = useState(routeAtLocation);
   const [investigationRun, setInvestigationRun] = useState(0);
   const [user, setUser] = useState(null);
@@ -75,8 +77,8 @@ function App() {
   const goHome = () => navigate({ view: "home" });
   const goLibrary = () => navigate({ view: "library" });
 
-  const handleLogout = () => {
-    signOut(auth);
+  const handleLogout = async () => {
+    await Promise.allSettled([blackBox.disconnect(), signOut(auth)]);
   };
 
   const startInvestigation = (caseData = null, origin = "library", source = origin) => {
