@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Auth.css";
+import BlackBoxAccountButton from "../blackbox/BlackBoxAccountButton";
 import { auth } from "../firebase";
 import {
   createUserWithEmailAndPassword,
@@ -94,9 +95,12 @@ function Auth({ onBack }) {
 
   return (
     <div className="auth-screen" dir="rtl">
-      <button className="auth-back" onClick={onBack}>
-        <span>→</span> العودة للرئيسية
-      </button>
+      <header className="auth-topbar">
+        <button className="auth-back" onClick={onBack}>
+          <span>→</span> العودة للرئيسية
+        </button>
+        <BlackBoxAccountButton />
+      </header>
 
       <div className="auth-card">
         <div className="terminal-header">

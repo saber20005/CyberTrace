@@ -14,6 +14,7 @@ import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import logo from "./assets/logo.svg";
 import { useBlackBox } from "./blackbox/useBlackBox";
+import BlackBoxAccountButton from "./blackbox/BlackBoxAccountButton";
 
 function routeAtLocation() {
   return {
@@ -124,6 +125,7 @@ function App() {
 
         <div className="nav-right">
           <XPBadge />
+          <BlackBoxAccountButton />
           <button className="nav-library" onClick={goLibrary}>مكتبة التحقيقات</button>
           {user ? (
             <div className="nav-user">

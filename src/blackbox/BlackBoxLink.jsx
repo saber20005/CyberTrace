@@ -51,17 +51,6 @@ export default function BlackBoxLink({ dialogRef }) {
   }
 
   return <>
-    <aside className="bb-link-dock" dir="rtl" aria-label="حساب BlackBox المرتبط">
-      <div className="bb-link-dock-copy">
-        <strong>{connected ? "نتائجك إلى حساب BlackBox" : "تحقيقاتك تبني مهاراتك في BlackBox"}</strong>
-        {connected ? <span dir="ltr" className="bb-linked-email">{status.user.email || status.user.displayName || "حساب BlackBox"}</span>
-          : <span>اربط حسابك لنقل أفضل نتائج التحقيقات إلى تقدّم المهارات.</span>}
-      </div>
-      <div className="bb-link-dock-actions">
-        {connected && <span className={`bb-link-mini-status ${status.error ? "has-error" : ""}`} role="status">{status.memoryOnly ? "نتائج مؤقتة · أبقِ التبويب مفتوحًا" : status.syncing ? "جارٍ المزامنة…" : status.pending ? `${status.pending} نتائج تنتظر المزامنة` : status.error ? "راجع حالة الربط" : "الحساب مرتبط"}</span>}
-        <button type="button" id="blackboxLinkButton" className="bb-link-button" onClick={bridge.openLink}>{connected ? "إدارة الربط" : "ربط حساب BlackBox"}</button>
-      </div>
-    </aside>
     <dialog ref={dialogRef} id="blackboxLinkDialog" className="bb-link-dialog" dir="rtl" aria-labelledby="blackboxLinkTitle" aria-describedby="blackboxLinkDescription" aria-busy={busy} onClose={() => form.current?.reset()}>
       <header className="bb-link-dialog-head"><span>CYBERTRACE / BLACKBOX</span><button type="button" id="blackboxLinkClose" className="bb-link-close" onClick={close} aria-label="إغلاق نافذة ربط BlackBox">×</button></header>
       <h2 id="blackboxLinkTitle">{connected ? "حساب BlackBox المرتبط" : "اربط التحقيقات برحلة مهاراتك"}</h2>

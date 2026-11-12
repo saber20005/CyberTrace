@@ -3,8 +3,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
+  justify-content: flex-start;
+  gap: 28px;
+  padding: 28px 20px 40px;
   background:
     radial-gradient(circle at 75% 15%, rgba(0, 255, 170, 0.08), transparent 28%),
     radial-gradient(circle at 15% 40%, rgba(0, 120, 255, 0.06), transparent 25%),
@@ -12,9 +13,6 @@
 }
 
 .auth-back {
-  position: absolute;
-  top: 28px;
-  right: 7%;
   background: transparent;
   border: none;
   color: #64748b;
@@ -29,7 +27,10 @@
   color: #00ffaa;
 }
 
+.auth-topbar { width: 100%; max-width: 950px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; }
+
 .auth-card {
+  margin-block: auto;
   width: 100%;
   max-width: 420px;
   direction: ltr;
@@ -210,11 +211,4 @@
 
 .auth-success .primary-button span {
   margin-right: 12px;
-}
-
-@media (max-width: 600px) {
-  .auth-back {
-    right: 5%;
-    top: 20px;
-  }
 }

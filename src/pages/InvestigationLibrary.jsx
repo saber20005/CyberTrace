@@ -8,6 +8,7 @@ import ShareLink from "../components/ShareLink";
 import { getBlackBoxLearningLink, getShareURL } from "../utils/routes";
 import { trackEvent } from "../utils/analytics";
 import { buildLearningPlan } from "../utils/learningPlan";
+import BlackBoxAccountButton from "../blackbox/BlackBoxAccountButton";
 import "./InvestigationLibrary.css";
 
 const dateFormat = new Intl.DateTimeFormat("ar", { day: "numeric", month: "short", year: "numeric" });
@@ -58,7 +59,7 @@ function InvestigationLibrary({ cases, onStart, onHome }) {
         <button className="logo logo-button" onClick={onHome} aria-label="CyberTrace — الرئيسية">
           <img src={logo} alt="" className="logo-mark" /><span>CyberTrace</span>
         </button>
-        <div className="nav-right"><XPBadge /><button className="nav-button library-home" onClick={onHome}>الرئيسية <span aria-hidden="true">↗</span></button></div>
+        <div className="nav-right"><XPBadge /><BlackBoxAccountButton /><button className="nav-button library-home" onClick={onHome}>الرئيسية <span aria-hidden="true">↗</span></button></div>
       </header>
       <main className="library-shell">
         <section className="library-heading" aria-labelledby="library-title">
