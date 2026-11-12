@@ -1,0 +1,54 @@
+.bb-linked-layout { padding-bottom: 96px; }
+.bb-link-dock { position: fixed; inset-inline: 0; bottom: 0; z-index: 120; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 13px max(5%, 18px); border-top: 1px solid #27463c; background: #08130ff5; box-shadow: 0 -12px 35px #0005; color: #d5e8df; }
+.bb-link-dock-copy { display: flex; flex-direction: column; min-width: 0; gap: 3px; }
+.bb-link-dock-copy strong { font-size: 13px; }
+.bb-link-dock-copy > span { color: #97b3a4; font-size: 11px; overflow-wrap: anywhere; }
+.bb-linked-email { text-align: right; }
+.bb-link-dock-actions { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.bb-link-mini-status { color: #a2c8b4; font-size: 11px; }
+.bb-link-button, .bb-link-secondary { border: 1px solid #458b70; border-radius: 8px; padding: 10px 16px; font-size: 12px; line-height: 1.7; cursor: pointer; }
+.bb-link-button { background: #b3f3d1; border-color: #b3f3d1; color: #07130e; font-weight: 700; }
+.bb-link-secondary { background: #10251b; color: #ccf2dd; }
+.bb-link-full { width: 100%; margin-top: 15px; }
+.bb-link-dialog { color: #e2eee7; background: linear-gradient(145deg,#101f17,#08100c); width: min(500px, calc(100% - 28px)); max-height: calc(100dvh - 36px); padding: 25px; border: 1px solid #41634e; border-radius: 16px; overflow-y: auto; box-shadow: 0 30px 100px #000b; }
+.bb-link-dialog::backdrop { background: #000b; backdrop-filter: blur(5px); }
+.bb-link-dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 15px; }
+.bb-link-dialog-head > span { color: #9abcaa; font: 11px monospace; }
+.bb-link-close { color: #dfede3; background: #112118; border: 1px solid #35513e; border-radius: 8px; width: 36px; height: 36px; font-size: 25px; flex-shrink: 0; }
+.bb-link-dialog h2 { font-size: 22px; line-height: 1.7; margin-bottom: 10px; }
+.bb-link-dialog h3 { font-size: 14px; margin-bottom: 6px; }
+.bb-link-dialog p { font-size: 12px; line-height: 2; }
+.bb-link-dialog > p { color: #a2bcad; margin: 10px 0; }
+.bb-link-dialog label { display: block; color: #d2e4d8; font-size: 12px; margin: 17px 0 7px; }
+.bb-link-dialog input { width: 100%; border: 1px solid #3a5947; background: #060e09; color: #e1eee5; border-radius: 8px; min-height: 44px; padding: 11px 12px; }
+.bb-link-dialog button:disabled, .bb-link-dialog input:disabled { opacity: .55; cursor: not-allowed; }
+.bb-link-message { padding: 11px 13px; border: 1px solid #456d47; border-radius: 9px; color: #c3e9c5 !important; background: #142619; }
+.bb-link-message.has-error { background: #2a1915; border-color: #775045; color: #f2c3b5 !important; }
+.bb-link-service.has-error, .bb-link-mini-status.has-error { color: #edca9d; }
+.bb-link-identity { padding: 14px; border: 1px solid #36533e; border-radius: 10px; background: #0c1a11; margin: 15px 0; }
+.bb-link-identity span, .bb-link-identity strong { display: block; overflow-wrap: anywhere; }
+.bb-link-identity span { font-size: 11px; color: #a6bfac; margin-bottom: 5px; }
+.bb-link-identity strong { text-align: right; font-size: 14px; }
+.bb-link-note { color: #9ab0a1; font-size: 11px !important; line-height: 1.9; }
+.bb-link-history { background: #122117; border: 1px solid #304c37; border-radius: 10px; padding: 15px; margin: 18px 0; }
+.bb-link-history p { margin-bottom: 10px; color: #b9cebf; }
+.bb-link-history button { width: 100%; }
+.bb-link-action-row { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 12px; }
+.bb-link-action-row button { flex: 1 1 140px; }
+.bb-link-destination { display: block; width: fit-content; max-width: 100%; font-size: 12px; color: #b2e9cb; margin-top: 17px; line-height: 1.9; text-decoration: underline; text-underline-offset: 4px; }
+.bb-link-guest { display: block; width: 100%; margin: 18px 0 0; border: 0; background: transparent; color: #9db1a4; padding: 9px; }
+.bb-case-result { text-align: right; margin: 22px 0; padding: 18px; background: #0d1e15; border: 1px solid #315940; border-radius: 9px; }
+.bb-case-source { color: #8fc9a5; font: 10px monospace; letter-spacing: .6px; }
+.bb-case-result h2 { font-size: 16px; margin: 7px 0; line-height: 1.8; }
+.bb-case-result p { font-size: 12px; line-height: 1.9; margin: 8px 0; }
+.bb-case-result button { margin-top: 8px; }
+@media (max-width: 600px) {
+  .bb-linked-layout { padding-bottom: 150px; }
+  .bb-link-dock { flex-wrap: wrap; gap: 9px; padding: 11px 15px; }
+  .bb-link-dock-copy { width: 100%; }
+  .bb-link-dock-copy strong { font-size: 12px; }
+  .bb-link-dock-actions { width: 100%; justify-content: space-between; flex-shrink: 1; }
+  .bb-link-dock-actions .bb-link-button { margin-inline-start: auto; }
+  .bb-link-dialog { padding: 20px; }
+  .bb-link-dialog h2 { font-size: 20px; }
+}

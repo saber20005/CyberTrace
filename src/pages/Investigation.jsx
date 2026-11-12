@@ -6,9 +6,12 @@ import { getCaseDetails } from "../data/caseCatalog";
 import ShareLink from "../components/ShareLink";
 import { getBlackBoxLearningLink, getShareURL } from "../utils/routes";
 import { trackEvent } from "../utils/analytics";
+import { useBlackBox } from "../blackbox/useBlackBox";
+import BlackBoxResult from "../blackbox/BlackBoxResult";
 import "./Investigation.css";
 
 function Investigation({ caseData, onBack, onNext, backLabel = "العودة لمكتبة التحقيقات" }) {
+  const blackBox = useBlackBox();
   const [step, setStep] = useState(0); // 0: brief, 1: evidence, 2: decision, 3: result
   const [selectedEvidence, setSelectedEvidence] = useState(null);
   const [evidenceChecked, setEvidenceChecked] = useState(false);
@@ -34,6 +37,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
     awarded.current = true;
     setAwardInfo(addXP(totalScore));
     setResultInfo(recordCaseResult(caseData.id, totalScore));
+    void blackBox.recordCompletion(caseData.id, totalScore).catch(() => {});
     trackEvent("training_complete", { case_id: caseData.id, score: totalScore });
     setStep(3);
   };
@@ -214,6 +218,8 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                 </div>
 
                 <p className="inv-outcome">{selectedDecision.outcome}</p>
+
+                <BlackBoxResult caseId={caseData.id} score={totalScore} />
 
                 {resultInfo && <div className="inv-personal-record" aria-label="سجل هذه القضية">
                   <div><span>أفضل نتيجة</span><strong>{resultInfo.bestScore} / 70</strong></div>
