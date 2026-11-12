@@ -1,3 +1,6 @@
+import { INTERMEDIATE_CASES } from './casesIntermediate.js';
+import { ADVANCED_CASES } from './casesAdvanced.js';
+
 export const CASES = [
   {
     id: "INC-0417",
@@ -1155,4 +1158,6 @@ export const CASES = [
       },
     ],
   },
+  ...INTERMEDIATE_CASES,
+  ...ADVANCED_CASES,
 ];

@@ -32,6 +32,18 @@ const CATALOG = {
   "INC-1104": { title: "تسريب بيانات عبر نفق DNS", category: "data", difficulty: "advanced" },
   "INC-1105": { title: "حركة جانبية بحساب خدمة مخترق", category: "network", difficulty: "advanced" },
   "INC-1106": { title: "استغلال مفتاح وصول سحابي مسرّب", category: "cloud", difficulty: "advanced" },
+  "INC-1201": { title: "إعادة استخدام جلسة مسروقة", category: "identity", difficulty: "intermediate" },
+  "INC-1202": { title: "قاعدة تحويل بريد خفية", category: "email", difficulty: "intermediate" },
+  "INC-1203": { title: "وصول إلى سجلات عميل آخر", category: "web", difficulty: "intermediate" },
+  "INC-1204": { title: "خادم DHCP غير مصرح يغيّر مسار DNS", category: "network", difficulty: "intermediate" },
+  "INC-1205": { title: "إنذار تصدير بيانات معتمد", category: "data", difficulty: "intermediate" },
+  "INC-1206": { title: "استبدال صورة حاوية تحت وسم موثوق", category: "supply-chain", difficulty: "intermediate" },
+  "INC-1207": { title: "تغيير جهة الثقة في تسجيل الدخول الموحّد", category: "identity", difficulty: "advanced" },
+  "INC-1208": { title: "احتيال مالي داخل سلسلة مراسلات مورد", category: "email", difficulty: "advanced" },
+  "INC-1209": { title: "تحميل مكتبة مزروعة بجانب برنامج موقّع", category: "malware", difficulty: "advanced" },
+  "INC-1210": { title: "مشاركة لقطة قاعدة بيانات مع حساب خارجي", category: "cloud", difficulty: "advanced" },
+  "INC-1211": { title: "تجاوز التقسيم الشبكي بقاعدة مؤقتة", category: "network", difficulty: "advanced" },
+  "INC-1212": { title: "انتحال مسار بناء عبر هوية CI موحّدة", category: "supply-chain", difficulty: "advanced" },
 };
 
 // Library labels are separate from investigation evidence and scoring data.
