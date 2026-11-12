@@ -1,6 +1,6 @@
-// Public Web app configuration. Activate after the domain and rules are ready.
+// Public Web app configuration. Domains and receipt rules are verified.
 export const blackBoxConfig = Object.freeze({
-  enabled: false,
+  enabled: true,
   firebase: Object.freeze({
     apiKey: "AIzaSyAXZixrz0V0-68NwGDHZFYwveIW20AsiRA",
     authDomain: "black-box-lab.firebaseapp.com",
