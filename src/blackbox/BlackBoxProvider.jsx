@@ -90,7 +90,7 @@ export default function BlackBoxProvider({ children }) {
     [status, modalVersion, openLink, signInEmail, signInGoogle, disconnect, recordCompletion, importHistory, retryPending]);
 
   return <BlackBoxContext.Provider value={value}>
-    <div className={status.enabled ? "bb-linked-layout" : undefined}>{children}</div>
+    {children}
     {status.enabled && <BlackBoxLink dialogRef={dialog} />}
   </BlackBoxContext.Provider>;
 }

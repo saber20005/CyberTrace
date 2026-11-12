@@ -1,6 +1,6 @@
 .inv-screen {
   min-height: 100vh;
-  padding: 90px 20px 60px;
+  padding: 28px 20px 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -11,9 +11,6 @@
 }
 
 .inv-back {
-  position: absolute;
-  top: 28px;
-  right: 7%;
   background: transparent;
   border: none;
   color: #64748b;
@@ -27,6 +24,9 @@
 .inv-back:hover {
   color: #00ffaa;
 }
+
+.inv-topbar { width: 100%; max-width: 950px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin: 0 auto 28px; }
+.inv-topbar-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
 
 .inv-wrapper {
   width: 100%;
@@ -356,11 +356,6 @@
 }
 
 @media (max-width: 600px) {
-  .inv-back {
-    right: 5%;
-    top: 20px;
-  }
-
   .inv-body {
     padding: 22px;
   }

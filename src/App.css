@@ -89,6 +89,8 @@ button {
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .nav-button {
@@ -509,6 +511,7 @@ footer p {
   }
 }
 /* Training navigation */
+@media (max-width: 1100px) { .nav-links { display: none; } }
 .logo-button { border: 0; padding: 0; color: #f1f5f9; background: transparent; }
 .nav-library { border: 1px solid #28513f; border-radius: 6px; color: #a6f4d8; background: rgba(0,255,170,.04); font-size: 12px; padding: 9px 13px; white-space: nowrap; }
 .nav-library:hover { border-color: #00ffaa; }

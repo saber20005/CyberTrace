@@ -9,6 +9,7 @@ import { getBlackBoxLearningLink, getShareURL } from "../utils/routes";
 import { trackEvent } from "../utils/analytics";
 import { useBlackBox } from "../blackbox/useBlackBox";
 import BlackBoxResult from "../blackbox/BlackBoxResult";
+import BlackBoxAccountButton from "../blackbox/BlackBoxAccountButton";
 import "./Investigation.css";
 
 function Investigation({ caseData, onBack, onNext, backLabel = "العودة لمكتبة التحقيقات" }) {
@@ -85,10 +86,12 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
 
   return (
     <div className="inv-screen" dir="rtl">
-      <button className="inv-back" onClick={onBack}>
-        <span aria-hidden="true">→</span> {backLabel}
-      </button>
-      <div className="inv-share"><ShareLink url={getShareURL({ view: "investigation", caseId: caseData.id })} label="نسخ رابط هذا التحقيق" /></div>
+      <header className="inv-topbar">
+        <button className="inv-back" onClick={onBack}>
+          <span aria-hidden="true">→</span> {backLabel}
+        </button>
+        <div className="inv-topbar-actions"><BlackBoxAccountButton /><ShareLink url={getShareURL({ view: "investigation", caseId: caseData.id })} label="نسخ رابط هذا التحقيق" /></div>
+      </header>
 
       <div className="inv-wrapper">
         <nav className="inv-progress" aria-label="مراحل التحقيق">

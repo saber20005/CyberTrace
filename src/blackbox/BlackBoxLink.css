@@ -1,11 +1,12 @@
-.bb-linked-layout { padding-bottom: 96px; }
-.bb-link-dock { position: fixed; inset-inline: 0; bottom: 0; z-index: 120; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 13px max(5%, 18px); border-top: 1px solid #27463c; background: #08130ff5; box-shadow: 0 -12px 35px #0005; color: #d5e8df; }
-.bb-link-dock-copy { display: flex; flex-direction: column; min-width: 0; gap: 3px; }
-.bb-link-dock-copy strong { font-size: 13px; }
-.bb-link-dock-copy > span { color: #97b3a4; font-size: 11px; overflow-wrap: anywhere; }
-.bb-linked-email { text-align: right; }
-.bb-link-dock-actions { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
-.bb-link-mini-status { color: #a2c8b4; font-size: 11px; }
+.bb-account-control { position: relative; flex-shrink: 0; }
+.bb-account-button { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 7px 11px; border: 1px solid #29473b; border-radius: 7px; background: #0b191380; color: #b6d9c5; font: inherit; font-size: 11px; line-height: 1.6; white-space: nowrap; cursor: pointer; }
+.bb-account-button:hover { border-color: #6bc99f; color: #e1f8eb; }
+.bb-account-button:focus-visible { outline: 2px solid #00ffaa; outline-offset: 3px; }
+.bb-account-button::before { content: ""; width: 6px; height: 6px; border: 1px solid #749884; border-radius: 50%; flex-shrink: 0; }
+.bb-account-button.is-connected::before { background: #8cddb0; border-color: #8cddb0; }
+.bb-account-button.needs-attention { color: #efd1a3; border-color: #735e39; }
+.bb-account-button.needs-attention::before { content: "!"; display: grid; place-items: center; width: 13px; height: 16px; border: 0; background: transparent; color: #efd1a3; font-weight: 800; }
+.bb-account-status { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 .bb-link-button, .bb-link-secondary { border: 1px solid #458b70; border-radius: 8px; padding: 10px 16px; font-size: 12px; line-height: 1.7; cursor: pointer; }
 .bb-link-button { background: #b3f3d1; border-color: #b3f3d1; color: #07130e; font-weight: 700; }
 .bb-link-secondary { background: #10251b; color: #ccf2dd; }
@@ -24,7 +25,7 @@
 .bb-link-dialog button:disabled, .bb-link-dialog input:disabled { opacity: .55; cursor: not-allowed; }
 .bb-link-message { padding: 11px 13px; border: 1px solid #456d47; border-radius: 9px; color: #c3e9c5 !important; background: #142619; }
 .bb-link-message.has-error { background: #2a1915; border-color: #775045; color: #f2c3b5 !important; }
-.bb-link-service.has-error, .bb-link-mini-status.has-error { color: #edca9d; }
+.bb-link-service.has-error { color: #edca9d; }
 .bb-link-identity { padding: 14px; border: 1px solid #36533e; border-radius: 10px; background: #0c1a11; margin: 15px 0; }
 .bb-link-identity span, .bb-link-identity strong { display: block; overflow-wrap: anywhere; }
 .bb-link-identity span { font-size: 11px; color: #a6bfac; margin-bottom: 5px; }
@@ -43,12 +44,7 @@
 .bb-case-result p { font-size: 12px; line-height: 1.9; margin: 8px 0; }
 .bb-case-result button { margin-top: 8px; }
 @media (max-width: 600px) {
-  .bb-linked-layout { padding-bottom: 150px; }
-  .bb-link-dock { flex-wrap: wrap; gap: 9px; padding: 11px 15px; }
-  .bb-link-dock-copy { width: 100%; }
-  .bb-link-dock-copy strong { font-size: 12px; }
-  .bb-link-dock-actions { width: 100%; justify-content: space-between; flex-shrink: 1; }
-  .bb-link-dock-actions .bb-link-button { margin-inline-start: auto; }
+  .bb-account-button { min-height: 36px; padding: 7px 9px; font-size: 10px; }
   .bb-link-dialog { padding: 20px; }
   .bb-link-dialog h2 { font-size: 20px; }
 }
