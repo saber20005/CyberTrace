@@ -42,10 +42,10 @@ export function getBlackBoxLearningLink(caseId) {
   const url = new URL("https://blackboxlab.dev/");
   url.searchParams.set("view", "tracks");
   let label = "استكشف مسارات BlackBox-Lab";
-  if (["INC-1101", "INC-0701"].includes(caseId)) {
+  if (["INC-1101", "INC-0701", "INC-1203"].includes(caseId)) {
     url.searchParams.set("track", "webgoat");
     label = "تابع مهارة تطبيقات الويب في BlackBox-Lab";
-  } else if (["INC-1104", "INC-0944"].includes(caseId)) {
+  } else if (["INC-1104", "INC-0944", "INC-1204", "INC-1209", "INC-1211"].includes(caseId)) {
     url.searchParams.set("track", "network");
     label = "تابع تحليل الشبكات في BlackBox-Lab";
   }

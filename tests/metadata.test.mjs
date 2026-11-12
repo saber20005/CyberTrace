@@ -28,7 +28,7 @@ test("invalid cases have library metadata and auth never creates an indexable du
   assert.doesNotThrow(() => applyPageMetadata(library));
 });
 
-test("sitemap contains exactly the real home, library and sixteen case URLs", async () => {
+test("sitemap contains exactly the real home, library and current case URLs", async () => {
   const xml = await readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8");
   const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
   assert.equal(urls.length, CASES.length + 2);
