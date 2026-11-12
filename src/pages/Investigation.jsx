@@ -3,6 +3,7 @@ import { addXP } from "../utils/xp";
 import { shuffleArray } from "../utils/shuffle";
 import { recordCaseResult } from "../utils/caseProgress";
 import { getCaseDetails } from "../data/caseCatalog";
+import { createInvestigationReport, getInvestigationReview } from "../utils/investigationReport";
 import ShareLink from "../components/ShareLink";
 import { getBlackBoxLearningLink, getShareURL } from "../utils/routes";
 import { trackEvent } from "../utils/analytics";
@@ -18,6 +19,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
   const [selectedDecision, setSelectedDecision] = useState(null);
   const [awardInfo, setAwardInfo] = useState(null);
   const [resultInfo, setResultInfo] = useState(null);
+  const [reportStatus, setReportStatus] = useState("");
   const awarded = useRef(false);
   const details = getCaseDetails(caseData);
   const partner = getBlackBoxLearningLink(caseData.id);
@@ -31,6 +33,31 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
   const evidencePoints = selectedEvidence?.correct ? 30 : 10;
   const decisionPoints = selectedDecision?.points ?? 0;
   const totalScore = evidencePoints + decisionPoints;
+  const review = step === 3 ? getInvestigationReview(caseData, selectedEvidence?.id, selectedDecision?.id, resultInfo) : null;
+
+  const downloadReport = () => {
+    const markdown = createInvestigationReport(caseData, selectedEvidence?.id, selectedDecision?.id, resultInfo);
+    if (step !== 3 || !markdown) {
+      setReportStatus("تعذّر تجهيز التقرير؛ أكمل التحقيق لتسجيل محاولتك أولًا.");
+      return;
+    }
+    let url;
+    let link;
+    try {
+      url = URL.createObjectURL(new Blob([markdown], { type: "text/markdown;charset=utf-8" }));
+      link = document.createElement("a");
+      link.href = url;
+      link.download = `cybertrace-${caseData.id}-${resultInfo.lastCompletedAt.slice(0, 10)}.md`;
+      document.body.appendChild(link);
+      link.click();
+      setReportStatus("جُهّز تقرير هذه المحاولة للتنزيل بصيغة Markdown.");
+    } catch {
+      setReportStatus("تعذّر تنزيل التقرير من هذا المتصفح. يمكنك مراجعة الملخص الظاهر أدناه.");
+    } finally {
+      link?.remove();
+      if (url) window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+  };
 
   const completeInvestigation = () => {
     if (awarded.current || !selectedEvidence || !evidenceChecked || !selectedDecision) return;
@@ -49,6 +76,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
     setSelectedDecision(null);
     setAwardInfo(null);
     setResultInfo(null);
+    setReportStatus("");
     awarded.current = false;
     setEvidenceOptions(shuffleArray(caseData.evidenceOptions));
     setDecisionOptions(shuffleArray(caseData.decisions));
@@ -217,7 +245,18 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                   <small>تم حل الحادثة {caseData.id}</small>
                 </div>
 
-                <p className="inv-outcome">{selectedDecision.outcome}</p>
+                {!review && <p className="inv-outcome">{selectedDecision.outcome}</p>}
+
+                {review && <section className="inv-review" aria-labelledby="analyst-review-title">
+                  <div className="inv-review-heading"><div><span className="incident-label">بعد إغلاق التحقيق</span><h2 id="analyst-review-title">مراجعة المحلّل</h2></div><button type="button" className="secondary-button inv-report-button" onClick={downloadReport}>تنزيل تقرير التحقيق</button></div>
+                  <dl className="inv-review-choices">
+                    <div><dt><span>الدليل الذي اخترته</span><strong>{review.evidence.points} / 30</strong></dt><dd><p>{review.evidence.label}</p><p className="inv-review-feedback">{review.evidence.feedback}</p></dd></div>
+                    <div><dt><span>قرار الاستجابة</span><strong>{review.decision.points} / 40</strong></dt><dd><p>{review.decision.label}</p><p className="inv-review-feedback">{review.decision.outcome}</p></dd></div>
+                  </dl>
+                  <div className="inv-review-next"><h3>ما الذي تراجعه في المحاولة القادمة؟</h3><ul>{review.nextSteps.map(item => <li key={item}>{item}</li>)}</ul></div>
+                  <p className="inv-review-note">التقرير يصف هذه المحاولة في محاكاة تعليمية، ويستخدم سجل هذا المتصفح أو الجلسة.</p>
+                  <p className="inv-report-status" role="status" aria-live="polite">{reportStatus}</p>
+                </section>}
 
                 <BlackBoxResult caseId={caseData.id} score={totalScore} />
 

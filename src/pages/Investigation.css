@@ -383,3 +383,20 @@
 @media (max-width: 600px) { .inv-screen { padding-inline: 15px; } .inv-body { padding: 20px; } .inv-total-xp-row { align-items: flex-start; flex-direction: column; } }
 .inv-score-box strong, .inv-total-count, .inv-personal-record strong { direction: ltr; text-align: right; }
 .inv-personal-record strong { display: block; }
+.inv-review { margin: 25px 0; padding: 22px; border: 1px solid #294335; border-radius: 10px; background: linear-gradient(135deg, #0d1c19, #0a121a); text-align: right; }
+.inv-review-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.inv-review h2 { color: #e2e8f0; font-size: 20px; margin: 6px 0 0; }
+.inv-report-button { font-size: 12px; padding: 10px 14px; border-color: #3d6757; color: #a6f4d8; }
+.inv-review-choices { display: grid; gap: 14px; margin: 22px 0; }
+.inv-review-choices > div { background: #050d1190; padding: 16px; border: 1px solid #223831; border-radius: 7px; min-width: 0; }
+.inv-review-choices dt { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #b9c7d4; font-size: 12px; }
+.inv-review-choices dt strong { direction: ltr; white-space: nowrap; color: #00ffaa; font-family: monospace; font-size: 14px; }
+.inv-review-choices dd { margin: 12px 0 0; overflow-wrap: anywhere; }
+.inv-review-choices p { color: #e2e8f0; font-size: 13px; line-height: 1.9; margin: 0; }
+.inv-review-choices .inv-review-feedback { color: #a5b5c5; margin-top: 10px; }
+.inv-review-next h3 { font-size: 14px; color: #c7f8e6; margin: 0 0 10px; }
+.inv-review-next ul { margin: 0; padding-inline-start: 20px; color: #bacbd4; font-size: 13px; line-height: 1.9; }
+.inv-review-note { color: #91a3b1; font-size: 11px; line-height: 1.8; margin: 15px 0 0; }
+.inv-report-status { color: #a6f4d8; font-size: 12px; line-height: 1.8; margin: 8px 0 0; }
+.inv-report-status:empty { margin: 0; }
+@media (max-width: 600px) { .inv-review { padding: 16px; } .inv-review-heading { align-items: stretch; flex-direction: column; } .inv-review-choices > div { padding: 13px; } }
