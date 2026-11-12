@@ -7,9 +7,16 @@ import logo from "../assets/logo.svg";
 import ShareLink from "../components/ShareLink";
 import { getBlackBoxLearningLink, getShareURL } from "../utils/routes";
 import { trackEvent } from "../utils/analytics";
+import { buildLearningPlan } from "../utils/learningPlan";
 import "./InvestigationLibrary.css";
 
 const dateFormat = new Intl.DateTimeFormat("ar", { day: "numeric", month: "short", year: "numeric" });
+const suggestionLabels = {
+  new: "خطوتك التالية",
+  review: "فرصة للتحسين",
+  record: "سجّل نتيجتك",
+  daily: "اقتراح اليوم",
+};
 
 function InvestigationLibrary({ cases, onStart, onHome }) {
   const [query, setQuery] = useState("");
@@ -29,6 +36,7 @@ function InvestigationLibrary({ cases, onStart, onHome }) {
   const attempts = recordedResults.reduce((sum, result) => sum + result.attempts, 0);
   const best = recordedResults.length ? Math.max(...recordedResults.map(result => result.bestScore)) : null;
   const progress = cases.length ? Math.round(completedCount / cases.length * 100) : 0;
+  const learningPlan = buildLearningPlan(cases, results, completedIds);
   const partner = getBlackBoxLearningLink();
   const normalizedQuery = query.trim().toLocaleLowerCase("ar");
   const visibleCases = cases.filter(c => {
@@ -72,6 +80,40 @@ function InvestigationLibrary({ cases, onStart, onHome }) {
           <div><h2 id="progress-title">رحلتك في التحقيق</h2><p>{completedCount === cases.length ? "أكملت المكتبة! يمكنك إعادة أي تحقيق أو بدء دورة عشوائية جديدة." : `بقيت ${cases.length - completedCount} قضية لتكمل مكتبة التدريب.`}</p></div>
           <div className="library-progress-meter"><span>{progress}% مكتمل</span><progress value={completedCount} max={cases.length || 1} aria-label="نسبة التحقيقات المكتملة" /></div>
           <p className="library-storage-note">تُحفظ نتائجك على هذا الجهاز عند توفر التخزين المحلي؛ وإلا تبقى خلال الجلسة فقط.</p>
+        </section>
+        <section className="learning-plan" aria-labelledby="learning-plan-title">
+          <div className="library-section-title"><div><p className="library-eyebrow">تعلّم بخطوة واضحة</p><h2 id="learning-plan-title">ما التحقيق المناسب لك الآن؟</h2></div></div>
+          <p className="learning-plan-intro">اقتراحات مبنية على إنجازك وأفضل نتائجك المسجّلة على هذا الجهاز. اختر ما يناسبك، أو استعرض المكتبة كاملة.</p>
+          {learningPlan.allScoredPerfect && <p className="learning-plan-complete">وصلت إلى النتيجة الكاملة في كل تحقيقات المكتبة الحالية. راجع اقتراح اليوم للحفاظ على مهارة التحليل.</p>}
+          {learningPlan.recommendations.length > 0 && <div className="learning-recommendations">
+            {learningPlan.recommendations.map(item => {
+              const details = getCaseDetails(item.caseData);
+              return <article className={`learning-suggestion suggestion-${item.type}`} key={item.type} data-suggestion={item.type}>
+                <span className="learning-suggestion-label">{suggestionLabels[item.type]}</span>
+                <div className="learning-suggestion-meta"><span>{details.categoryLabel}</span><span>{details.difficultyLabel}</span></div>
+                <h3>{details.title}</h3>
+                <p>{item.reason}</p>
+                <button type="button" className="case-start" onClick={() => onStart(item.caseData)} aria-label={`${item.type === "new" ? "بدء" : "فتح"} التحقيق المقترح: ${details.title}`}>
+                  {item.type === "review" || item.type === "record" ? "أعد التحقيق" : "ابدأ التحقيق"}<span aria-hidden="true">←</span>
+                </button>
+              </article>;
+            })}
+          </div>}
+          <details className="learning-skill-details">
+            <summary>خريطة تقدّمك حسب المجال <span aria-hidden="true">＋</span></summary>
+            <div className="learning-skill-content">
+              <p className="learning-coverage-note">النسبة هي مجموع أفضل نتائجك من النقاط المتاحة في تحقيقات كل مجال؛ تعكس تغطية مكتبة التدريب، وليست تقييمًا مهنيًا لمستواك.</p>
+              <div className="learning-skill-grid">
+                {learningPlan.skills.map(skill => <article className="learning-skill" key={skill.id}>
+                  <h3>{skill.label}</h3>
+                  <div className="learning-skill-score"><strong>{skill.percent}%</strong><span>{skill.points} / {skill.maxPoints} نقطة</span></div>
+                  <progress value={skill.points} max={skill.maxPoints || 1} aria-label={`تغطية نقاط ${skill.label}`} />
+                  <p>{skill.scoredCount} من {skill.caseCount} تحقيقًا بنتيجة مسجّلة</p>
+                  {skill.unscoredCount > 0 && <small>{skill.unscoredCount} مكتملة سابقًا دون نتيجة مسجّلة</small>}
+                </article>)}
+              </div>
+            </div>
+          </details>
         </section>
         <section aria-labelledby="cases-title">
           <div className="library-section-title"><div><p className="library-eyebrow">ملفات الحوادث</p><h2 id="cases-title">مهمتك التالية تبدأ هنا</h2></div><span className="library-result-count" aria-live="polite">{visibleCases.length} من {cases.length} تحقيقًا</span></div>
