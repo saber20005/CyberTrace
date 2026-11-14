@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://cyber-trace-psi.vercel.app/sitemap.xml
+Sitemap: https://cybertracelab.dev/sitemap.xml
