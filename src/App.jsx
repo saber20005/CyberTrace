@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import "./App.css";
-import Auth from "./pages/Auth";
-import Investigation from "./pages/Investigation";
-import InvestigationLibrary from "./pages/InvestigationLibrary";
+const Auth = lazy(() => import("./pages/Auth"));
+const Investigation = lazy(() => import("./pages/Investigation"));
+const InvestigationLibrary = lazy(() => import("./pages/InvestigationLibrary"));
 import XPBadge from "./components/XPBadge";
 import { CASES } from "./data/cases";
 import { pickRandomCase } from "./utils/caseProgress";
@@ -91,22 +91,22 @@ function App() {
   };
 
   if (view === "auth") {
-    return <Auth onBack={goHome} />;
+    return <Suspense fallback={<div className="app" dir="rtl" role="status">جارٍ تحميل صفحة الحساب...</div>}><Auth onBack={goHome} /></Suspense>;
   }
 
   if (view === "library") {
-    return <InvestigationLibrary cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} />;
+    return <Suspense fallback={<div className="app" dir="rtl" role="status">جارٍ تحميل مكتبة التحقيقات...</div>}><InvestigationLibrary cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} /></Suspense>;
   }
 
   if (view === "investigation" && selectedCase) {
     return (
-      <Investigation
+      <Suspense fallback={<div className="app" dir="rtl" role="status">جارٍ تحميل التحقيق...</div>}><Investigation
         key={investigationRun}
         caseData={selectedCase}
         onBack={returnView === "library" ? goLibrary : goHome}
         backLabel={returnView === "library" ? "العودة لمكتبة التحقيقات" : "العودة للرئيسية"}
         onNext={() => startInvestigation(null, returnView, "next_case")}
-      />
+      /></Suspense>
     );
   }
 
