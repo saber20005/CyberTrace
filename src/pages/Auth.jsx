@@ -5,6 +5,7 @@ import { auth } from "../firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   updateProfile,
 } from "firebase/auth";
 
@@ -32,6 +33,7 @@ function Auth({ onBack }) {
   const [displayName, setDisplayName] = useState("");
 
   const isSignup = mode === "signup";
+  const isReset = mode === "reset";
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -56,7 +58,7 @@ function Auth({ onBack }) {
       setError("البريد الإلكتروني غير صالح");
       return;
     }
-    if (form.password.length < 6) {
+    if (!isReset && form.password.length < 6) {
       setError("كلمة المرور يجب أن تكون 6 أحرف على الأقل");
       return;
     }
@@ -67,7 +69,10 @@ function Auth({ onBack }) {
 
     setLoading(true);
     try {
-      if (isSignup) {
+      if (isReset) {
+        await sendPasswordResetEmail(auth, form.email.trim());
+        setSuccess(true);
+      } else if (isSignup) {
         const credential = await createUserWithEmailAndPassword(
           auth,
           form.email.trim(),
@@ -117,24 +122,23 @@ function Auth({ onBack }) {
             <div className="auth-success">
               <span className="green">✓</span>
               <strong>
-                {isSignup ? "تم إنشاء الحساب بنجاح" : "تم تسجيل الدخول بنجاح"}
+                {isReset ? "تم إرسال الطلب" : isSignup ? "تم إنشاء الحساب بنجاح" : "تم تسجيل الدخول بنجاح"}
               </strong>
               <p>
-                مرحبًا بك في CyberTrace{displayName ? `، ${displayName}` : ""}. جاهز
-                لبدء أول تحقيق؟
+                {isReset ? "إذا كان البريد مرتبطًا بحساب، ستصلك رسالة لإعادة تعيين كلمة المرور. افحص البريد غير المرغوب فيه أيضاً." : `مرحبًا بك في CyberTrace${displayName ? `، ${displayName}` : ""}. جاهز لبدء أول تحقيق؟`}
               </p>
-              <button className="primary-button" onClick={onBack}>
-                الانتقال إلى المنصة <span>←</span>
+              <button className="primary-button" onClick={isReset ? () => switchMode("login") : onBack}>
+                {isReset ? "العودة لتسجيل الدخول" : "الانتقال إلى المنصة"} <span>←</span>
               </button>
             </div>
           ) : (
             <>
               <p className="auth-line">
                 <span className="green">$</span>{" "}
-                {isSignup ? "register --new-analyst" : "login --analyst"}
+                {isReset ? "auth --reset-password" : isSignup ? "register --new-analyst" : "login --analyst"}
               </p>
 
-              <div className="auth-tabs">
+              {!isReset && <div className="auth-tabs">
                 <button
                   className={!isSignup ? "active" : ""}
                   onClick={() => switchMode("login")}
@@ -149,7 +153,7 @@ function Auth({ onBack }) {
                 >
                   إنشاء حساب
                 </button>
-              </div>
+              </div>}
 
               <form className="auth-form" onSubmit={handleSubmit}>
                 {isSignup && (
@@ -174,7 +178,7 @@ function Auth({ onBack }) {
                   />
                 </label>
 
-                <label>
+                {!isReset && <label>
                   <span>كلمة المرور</span>
                   <input
                     type="password"
@@ -182,7 +186,7 @@ function Auth({ onBack }) {
                     onChange={handleChange("password")}
                     placeholder="••••••••"
                   />
-                </label>
+                </label>}
 
                 {isSignup && (
                   <label>
@@ -203,10 +207,13 @@ function Auth({ onBack }) {
                   type="submit"
                   disabled={loading}
                 >
-                  {loading ? "جارٍ التحقق..." : isSignup ? "إنشاء الحساب" : "دخول"}{" "}
+                  {loading ? "جارٍ التحقق..." : isReset ? "إرسال رابط الاستعادة" : isSignup ? "إنشاء الحساب" : "دخول"}{" "}
                   <span>←</span>
                 </button>
               </form>
+              {!isSignup && <button type="button" className="auth-mode-link" onClick={() => switchMode(isReset ? "login" : "reset")}>
+                {isReset ? "العودة إلى تسجيل الدخول" : "نسيت كلمة المرور؟"}
+              </button>}
             </>
           )}
         </div>
