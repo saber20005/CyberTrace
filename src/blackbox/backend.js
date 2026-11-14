@@ -1,3 +1,5 @@
+import * as appSDK from "firebase/app";
+import * as authSDK from "firebase/auth";
 import { blackBoxConfig } from "./config.js";
 import { CASE_IDS, MAX_CASE_SCORE, normalizeReceipt } from "../data/linkedSkills.js";
 
@@ -8,9 +10,8 @@ export async function createBlackBoxBackend(config = blackBoxConfig) {
   if (!config.enabled || !config.firebase?.apiKey || !config.firebase?.projectId) {
     throw problem("bridge/disabled", "ربط BlackBox قيد الإعداد. يبقى تدريبك محفوظًا في CyberTrace.");
   }
-  const [appSDK, authSDK, storeSDK] = await Promise.all([
-    import("firebase/app"), import("firebase/auth"), import("firebase/firestore"),
-  ]);
+  // App and Auth are already loaded by CyberTrace; keep Firestore lazy for BlackBox linking.
+  const storeSDK = await import("firebase/firestore");
   const name = "cybertrace-blackbox-link";
   const existing = appSDK.getApps().find(candidate => candidate.name === name);
   if (existing && existing.options.projectId !== config.firebase.projectId) throw problem("bridge/configuration", "إعداد حساب BlackBox غير متوافق.");
