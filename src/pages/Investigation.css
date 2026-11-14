@@ -395,3 +395,26 @@
 .inv-report-status { color: #a6f4d8; font-size: 12px; line-height: 1.8; margin: 8px 0 0; }
 .inv-report-status:empty { margin: 0; }
 @media (max-width: 600px) { .inv-review { padding: 16px; } .inv-review-heading { align-items: stretch; flex-direction: column; } .inv-review-choices > div { padding: 13px; } }
+
+/* Mobile evidence: keep complete forensic log lines reachable by horizontal scroll. */
+.inv-wrapper, .inv-card, .inv-body, .inv-step { min-width: 0; }
+.inv-log {
+  direction: ltr;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.inv-log-line {
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+  white-space: pre;
+  unicode-bidi: plaintext;
+}
+.inv-line { overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .inv-log { padding: 12px; touch-action: pan-x pan-y; }
+  .inv-log-line { font-size: 12px; }
+}
