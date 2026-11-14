@@ -1,6 +1,6 @@
 import { getCaseDetails } from "../data/caseCatalog.js";
 
-export const SITE_ORIGIN = "https://cyber-trace-psi.vercel.app";
+export const SITE_ORIGIN = "https://cybertracelab.dev";
 const HOME_TITLE = "CyberTrace | منصة التحقيقات الأمنية";
 const HOME_DESCRIPTION = "CyberTrace منصة تدريب تفاعلية على التحقيق في الحوادث الأمنية وتحليل الأدلة الرقمية.";
 
