@@ -4,7 +4,7 @@
 The checked-in `security/firestore.current.rules` is a **snapshot supplied by the project owner**, not proof of the rules currently deployed in Firebase. Do not deploy it blindly. The existing client writes to `blackboxUsers/{uid}/cybertrace/{caseId}` directly using a score it computed in the browser. Ownership and monotonic scores do **not** establish authenticity. In addition, the current rules allowlist has 16 cases while the CyberTrace catalogue has 28: newer `INC-12xx` cases cannot sync under these rules.
 
 ## Phase 0 — regression testing, no production changes
-Install the Firebase CLI and the test library locally, start the Firestore emulator using `security/firebase.emulator.json`, and run `tests/firestore-rules.emulator.test.mjs`. These tests intentionally document that a signed-in owner can submit a perfect score without proof. The emulator does not establish production deployment or client/server identity.
+Install the Firebase CLI and the test library locally, start the Firestore emulator using `security/firebase.emulator.json`, and run `tests/firestore-rules.emulator.mjs`. These tests intentionally document that a signed-in owner can submit a perfect score without proof. The emulator does not establish production deployment or client/server identity.
 
 ## Phase 1 — preserve legacy synchronization
 Keep the current `blackboxUsers/{uid}/cybertrace/{caseId}` documents readable and writable as **unverified legacy records** during migration. In the UI label their scores **self-reported / unverified**. Never treat legacy scores as certificates, leaderboards or verified completion. Preserve existing timestamps and offline UX.
