@@ -40,9 +40,9 @@ test("sitemap contains exactly the real home, library and current case URLs", as
 
 test("static sharing tags provide a PNG card for crawlers that do not execute JavaScript", async () => {
   const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
-  assert(html.includes('property="og:image" content="https://cyber-trace-psi.vercel.app/social-preview.png"'));
+  assert(html.includes('property="og:image" content="https://cybertracelab.dev/social-preview.png"'));
   assert(html.includes('property="og:image:width" content="1200"'));
   assert(html.includes('property="og:image:height" content="630"'));
   assert(html.includes('name="twitter:card" content="summary_large_image"'));
-  assert(html.includes('rel="canonical" href="https://cyber-trace-psi.vercel.app/"'));
+  assert(html.includes('rel="canonical" href="https://cybertracelab.dev/"'));
 });
