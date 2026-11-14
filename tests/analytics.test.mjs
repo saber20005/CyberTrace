@@ -147,3 +147,14 @@ test('missing browser objects and blocked script insertion fail without disrupti
     assert.equal(denied.trackPageView(), false);
   });
 });
+
+test('default analytics host allowlist accepts the primary domain but rejects previews', () => {
+  const production = browser({ url: 'https://cybertracelab.dev/?view=library' });
+  const productionApi = createAnalytics({ window: production.window, document: production.document, navigator: production.navigator, measurementId: ID });
+  assert.equal(productionApi.trackPageView(), true);
+  assert.equal(production.scripts.length, 1);
+  const preview = browser({ url: 'https://cyber-trace-psi.vercel.app/?view=library' });
+  const previewApi = createAnalytics({ window: preview.window, document: preview.document, navigator: preview.navigator, measurementId: ID });
+  assert.equal(previewApi.trackPageView(), false);
+  assert.equal(preview.scripts.length, 0);
+});
