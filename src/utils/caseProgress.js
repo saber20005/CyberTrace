@@ -1,3 +1,4 @@
+import { progressKey } from "./progressScope.js";
 const SEEN_KEY = "cybertrace_seen_cases";
 const COMPLETED_KEY = "cybertrace_completed_cases";
 const RESULTS_KEY = "cybertrace_case_results";
@@ -7,6 +8,7 @@ const memory = new Map();
 const pendingWrites = new Set();
 
 function readJSON(key, fallback) {
+  key = progressKey(key);
   let raw;
   if (pendingWrites.has(key)) {
     raw = memory.get(key);
@@ -28,6 +30,7 @@ function readJSON(key, fallback) {
 }
 
 function writeJSON(key, value) {
+  key = progressKey(key);
   const raw = JSON.stringify(value);
   memory.set(key, raw);
   try {
