@@ -7,7 +7,9 @@ function parseURL(value) {
 }
 
 export function readRoute(value, cases = []) {
-  const params = parseURL(value).searchParams;
+  const parsed = parseURL(value);
+  if (parsed.pathname === "/admin") return { view: "admin" };
+  const params = parsed.searchParams;
   if (params.has("case")) {
     const ids = params.getAll("case");
     if (ids.length === 1 && Array.isArray(cases) && cases.some(item => item?.id === ids[0])) {
@@ -23,7 +25,7 @@ export function readRoute(value, cases = []) {
 // Navigation keeps campaign attribution, while copied/canonical links stay clean.
 export function createRouteURL(route, currentURL, { preserveHash = false } = {}) {
   const current = parseURL(currentURL);
-  const next = new URL("/", current.origin);
+  const next = new URL(route.view === "admin" ? "/admin" : "/", current.origin);
   if (route.view === "investigation" && route.caseId) next.searchParams.set("case", route.caseId);
   else if (["library", "auth"].includes(route.view)) next.searchParams.set("view", route.view);
   for (const key of CAMPAIGN_KEYS) {
