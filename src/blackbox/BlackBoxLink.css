@@ -1,7 +1,7 @@
 .bb-account-control { position: relative; flex-shrink: 0; }
 .bb-account-button { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 7px 11px; border: 1px solid #29473b; border-radius: 7px; background: #0b191380; color: #b6d9c5; font: inherit; font-size: 11px; line-height: 1.6; white-space: nowrap; cursor: pointer; }
 .bb-account-button:hover { border-color: #6bc99f; color: #e1f8eb; }
-.bb-account-button:focus-visible { outline: 2px solid #00ffaa; outline-offset: 3px; }
+.bb-account-button:focus-visible { outline: 2px solid #47c9ff; outline-offset: 3px; }
 .bb-account-button::before { content: ""; width: 6px; height: 6px; border: 1px solid #749884; border-radius: 50%; flex-shrink: 0; }
 .bb-account-button.is-connected::before { background: #8cddb0; border-color: #8cddb0; }
 .bb-account-button.needs-attention { color: #efd1a3; border-color: #735e39; }
