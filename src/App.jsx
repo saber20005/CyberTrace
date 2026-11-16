@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import "./App.css";
 const Auth = lazy(() => import("./pages/Auth"));
+const Admin = lazy(() => import("./pages/Admin"));
 const Investigation = lazy(() => import("./pages/Investigation"));
 const InvestigationLibrary = lazy(() => import("./pages/InvestigationLibrary"));
 import XPBadge from "./components/XPBadge";
@@ -98,6 +99,10 @@ function App() {
   };
 
   if (!authReady) return <LoadingScreen message="جارٍ التحقق من حساب التدريب..." />;
+
+  if (view === "admin") {
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ التحقق من صلاحيات الإدارة..." />}><Admin user={user} onHome={goHome} /></Suspense>;
+  }
 
   if (view === "auth") {
     return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل صفحة الحساب..." />}><Auth onBack={goHome} /></Suspense>;
