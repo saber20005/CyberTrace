@@ -6,14 +6,14 @@
   -moz-osx-font-smoothing: grayscale;
   color-scheme: dark;
   color: #f1f5f9;
-  background: #05080d;
+  background: #100f10;
   line-height: 1.6;
 }
 body { margin: 0; }
 #root { min-height: 100svh; width: 100%; }
 button, input, select, textarea { font-family: inherit; }
 button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
-:focus-visible { outline: 2px solid #7eeac7; outline-offset: 4px; }
+:focus-visible { outline: 2px solid #e0b98a; outline-offset: 4px; }
 button:disabled { cursor: not-allowed; opacity: .6; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
