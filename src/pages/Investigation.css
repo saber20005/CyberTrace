@@ -5,9 +5,9 @@
   flex-direction: column;
   align-items: center;
   background:
-    radial-gradient(circle at 75% 15%, rgba(0, 255, 170, 0.08), transparent 28%),
+    radial-gradient(circle at 75% 15%, rgba(213, 165, 108, 0.08), transparent 28%),
     radial-gradient(circle at 15% 40%, rgba(0, 120, 255, 0.06), transparent 25%),
-    #05080d;
+    #100f10;
 }
 
 .inv-back {
@@ -22,7 +22,7 @@
 }
 
 .inv-back:hover {
-  color: #00ffaa;
+  color: #d5a56c;
 }
 
 .inv-topbar { width: 100%; max-width: 950px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin: 0 auto 28px; }
@@ -60,13 +60,13 @@
 }
 
 .inv-progress-step.active {
-  color: #00ffaa;
+  color: #d5a56c;
 }
 
 .inv-card {
   direction: ltr;
   border: 1px solid #26313d;
-  background: #080d13;
+  background: #171619;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
   position: relative;
 }
@@ -75,7 +75,7 @@
   content: "";
   position: absolute;
   inset: -1px;
-  border: 1px solid rgba(0, 255, 170, 0.08);
+  border: 1px solid rgba(213, 165, 108, 0.08);
   pointer-events: none;
 }
 
@@ -117,7 +117,7 @@
 }
 
 .inv-line .green {
-  color: #00ffaa;
+  color: #d5a56c;
 }
 
 .incident-box {
@@ -154,7 +154,7 @@
 }
 
 .inv-log {
-  background: #05080d;
+  background: #100f10;
   border: 1px solid #1b2631;
   padding: 16px;
   margin-bottom: 24px;
@@ -205,13 +205,13 @@
 }
 
 .inv-option.selected {
-  border-color: #00ffaa;
-  background: rgba(0, 255, 170, 0.05);
+  border-color: #d5a56c;
+  background: rgba(213, 165, 108, 0.05);
 }
 
 .inv-option.correct {
-  border-color: #00ffaa;
-  background: rgba(0, 255, 170, 0.08);
+  border-color: #d5a56c;
+  background: rgba(213, 165, 108, 0.08);
 }
 
 .inv-option.incorrect {
@@ -227,8 +227,8 @@
 }
 
 .inv-score-box {
-  border-left: 2px solid #00ffaa;
-  background: rgba(0, 255, 170, 0.04);
+  border-left: 2px solid #d5a56c;
+  background: rgba(213, 165, 108, 0.04);
   padding: 20px;
   margin-bottom: 22px;
   display: flex;
@@ -237,7 +237,7 @@
 }
 
 .inv-score-box strong {
-  color: #00ffaa;
+  color: #d5a56c;
   font-size: 24px;
 }
 
@@ -254,8 +254,8 @@
 }
 
 .inv-levelup {
-  border: 1px solid rgba(0, 255, 170, 0.35);
-  background: rgba(0, 255, 170, 0.06);
+  border: 1px solid rgba(213, 165, 108, 0.35);
+  background: rgba(213, 165, 108, 0.06);
   padding: 16px 18px;
   margin-bottom: 22px;
   display: flex;
@@ -265,11 +265,11 @@
 
 .inv-levelup span {
   font-size: 13px;
-  color: #7eeac7;
+  color: #e0b98a;
 }
 
 .inv-levelup strong {
-  color: #00ffaa;
+  color: #d5a56c;
   font-size: 16px;
 }
 
@@ -308,8 +308,8 @@
 
 .inv-total-bar div {
   height: 100%;
-  background: #00ffaa;
-  box-shadow: 0 0 6px rgba(0, 255, 170, 0.6);
+  background: #d5a56c;
+  box-shadow: 0 0 6px rgba(213, 165, 108, 0.6);
   transition: width 0.4s ease;
 }
 
@@ -326,8 +326,8 @@
 
 .primary-button {
   border: none;
-  background: #00ffaa;
-  color: #03110c;
+  background: #d5a56c;
+  color: #17110d;
   padding: 13px 24px;
   border-radius: 5px;
   font-weight: 800;
@@ -336,7 +336,7 @@
 
 .primary-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 255, 170, 0.2);
+  box-shadow: 0 8px 30px rgba(213, 165, 108, 0.2);
 }
 
 .primary-button span {
@@ -370,29 +370,29 @@
   }
 }
 .inv-title { color: #e2e8f0; font-size: 21px; line-height: 1.7; font-weight: 700; margin: 0; }
-.inv-personal-record { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; border: 1px solid #294335; border-radius: 6px; background: rgba(0,255,170,.025); padding: 16px 18px; margin-bottom: 22px; }
+.inv-personal-record { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; border: 1px solid #392d23; border-radius: 6px; background: rgba(213, 165, 108,.025); padding: 16px 18px; margin-bottom: 22px; }
 .inv-personal-record span { display: block; font-size: 11px; color: #94a3b8; margin-bottom: 7px; }
-.inv-personal-record strong { font-size: 17px; color: #a6f4d8; }
+.inv-personal-record strong { font-size: 17px; color: #e8c9a4; }
 .inv-card .terminal-header { overflow: hidden; }
 .inv-card .terminal-header > span { overflow-wrap: anywhere; }
 @media (max-width: 600px) { .inv-screen { padding-inline: 15px; } .inv-body { padding: 20px; } .inv-total-xp-row { align-items: flex-start; flex-direction: column; } }
 .inv-score-box strong, .inv-total-count, .inv-personal-record strong { direction: ltr; text-align: right; }
 .inv-personal-record strong { display: block; }
-.inv-review { margin: 25px 0; padding: 22px; border: 1px solid #294335; border-radius: 10px; background: linear-gradient(135deg, #0d1c19, #0a121a); text-align: right; }
+.inv-review { margin: 25px 0; padding: 22px; border: 1px solid #392d23; border-radius: 10px; background: linear-gradient(135deg, #0d1c19, #0a121a); text-align: right; }
 .inv-review-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .inv-review h2 { color: #e2e8f0; font-size: 20px; margin: 6px 0 0; }
-.inv-report-button { font-size: 12px; padding: 10px 14px; border-color: #3d6757; color: #a6f4d8; }
+.inv-report-button { font-size: 12px; padding: 10px 14px; border-color: #3d6757; color: #e8c9a4; }
 .inv-review-choices { display: grid; gap: 14px; margin: 22px 0; }
 .inv-review-choices > div { background: #050d1190; padding: 16px; border: 1px solid #223831; border-radius: 7px; min-width: 0; }
 .inv-review-choices dt { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #b9c7d4; font-size: 12px; }
-.inv-review-choices dt strong { direction: ltr; white-space: nowrap; color: #00ffaa; font-family: monospace; font-size: 14px; }
+.inv-review-choices dt strong { direction: ltr; white-space: nowrap; color: #d5a56c; font-family: monospace; font-size: 14px; }
 .inv-review-choices dd { margin: 12px 0 0; overflow-wrap: anywhere; }
 .inv-review-choices p { color: #e2e8f0; font-size: 13px; line-height: 1.9; margin: 0; }
 .inv-review-choices .inv-review-feedback { color: #a5b5c5; margin-top: 10px; }
 .inv-review-next h3 { font-size: 14px; color: #c7f8e6; margin: 0 0 10px; }
 .inv-review-next ul { margin: 0; padding-inline-start: 20px; color: #bacbd4; font-size: 13px; line-height: 1.9; }
 .inv-review-note { color: #91a3b1; font-size: 11px; line-height: 1.8; margin: 15px 0 0; }
-.inv-report-status { color: #a6f4d8; font-size: 12px; line-height: 1.8; margin: 8px 0 0; }
+.inv-report-status { color: #e8c9a4; font-size: 12px; line-height: 1.8; margin: 8px 0 0; }
 .inv-report-status:empty { margin: 0; }
 @media (max-width: 600px) { .inv-review { padding: 16px; } .inv-review-heading { align-items: stretch; flex-direction: column; } .inv-review-choices > div { padding: 13px; } }
 
