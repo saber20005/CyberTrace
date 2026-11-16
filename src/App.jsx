@@ -4,6 +4,7 @@ const Auth = lazy(() => import("./pages/Auth"));
 const Investigation = lazy(() => import("./pages/Investigation"));
 const InvestigationLibrary = lazy(() => import("./pages/InvestigationLibrary"));
 import XPBadge from "./components/XPBadge";
+import LoadingScreen from "./components/LoadingScreen";
 import { CASES } from "./data/cases";
 import { pickRandomCase } from "./utils/caseProgress";
 import { getCaseDetails } from "./data/caseCatalog";
@@ -91,16 +92,16 @@ function App() {
   };
 
   if (view === "auth") {
-    return <Suspense fallback={<div className="app" dir="rtl" role="status">جارٍ تحميل صفحة الحساب...</div>}><Auth onBack={goHome} /></Suspense>;
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل صفحة الحساب..." />}><Auth onBack={goHome} /></Suspense>;
   }
 
   if (view === "library") {
-    return <Suspense fallback={<div className="app" dir="rtl" role="status">جارٍ تحميل مكتبة التحقيقات...</div>}><InvestigationLibrary cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} /></Suspense>;
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} /></Suspense>;
   }
 
   if (view === "investigation" && selectedCase) {
     return (
-      <Suspense fallback={<div className="app" dir="rtl" role="status">جارٍ تحميل التحقيق...</div>}><Investigation
+      <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل التحقيق..." />}><Investigation
         key={investigationRun}
         caseData={selectedCase}
         onBack={returnView === "library" ? goLibrary : goHome}

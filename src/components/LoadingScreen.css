@@ -1,0 +1,10 @@
+/* CyberTrace: small, dependency-free loading state. */
+.ct-loading{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center;background:#05080d;color:#e8f1ff;font-family:system-ui,sans-serif}
+.ct-loading--inline{min-height:55vh;background:transparent}
+.ct-loading__mark{width:52px;height:52px;display:grid;place-items:center;border:1px solid #315d81;border-radius:14px;color:#7ed7fa;font-size:27px;font-weight:800;box-shadow:0 0 24px #1389b51c}
+.ct-loading__name{font-size:1.2rem;font-weight:750;letter-spacing:.06em}
+.ct-loading__detail{color:#9fb2c8;font-size:.9rem}
+.ct-loading__bar{width:min(200px,70vw);height:3px;overflow:hidden;border-radius:10px;background:#1a2b39}
+.ct-loading__bar::after{content:"";display:block;height:100%;width:38%;background:#55c5ee;animation:ct-sweep 1.2s ease-in-out infinite}
+@keyframes ct-sweep{from{transform:translateX(-110%)}to{transform:translateX(300%)}}
+@media(prefers-reduced-motion:reduce){.ct-loading__bar::after{animation:none;transform:none;width:100%}}
