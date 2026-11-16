@@ -4,7 +4,7 @@
   gap: 5px;
   min-width: 150px;
   padding: 7px 14px;
-  border: 1px solid #26313d;
+  border: 1px solid #463a34;
   background: rgba(255, 255, 255, 0.015);
 }
 
@@ -16,7 +16,7 @@
 }
 
 .xp-badge-level {
-  color: #64748b;
+  color: #998b80;
   font-size: 10px;
   font-family: monospace;
 }
@@ -28,7 +28,7 @@
 
 .xp-badge-bar {
   height: 4px;
-  background: #1b2631;
+  background: #383130;
   overflow: hidden;
 }
 
@@ -40,7 +40,7 @@
 }
 
 .xp-badge-count {
-  color: #475569;
+  color: #8d7b70;
   font-size: 10px;
   font-family: monospace;
 }
