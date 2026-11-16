@@ -418,3 +418,6 @@
   .inv-log { padding: 12px; touch-action: pan-x pan-y; }
   .inv-log-line { font-size: 12px; }
 }
+
+.inv-accuracy{margin:14px 0 16px;padding:10px 14px;border:1px solid #765b3d;border-radius:8px;background:rgba(213,165,108,.07);color:#e0bd8e;font-size:12px;line-height:1.9}
+.inv-score-box p{margin:10px 0;color:#e0bd8e;font-size:13px;line-height:1.8}
