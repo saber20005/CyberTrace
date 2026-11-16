@@ -12,6 +12,7 @@ import { createRouteURL, getBlackBoxLearningLink, readRoute } from "./utils/rout
 import { applyPageMetadata, describePage } from "./utils/pageMetadata";
 import { trackEvent, trackPageView } from "./utils/analytics";
 import { auth } from "./firebase";
+import { setProgressOwner, legacyProgressAvailable, importLegacyProgress } from "./utils/progressScope";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import logo from "./assets/logo.svg";
 import { useBlackBox } from "./blackbox/useBlackBox";
@@ -34,6 +35,8 @@ function App() {
   const [route, setRoute] = useState(routeAtLocation);
   const [investigationRun, setInvestigationRun] = useState(0);
   const [user, setUser] = useState(null);
+  const [authReady, setAuthReady] = useState(false);
+  const [legacyNotice, setLegacyNotice] = useState(false);
   const initialVisitTracked = useRef(false);
   const { view, returnView } = route;
   const selectedCase = CASES.find(item => item.id === route.caseId);
@@ -41,7 +44,10 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setProgressOwner(firebaseUser?.uid ?? null);
       setUser(firebaseUser);
+      setLegacyNotice(Boolean(firebaseUser && legacyProgressAvailable()));
+      setAuthReady(true);
     });
     return unsubscribe;
   }, []);
@@ -91,18 +97,20 @@ function App() {
     trackStart(next, source);
   };
 
+  if (!authReady) return <LoadingScreen message="جارٍ التحقق من حساب التدريب..." />;
+
   if (view === "auth") {
     return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل صفحة الحساب..." />}><Auth onBack={goHome} /></Suspense>;
   }
 
   if (view === "library") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} /></Suspense>;
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary key={user?.uid ?? "guest"} cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} /></Suspense>;
   }
 
   if (view === "investigation" && selectedCase) {
     return (
       <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل التحقيق..." />}><Investigation
-        key={investigationRun}
+        key={`${investigationRun}:${user?.uid ?? "guest"}`}
         caseData={selectedCase}
         onBack={returnView === "library" ? goLibrary : goHome}
         backLabel={returnView === "library" ? "العودة لمكتبة التحقيقات" : "العودة للرئيسية"}
@@ -144,6 +152,7 @@ function App() {
       </nav>
 
       <main>
+        {legacyNotice && <section role="status" style={{margin:"1rem auto",padding:"1rem",maxWidth:900,border:"1px solid #4d728d",borderRadius:12}}><p>توجد نتائج تدريب قديمة محفوظة على هذا المتصفح دون هوية حساب مؤكدة. لن تُنسب لأي حساب تلقائيًا. استوردها فقط إذا كانت تخص حسابك الحالي.</p><button type="button" onClick={() => { if (!window.confirm("هل تؤكد أن النتائج القديمة تخص حساب CyberTrace الحالي؟ لا يمكن التحقق من مالكها السابق.")) return; const ok=importLegacyProgress(); if (ok) { setLegacyNotice(false); window.location.reload(); } else window.alert("تعذّر الاستيراد، أو توجد نتائج مسبقًا لهذا الحساب. لم تُحذف البيانات القديمة."); }}>استيراد نتائجي القديمة لهذا الحساب</button><button type="button" onClick={() => setLegacyNotice(false)}>ليس الآن</button></section>}
         <section className="hero">
           <div className="hero-content">
             <div className="badge">
