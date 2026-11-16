@@ -27,18 +27,26 @@
     <meta name="twitter:image" content="https://cybertracelab.dev/social-preview.png" />
     <meta name="twitter:image:alt" content="CyberTrace — تدرب على تحليل الحوادث الأمنية بالعربية" />
     <style>
-      .ct-loading{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center;background:#05080d;color:#e8f1ff;font-family:system-ui,sans-serif}
-      .ct-loading__mark{width:52px;height:52px;display:grid;place-items:center;border:1px solid #315d81;border-radius:14px;color:#7ed7fa;font-size:27px;font-weight:800}
-      .ct-loading__name{font-size:1.2rem;font-weight:750;letter-spacing:.06em}
-      .ct-loading__detail{color:#9fb2c8;font-size:.9rem}
-      .ct-loading__bar{width:min(200px,70vw);height:3px;overflow:hidden;border-radius:10px;background:#1a2b39}
-      .ct-loading__bar::after{content:"";display:block;height:100%;width:38%;background:#55c5ee;animation:ct-sweep 1.2s ease-in-out infinite}
-      @keyframes ct-sweep{from{transform:translateX(-110%)}to{transform:translateX(300%)}}
-      @media(prefers-reduced-motion:reduce){.ct-loading__bar::after{animation:none;transform:none;width:100%}}
+/* Cyber Scanner: lightweight CSS-only loading animation, no assets or timers. */
+.ct-loading{box-sizing:border-box;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;padding:24px;text-align:center;background:radial-gradient(ellipse at 50% 45%,#0b2131 0%,#07121e 44%,#05080d 78%);color:#e8f1ff;font-family:system-ui,sans-serif}
+.ct-loading--inline{min-height:55vh;background:transparent}
+.ct-loading__scanner{position:relative;width:116px;height:116px;border:1px solid #1c5068;border-radius:50%;overflow:hidden;background:radial-gradient(circle,#0e3547 0%,#091c2b 55%,#07111b 100%);box-shadow:0 0 0 6px #12526a14,0 0 32px #0c8fc12a}
+.ct-loading__orbit{position:absolute;border:1px dashed #52c9ed73;border-radius:50%;inset:12px}
+.ct-loading__orbit--inner{inset:29px;border-style:solid;border-color:#48c8e850}
+.ct-loading__sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent 0deg,transparent 260deg,#37bfe41a 295deg,#57dafa6b 360deg);animation:ct-radar 2.4s linear infinite}
+.ct-loading__crosshair{position:absolute;inset:0;background:linear-gradient(transparent calc(50% - .5px),#4dc8e32b 50%,transparent calc(50% + .5px)),linear-gradient(90deg,transparent calc(50% - .5px),#4dc8e32b 50%,transparent calc(50% + .5px))}
+.ct-loading__core{position:absolute;inset:42px;display:grid;place-items:center;border-radius:50%;background:#071e2a;border:1px solid #63d9f4;color:#b4efff;font-weight:800;font-size:12px;letter-spacing:.02em;box-shadow:0 0 13px #2fc4e63b}
+.ct-loading__name{font-size:1.24rem;font-weight:750;letter-spacing:.07em}
+.ct-loading__detail{color:#a6b9ca;font-size:.88rem}
+.ct-loading__bar{width:min(178px,65vw);height:2px;overflow:hidden;border-radius:10px;background:#1b3b4b}
+.ct-loading__bar::after{content:"";display:block;height:100%;width:35%;background:#61d7f5;animation:ct-sweep 1.35s ease-in-out infinite}
+@keyframes ct-radar{to{transform:rotate(360deg)}}
+@keyframes ct-sweep{from{transform:translateX(-110%)}to{transform:translateX(310%)}}
+@media(prefers-reduced-motion:reduce){.ct-loading__sweep,.ct-loading__bar::after{animation:none}.ct-loading__bar::after{width:100%}}
     </style>
   </head>
   <body>
-    <div id="root"><div class="ct-loading" role="status" aria-live="polite" dir="rtl"><div class="ct-loading__mark" aria-hidden="true">⌁</div><div class="ct-loading__name">CyberTrace</div><div class="ct-loading__bar" aria-hidden="true"></div><div class="ct-loading__detail">جارٍ تجهيز المنصة...</div></div></div>
+    <div id="root"><div class="ct-loading" role="status" aria-live="polite" dir="rtl"><div class="ct-loading__scanner" aria-hidden="true"><span class="ct-loading__orbit ct-loading__orbit--outer"></span><span class="ct-loading__orbit ct-loading__orbit--inner"></span><span class="ct-loading__sweep"></span><span class="ct-loading__crosshair"></span><span class="ct-loading__core">CT</span></div><div class="ct-loading__name">CyberTrace</div><div class="ct-loading__bar" aria-hidden="true"></div><div class="ct-loading__detail">جارٍ تجهيز المنصة...</div></div></div>
     <script defer src="/_vercel/insights/script.js"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
