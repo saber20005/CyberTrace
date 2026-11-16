@@ -15,7 +15,7 @@
 .auth-back {
   background: transparent;
   border: none;
-  color: #64748b;
+  color: #998b80;
   font-size: 13px;
   display: flex;
   align-items: center;
@@ -34,7 +34,7 @@
   width: 100%;
   max-width: 420px;
   direction: ltr;
-  border: 1px solid #26313d;
+  border: 1px solid #463a34;
   background: #171619;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
   position: relative;
@@ -54,8 +54,8 @@
   align-items: center;
   gap: 18px;
   padding: 0 17px;
-  border-bottom: 1px solid #1b2631;
-  color: #64748b;
+  border-bottom: 1px solid #383130;
+  color: #998b80;
   font-family: monospace;
   font-size: 11px;
 }
@@ -80,7 +80,7 @@
 .auth-line {
   font-family: monospace;
   font-size: 13px;
-  color: #cbd5e1;
+  color: #d6c7b8;
   margin-bottom: 22px;
 }
 
@@ -90,7 +90,7 @@
 
 .auth-tabs {
   display: flex;
-  border: 1px solid #1b2631;
+  border: 1px solid #383130;
   margin-bottom: 26px;
 }
 
@@ -99,7 +99,7 @@
   padding: 10px;
   background: transparent;
   border: none;
-  color: #64748b;
+  color: #998b80;
   font-size: 13px;
   transition: 0.2s;
 }
@@ -122,15 +122,15 @@
 }
 
 .auth-form label span {
-  color: #64748b;
+  color: #998b80;
   font-size: 12px;
   font-family: monospace;
 }
 
 .auth-form input {
   background: #100f10;
-  border: 1px solid #26313d;
-  color: #e2e8f0;
+  border: 1px solid #463a34;
+  color: #eee6dc;
   padding: 11px 13px;
   border-radius: 4px;
   font-size: 14px;
@@ -191,11 +191,11 @@
 
 .auth-success strong {
   font-size: 18px;
-  color: #e2e8f0;
+  color: #eee6dc;
 }
 
 .auth-success p {
-  color: #94a3b8;
+  color: #b3a69b;
   font-size: 14px;
   line-height: 1.8;
   max-width: 320px;
