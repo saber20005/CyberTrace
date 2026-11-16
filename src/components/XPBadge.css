@@ -22,7 +22,7 @@
 }
 
 .xp-badge-title {
-  color: #00ffaa;
+  color: #47c9ff;
   font-size: 12px;
 }
 
@@ -34,8 +34,8 @@
 
 .xp-badge-fill {
   height: 100%;
-  background: #00ffaa;
-  box-shadow: 0 0 6px rgba(0, 255, 170, 0.6);
+  background: #47c9ff;
+  box-shadow: 0 0 6px rgba(71, 201, 255, 0.6);
   transition: width 0.4s ease;
 }
 
