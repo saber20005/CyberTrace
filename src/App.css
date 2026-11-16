@@ -12,8 +12,8 @@ html {
 
 body {
   font-family: "Cairo", sans-serif;
-  background: #05080d;
-  color: #f1f5f9;
+  background: #100f10;
+  color: #f4eee7;
 }
 
 button,
@@ -28,9 +28,9 @@ button {
 .app {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 75% 15%, rgba(0, 255, 170, 0.08), transparent 28%),
+    radial-gradient(circle at 75% 15%, rgba(213, 165, 108, 0.08), transparent 28%),
     radial-gradient(circle at 15% 40%, rgba(0, 120, 255, 0.06), transparent 25%),
-    #05080d;
+    #100f10;
 }
 
 /* Navbar */
@@ -63,8 +63,8 @@ button {
   height: 36px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(0, 255, 170, 0.5);
-  color: #00ffaa;
+  border: 1px solid rgba(213, 165, 108, 0.5);
+  color: #d5a56c;
   font-size: 12px;
   letter-spacing: 1px;
 }
@@ -75,14 +75,14 @@ button {
 }
 
 .nav-links a {
-  color: #94a3b8;
+  color: #b3a69b;
   text-decoration: none;
   font-size: 14px;
   transition: 0.2s;
 }
 
 .nav-links a:hover {
-  color: #00ffaa;
+  color: #d5a56c;
 }
 
 .nav-right {
@@ -95,16 +95,16 @@ button {
 
 .nav-button {
   background: transparent;
-  border: 1px solid #26313d;
-  color: #e2e8f0;
+  border: 1px solid #463a34;
+  color: #eee6dc;
   padding: 9px 18px;
   border-radius: 6px;
   transition: 0.2s;
 }
 
 .nav-button:hover {
-  border-color: #00ffaa;
-  color: #00ffaa;
+  border-color: #d5a56c;
+  color: #d5a56c;
 }
 
 /* Hero */
@@ -131,9 +131,9 @@ button {
   align-items: center;
   gap: 9px;
   padding: 7px 13px;
-  border: 1px solid rgba(0, 255, 170, 0.2);
-  background: rgba(0, 255, 170, 0.04);
-  color: #7eeac7;
+  border: 1px solid rgba(213, 165, 108, 0.2);
+  background: rgba(213, 165, 108, 0.04);
+  color: #e0b98a;
   border-radius: 5px;
   font-size: 12px;
   margin-bottom: 25px;
@@ -142,9 +142,9 @@ button {
 .status-dot {
   width: 7px;
   height: 7px;
-  background: #00ffaa;
+  background: #d5a56c;
   border-radius: 50%;
-  box-shadow: 0 0 10px #00ffaa;
+  box-shadow: 0 0 10px #d5a56c;
 }
 
 .hero h1 {
@@ -156,14 +156,14 @@ button {
 }
 
 .hero h1 span {
-  color: #00ffaa;
+  color: #d5a56c;
   display: block;
 }
 
 .hero-description {
   max-width: 650px;
   margin-top: 25px;
-  color: #94a3b8;
+  color: #b3a69b;
   line-height: 2;
   font-size: 16px;
 }
@@ -176,8 +176,8 @@ button {
 
 .primary-button {
   border: none;
-  background: #00ffaa;
-  color: #03110c;
+  background: #d5a56c;
+  color: #17110d;
   padding: 13px 24px;
   border-radius: 5px;
   font-weight: 800;
@@ -186,7 +186,7 @@ button {
 
 .primary-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 255, 170, 0.2);
+  box-shadow: 0 8px 30px rgba(213, 165, 108, 0.2);
 }
 
 .primary-button span {
@@ -195,14 +195,14 @@ button {
 
 .secondary-button {
   background: transparent;
-  border: 1px solid #26313d;
-  color: #cbd5e1;
+  border: 1px solid #463a34;
+  color: #d6c7b8;
   padding: 13px 24px;
   border-radius: 5px;
 }
 
 .secondary-button:hover {
-  border-color: #64748b;
+  border-color: #998b80;
 }
 
 .hero-stats {
@@ -218,12 +218,12 @@ button {
 }
 
 .hero-stats strong {
-  color: #e2e8f0;
+  color: #eee6dc;
   font-size: 20px;
 }
 
 .hero-stats span {
-  color: #64748b;
+  color: #998b80;
   font-size: 11px;
 }
 
@@ -231,8 +231,8 @@ button {
 
 .terminal-card {
   direction: ltr;
-  border: 1px solid #26313d;
-  background: #080d13;
+  border: 1px solid #463a34;
+  background: #171619;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
   position: relative;
 }
@@ -241,7 +241,7 @@ button {
   content: "";
   position: absolute;
   inset: -1px;
-  border: 1px solid rgba(0, 255, 170, 0.08);
+  border: 1px solid rgba(213, 165, 108, 0.08);
   pointer-events: none;
 }
 
@@ -251,8 +251,8 @@ button {
   align-items: center;
   gap: 18px;
   padding: 0 17px;
-  border-bottom: 1px solid #1b2631;
-  color: #64748b;
+  border-bottom: 1px solid #383130;
+  color: #998b80;
   font-family: monospace;
   font-size: 11px;
 }
@@ -277,12 +277,12 @@ button {
 }
 
 .terminal-line {
-  color: #cbd5e1;
+  color: #d6c7b8;
   margin-bottom: 20px;
 }
 
 .green {
-  color: #00ffaa;
+  color: #d5a56c;
 }
 
 .yellow {
@@ -290,7 +290,7 @@ button {
 }
 
 .terminal-muted {
-  color: #475569;
+  color: #8d7b70;
   margin-bottom: 25px;
 }
 
@@ -310,25 +310,25 @@ button {
 }
 
 .incident-box strong {
-  color: #e2e8f0;
+  color: #eee6dc;
 }
 
 .incident-box small {
-  color: #64748b;
+  color: #998b80;
 }
 
 .terminal-input {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #00ffaa;
+  color: #d5a56c;
   margin-top: 35px;
 }
 
 .cursor {
   width: 7px;
   height: 15px;
-  background: #00ffaa;
+  background: #d5a56c;
   animation: blink 1s infinite;
 }
 
@@ -349,7 +349,7 @@ button {
 }
 
 .section-heading span {
-  color: #00ffaa;
+  color: #d5a56c;
   font-size: 12px;
   font-family: monospace;
 }
@@ -369,7 +369,7 @@ button {
 }
 
 .feature-card {
-  border: 1px solid #1b2631;
+  border: 1px solid #383130;
   background: rgba(255, 255, 255, 0.015);
   padding: 30px;
   min-height: 230px;
@@ -377,12 +377,12 @@ button {
 }
 
 .feature-card:hover {
-  border-color: rgba(0, 255, 170, 0.3);
+  border-color: rgba(213, 165, 108, 0.3);
   transform: translateY(-4px);
 }
 
 .feature-number {
-  color: #00ffaa;
+  color: #d5a56c;
   font-family: monospace;
   margin-bottom: 45px;
 }
@@ -394,7 +394,7 @@ button {
 
 .feature-card p,
 .step p {
-  color: #64748b;
+  color: #998b80;
   line-height: 1.9;
   font-size: 14px;
 }
@@ -405,12 +405,12 @@ button {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   margin-top: 55px;
-  border-top: 1px solid #1b2631;
+  border-top: 1px solid #383130;
 }
 
 .step {
   padding: 30px 25px;
-  border-left: 1px solid #1b2631;
+  border-left: 1px solid #383130;
 }
 
 .step:last-child {
@@ -418,7 +418,7 @@ button {
 }
 
 .step > span {
-  color: #00ffaa;
+  color: #d5a56c;
   font-family: monospace;
 }
 
@@ -429,7 +429,7 @@ button {
 /* Footer */
 
 footer {
-  border-top: 1px solid #1b2631;
+  border-top: 1px solid #383130;
   padding: 30px 7%;
   display: flex;
   align-items: center;
@@ -437,7 +437,7 @@ footer {
 }
 
 footer p {
-  color: #475569;
+  color: #8d7b70;
   font-family: monospace;
   font-size: 12px;
 }
@@ -461,7 +461,7 @@ footer p {
 
   .step {
     border-left: none;
-    border-bottom: 1px solid #1b2631;
+    border-bottom: 1px solid #383130;
   }
 
   .step:last-child {
@@ -512,9 +512,9 @@ footer p {
 }
 /* Training navigation */
 @media (max-width: 1100px) { .nav-links { display: none; } }
-.logo-button { border: 0; padding: 0; color: #f1f5f9; background: transparent; }
-.nav-library { border: 1px solid #28513f; border-radius: 6px; color: #a6f4d8; background: rgba(0,255,170,.04); font-size: 12px; padding: 9px 13px; white-space: nowrap; }
-.nav-library:hover { border-color: #00ffaa; }
+.logo-button { border: 0; padding: 0; color: #f4eee7; background: transparent; }
+.nav-library { border: 1px solid #5b4938; border-radius: 6px; color: #e8c9a4; background: rgba(213, 165, 108,.04); font-size: 12px; padding: 9px 13px; white-space: nowrap; }
+.nav-library:hover { border-color: #d5a56c; }
 @media (max-width: 600px) {
   .navbar { gap: 10px; height: auto; min-height: 76px; flex-wrap: wrap; padding-top: 12px; padding-bottom: 12px; }
   .navbar .logo { font-size: 17px; gap: 7px; }
@@ -524,3 +524,13 @@ footer p {
   .nav-library { font-size: 10px; padding: 8px 9px; }
   .nav-user { font-size: 10px; max-width: 160px; overflow-wrap: anywhere; }
 }
+
+/* Forensic Noir identity: coherent logo lockup and premium controls */
+.logo{gap:12px;letter-spacing:-.4px;color:#f4eee7;white-space:nowrap}
+.logo-mark{width:42px;height:42px;padding:5px;border:1px solid #72553c;border-radius:10px;background:linear-gradient(145deg,#32271f,#181617);box-shadow:inset 0 1px #ffffff0b,0 0 0 3px #d5a56c0b;object-fit:contain}
+.logo-button:hover .logo-mark{border-color:#d5a56c}
+.navbar{background:#151314ed;border-bottom-color:#45362e}
+.primary-button{border-radius:9px;box-shadow:0 5px 22px #d5a56c19}
+.nav-button,.nav-library,.secondary-button{border-radius:9px}
+.feature-card,.terminal-card{border-radius:12px}
+@media(max-width:600px){.logo{gap:8px}.logo-mark{width:34px;height:34px;padding:4px}.navbar .logo{font-size:17px}}
