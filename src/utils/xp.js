@@ -1,3 +1,4 @@
+import { progressKey } from "./progressScope.js";
 const STORAGE_KEY = "cybertrace_xp";
 let sessionXP = 0;
 let pendingWrite = false;
@@ -16,7 +17,7 @@ export const LEVELS = [
 export function getXP() {
   if (pendingWrite) return sessionXP;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(progressKey(STORAGE_KEY));
     const value = raw === null ? 0 : Number(raw);
     sessionXP = Number.isSafeInteger(value) && value >= 0 ? value : 0;
     return sessionXP;
@@ -29,7 +30,7 @@ export function getXP() {
 function setXP(value) {
   sessionXP = value;
   try {
-    localStorage.setItem(STORAGE_KEY, String(value));
+    localStorage.setItem(progressKey(STORAGE_KEY), String(value));
     pendingWrite = false;
   } catch {
     pendingWrite = true;
