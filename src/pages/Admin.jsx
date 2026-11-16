@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import "./Admin.css";
 
 export default function Admin({ user, onHome }) {
-  const [status, setStatus] = useState("checking");
+  const [verification, setVerification] = useState({ uid: null, status: "checking" });
+  const status = !user ? "signed-out" : verification.uid === user.uid ? verification.status : "checking";
   useEffect(() => {
     let active = true;
-    setStatus(user ? "checking" : "signed-out");
     if (user) {
       user.getIdTokenResult(true).then(token => {
-        if (active) setStatus(token.claims.admin === true ? "authorized" : "forbidden");
-      }).catch(() => { if (active) setStatus("error"); });
+        if (active) setVerification({ uid: user.uid, status: token.claims.admin === true ? "authorized" : "forbidden" });
+      }).catch(() => { if (active) setVerification({ uid: user.uid, status: "error" }); });
     }
     return () => { active = false; };
   }, [user]);
