@@ -12,7 +12,7 @@ html {
 
 body {
   font-family: "Cairo", sans-serif;
-  background: #05080d;
+  background: #100f10;
   color: #f1f5f9;
 }
 
@@ -28,9 +28,9 @@ button {
 .app {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 75% 15%, rgba(0, 255, 170, 0.08), transparent 28%),
+    radial-gradient(circle at 75% 15%, rgba(213, 165, 108, 0.08), transparent 28%),
     radial-gradient(circle at 15% 40%, rgba(0, 120, 255, 0.06), transparent 25%),
-    #05080d;
+    #100f10;
 }
 
 /* Navbar */
@@ -63,8 +63,8 @@ button {
   height: 36px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(0, 255, 170, 0.5);
-  color: #00ffaa;
+  border: 1px solid rgba(213, 165, 108, 0.5);
+  color: #d5a56c;
   font-size: 12px;
   letter-spacing: 1px;
 }
@@ -82,7 +82,7 @@ button {
 }
 
 .nav-links a:hover {
-  color: #00ffaa;
+  color: #d5a56c;
 }
 
 .nav-right {
@@ -103,8 +103,8 @@ button {
 }
 
 .nav-button:hover {
-  border-color: #00ffaa;
-  color: #00ffaa;
+  border-color: #d5a56c;
+  color: #d5a56c;
 }
 
 /* Hero */
@@ -131,9 +131,9 @@ button {
   align-items: center;
   gap: 9px;
   padding: 7px 13px;
-  border: 1px solid rgba(0, 255, 170, 0.2);
-  background: rgba(0, 255, 170, 0.04);
-  color: #7eeac7;
+  border: 1px solid rgba(213, 165, 108, 0.2);
+  background: rgba(213, 165, 108, 0.04);
+  color: #e0b98a;
   border-radius: 5px;
   font-size: 12px;
   margin-bottom: 25px;
@@ -142,9 +142,9 @@ button {
 .status-dot {
   width: 7px;
   height: 7px;
-  background: #00ffaa;
+  background: #d5a56c;
   border-radius: 50%;
-  box-shadow: 0 0 10px #00ffaa;
+  box-shadow: 0 0 10px #d5a56c;
 }
 
 .hero h1 {
@@ -156,7 +156,7 @@ button {
 }
 
 .hero h1 span {
-  color: #00ffaa;
+  color: #d5a56c;
   display: block;
 }
 
@@ -176,8 +176,8 @@ button {
 
 .primary-button {
   border: none;
-  background: #00ffaa;
-  color: #03110c;
+  background: #d5a56c;
+  color: #17110d;
   padding: 13px 24px;
   border-radius: 5px;
   font-weight: 800;
@@ -186,7 +186,7 @@ button {
 
 .primary-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 255, 170, 0.2);
+  box-shadow: 0 8px 30px rgba(213, 165, 108, 0.2);
 }
 
 .primary-button span {
@@ -232,7 +232,7 @@ button {
 .terminal-card {
   direction: ltr;
   border: 1px solid #26313d;
-  background: #080d13;
+  background: #171619;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
   position: relative;
 }
@@ -241,7 +241,7 @@ button {
   content: "";
   position: absolute;
   inset: -1px;
-  border: 1px solid rgba(0, 255, 170, 0.08);
+  border: 1px solid rgba(213, 165, 108, 0.08);
   pointer-events: none;
 }
 
@@ -282,7 +282,7 @@ button {
 }
 
 .green {
-  color: #00ffaa;
+  color: #d5a56c;
 }
 
 .yellow {
@@ -321,14 +321,14 @@ button {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #00ffaa;
+  color: #d5a56c;
   margin-top: 35px;
 }
 
 .cursor {
   width: 7px;
   height: 15px;
-  background: #00ffaa;
+  background: #d5a56c;
   animation: blink 1s infinite;
 }
 
@@ -349,7 +349,7 @@ button {
 }
 
 .section-heading span {
-  color: #00ffaa;
+  color: #d5a56c;
   font-size: 12px;
   font-family: monospace;
 }
@@ -377,12 +377,12 @@ button {
 }
 
 .feature-card:hover {
-  border-color: rgba(0, 255, 170, 0.3);
+  border-color: rgba(213, 165, 108, 0.3);
   transform: translateY(-4px);
 }
 
 .feature-number {
-  color: #00ffaa;
+  color: #d5a56c;
   font-family: monospace;
   margin-bottom: 45px;
 }
@@ -418,7 +418,7 @@ button {
 }
 
 .step > span {
-  color: #00ffaa;
+  color: #d5a56c;
   font-family: monospace;
 }
 
@@ -513,8 +513,8 @@ footer p {
 /* Training navigation */
 @media (max-width: 1100px) { .nav-links { display: none; } }
 .logo-button { border: 0; padding: 0; color: #f1f5f9; background: transparent; }
-.nav-library { border: 1px solid #28513f; border-radius: 6px; color: #a6f4d8; background: rgba(0,255,170,.04); font-size: 12px; padding: 9px 13px; white-space: nowrap; }
-.nav-library:hover { border-color: #00ffaa; }
+.nav-library { border: 1px solid #5b4938; border-radius: 6px; color: #e8c9a4; background: rgba(213, 165, 108,.04); font-size: 12px; padding: 9px 13px; white-space: nowrap; }
+.nav-library:hover { border-color: #d5a56c; }
 @media (max-width: 600px) {
   .navbar { gap: 10px; height: auto; min-height: 76px; flex-wrap: wrap; padding-top: 12px; padding-bottom: 12px; }
   .navbar .logo { font-size: 17px; gap: 7px; }
