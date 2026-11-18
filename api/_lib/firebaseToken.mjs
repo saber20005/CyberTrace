@@ -21,7 +21,8 @@ export async function verifyAdminToken(token, { now = Date.now(), fetchCerts = f
       typeof payload.sub !== "string" || !payload.sub || payload.sub.length > 128 ||
       !Number.isInteger(payload.iat) || payload.iat > seconds ||
       !Number.isInteger(payload.exp) || payload.exp <= seconds ||
-      !Number.isInteger(payload.auth_time) || payload.auth_time > seconds) throw new Error("Invalid JWT claims");
+      !Number.isInteger(payload.auth_time) || payload.auth_time > seconds ||
+      payload.auth_time > payload.iat || payload.exp <= payload.iat) throw new Error("Invalid JWT claims");
   if (!cached.certs || cached.expires <= now) {
     const response = await fetchCerts(CERT_URL, { signal: AbortSignal.timeout(5000) });
     if (!response.ok) throw new Error("Firebase certificate fetch failed");
