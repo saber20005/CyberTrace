@@ -12,7 +12,8 @@ export async function verifyAdminToken(token, { now = Date.now(), fetchCerts = f
   if (typeof token !== "string" || token.length > 8192) throw new Error("Invalid token");
   const parts = token.split(".");
   if (parts.length !== 3) throw new Error("Malformed token");
-  const [header, payload] = parts.map(decode);
+  const header = decode(parts[0]);
+  const payload = decode(parts[1]);
   const seconds = Math.floor(now / 1000);
   if (header.alg !== "RS256" || typeof header.kid !== "string" || !header.kid || header.typ && header.typ !== "JWT") throw new Error("Invalid JWT header");
   if (payload.aud !== PROJECT_ID || payload.iss !== `https://securetoken.google.com/${PROJECT_ID}` ||
