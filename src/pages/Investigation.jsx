@@ -71,17 +71,15 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
   };
 
   const confirmDecision = () => {
-    if (!selectedDecision) return;
-    if (selectedDecision.points !== 40) {
-      setWrongDecisionIds(ids => ids.includes(selectedDecision.id) ? ids : [...ids, selectedDecision.id]);
-      setDecisionChecked(true);
-      return;
-    }
+    if (!selectedDecision || decisionChecked) return;
+    // Decisions are graded by their canonical case points, including partial credit.
+    // Finalize the chosen action rather than forcing a perfect answer.
+    setDecisionChecked(true);
     completeInvestigation();
   };
 
   const completeInvestigation = () => {
-    if (awarded.current || !selectedEvidence?.correct || !evidenceChecked || selectedDecision?.points !== 40) return;
+    if (awarded.current || !selectedEvidence?.correct || !evidenceChecked || !selectedDecision || !Number.isInteger(selectedDecision.points) || selectedDecision.points < 0 || selectedDecision.points > 40) return;
     awarded.current = true;
     setAwardInfo(addXP(totalScore));
     setResultInfo(recordCaseResult(caseData.id, totalScore));
@@ -237,7 +235,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                   <span className="yellow">!</span> {caseData.decisionQuestion}
                 </p>
 
-                <p className="inv-accuracy" role="status">دقة التحقيق: {investigationScore}/100 · المحاولة متاحة حتى القرار الصحيح</p>
+                <p className="inv-accuracy" role="status">تقييم الإجراء: من 0 إلى 40 نقطة حسب جودة القرار · الاختيار نهائي لهذه المحاولة</p>
                 <div className="inv-options">
                   {decisionOptions.map((d) => (
                     <button
@@ -253,7 +251,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                   ))}
                 </div>
 
-                {decisionChecked && <p className="inv-feedback" role="status">✗ هذا ليس الإجراء الأفضل. راجع الأدلة واختر قرارًا آخر؛ لن تُخصم نقاط إضافية عند تكرار الخيار نفسه.</p>}
+
                 {selectedDecision && !decisionChecked && (
                   <button className="primary-button" onClick={confirmDecision}>
                     تنفيذ القرار <span>←</span>
