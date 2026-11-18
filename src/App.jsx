@@ -52,6 +52,8 @@ function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setProgressOwner(firebaseUser?.uid ?? null);
+      window.dispatchEvent(new Event("cybertrace-progress-synced"));
+      setSyncStatus("");
       setSyncEnabled(Boolean(firebaseUser && cloudSyncEnabled(firebaseUser.uid)));
       setUser(firebaseUser);
       setLegacyNotice(Boolean(firebaseUser && legacyProgressAvailable()));
