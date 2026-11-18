@@ -107,7 +107,7 @@ export function recordCaseResult(id, score) {
   };
   writeJSON(RESULTS_KEY, { ...results, [id]: result });
   markCaseSeen(id);
-  window.dispatchEvent(new Event("cybertrace-progress-changed"));
+  if (typeof window !== "undefined") window.dispatchEvent(new Event("cybertrace-progress-changed"));
   return result;
 }
 
