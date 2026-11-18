@@ -21,3 +21,11 @@ React route lazy-loading was merged separately. Review actual production chunk s
 
 ## Release gate
 Do not mark security or production acceptance as complete without saved CI run links, Firebase Rules test output, and browser checks for auth, library, investigations and mobile navigation.
+
+## Security hardening status (Nov 2026)
+- Client-saved XP and investigation scores are **self-reported**. Firestore owner-only rules stop cross-user writes but do NOT establish that a particular score was earned. Neither leaderboard badges nor certificates may rely on them.
+- `security/firestore.cybertrace-progress.rules` is a stricter **reference ruleset** for `cybertrace-48ab0`, with known case allowlisting, bounded attempt counts and XP, no list/delete, and owner-only read/write. It must be merged with, not blindly replace, live Firebase rules, then deployed by a Firebase project administrator.
+- The `firestore-security.yml` GitHub Action tests that checked-in rules file with a Firestore emulator. A passing CI run does **not** prove that the rules have been published in Firebase production.
+- Server-side verified scores require a separate authenticated, App Check protected grading service and server-owned challenge data; the current localStorage/Firestore data model does not provide this protection.
+- The Vercel response headers reduce clickjacking and content sniffing but do not replace authorization checks.
+- Do not delete historical BLACKBOX receipts or account progress during this hardening.
