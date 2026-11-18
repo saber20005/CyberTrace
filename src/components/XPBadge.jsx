@@ -1,9 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getXP, getLevelInfo } from "../utils/xp";
 import "./XPBadge.css";
 
 function XPBadge() {
-  const [info] = useState(() => getLevelInfo(getXP()));
+  const [info, setInfo] = useState(() => getLevelInfo(getXP()));
+  useEffect(() => {
+    const refresh = () => setInfo(getLevelInfo(getXP()));
+    window.addEventListener("cybertrace-progress-synced", refresh);
+    window.addEventListener("cybertrace-progress-changed", refresh);
+    return () => {
+      window.removeEventListener("cybertrace-progress-synced", refresh);
+      window.removeEventListener("cybertrace-progress-changed", refresh);
+    };
+  }, []);
 
   return (
     <div className="xp-badge" title={`${info.xp} XP`}>
