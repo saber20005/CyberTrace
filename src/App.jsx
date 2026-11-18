@@ -41,6 +41,8 @@ function App() {
   const [legacyNotice, setLegacyNotice] = useState(false);
   const [syncStatus, setSyncStatus] = useState("");
   const [syncEnabled, setSyncEnabled] = useState(false);
+  const [syncBusy, setSyncBusy] = useState(false);
+  const syncNowRef = useRef(null);
   const [progressVersion, setProgressVersion] = useState(0);
   const initialVisitTracked = useRef(false);
   const { view, returnView } = route;
@@ -65,8 +67,14 @@ function App() {
   }, []);
 
   useEffect(() => {
+    syncNowRef.current = null;
     if (!user || !syncEnabled) return undefined;
-    return startCloudSync(user.uid, setSyncStatus);
+    const stop = startCloudSync(user.uid, setSyncStatus);
+    syncNowRef.current = stop.syncNow;
+    return () => {
+      syncNowRef.current = null;
+      stop();
+    };
   }, [user, syncEnabled]);
 
   useEffect(() => {
@@ -102,6 +110,33 @@ function App() {
   const goHome = () => navigate({ view: "home" });
   const goLibrary = () => navigate({ view: "library" });
 
+  const enableSync = () => {
+    if (!user) return;
+    try {
+      enableCloudSync(user.uid);
+      setSyncStatus("جارٍ فتح اتصال CyberTrace السحابي...");
+      setSyncEnabled(true);
+    } catch (error) { setSyncStatus("تعذّر تفعيل المزامنة: " + error.message); }
+  };
+
+  const syncNow = async () => {
+    if (syncBusy) return;
+    if (!syncNowRef.current) { setSyncStatus("لم يجهز اتصال CyberTrace؛ تأكد من تسجيل الدخول وتفعيل المزامنة."); return; }
+    setSyncBusy(true);
+    try { await syncNowRef.current(); }
+    catch (error) { setSyncStatus("فشلت المزامنة: " + (error.code || error.message)); }
+    finally { setSyncBusy(false); }
+  };
+
+  const cloudSyncPanel = user ? <section aria-label="مزامنة تقدم CyberTrace" style={{margin:"1rem auto",padding:"1rem",maxWidth:900,border:"1px solid #4d728d",borderRadius:12}}>
+    <strong>مزامنة تقدم CyberTrace بين الأجهزة</strong>
+    <p role="status" aria-live="polite">{syncStatus || (syncEnabled ? "جارٍ الاتصال بسجل حسابك..." : "نتائج هذا الجهاز محلية. فعّل مزامنة هذا الحساب لاستعادتها على جهاز آخر.")}</p>
+    {syncEnabled
+      ? <button type="button" disabled={syncBusy} onClick={() => { void syncNow(); }}>{syncBusy ? "جارٍ التحقق..." : "مزامنة تقدم CyberTrace الآن"}</button>
+      : <button type="button" onClick={enableSync}>تفعيل مزامنة هذا الحساب</button>}
+    <p style={{fontSize:".85rem",opacity:".8"}}>هذه المزامنة تخص CyberTrace فقط. نتائج BLACKBOX منفصلة ولا تُنقل تلقائيًا.</p>
+  </section> : null;
+
   const handleLogout = async () => {
     await Promise.allSettled([blackBox.disconnect(), signOut(auth)]);
   };
@@ -125,7 +160,7 @@ function App() {
   }
 
   if (view === "library") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary key={`${user?.uid ?? "guest"}:${progressVersion}`} cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} /></Suspense>;
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary key={`${user?.uid ?? "guest"}:${progressVersion}`} cloudSyncPanel={cloudSyncPanel} cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} /></Suspense>;
   }
 
   if (view === "investigation" && selectedCase) {
@@ -173,7 +208,7 @@ function App() {
       </nav>
 
       <main>
-        {user && <section role="status" style={{margin:"1rem auto",padding:"1rem",maxWidth:900,border:"1px solid #4d728d",borderRadius:12}}><strong>مزامنة تقدم CyberTrace بين الأجهزة</strong><p>{syncEnabled ? (syncStatus || "جارٍ الاتصال بسجل حسابك...") : "تقدمك محفوظ على هذا الجهاز فقط. فعّل المزامنة إذا أردت استخدام الحساب نفسه على الهاتف والكمبيوتر. لا تُنقل نتائج BLACKBOX أو حسابات أخرى."}</p>{!syncEnabled && <button type="button" onClick={() => { try { enableCloudSync(user.uid); setSyncEnabled(true); } catch (error) { setSyncStatus(error.message); } }}>تفعيل مزامنة هذا الحساب</button>}</section>}
+        {cloudSyncPanel}
         {legacyNotice && <section role="status" style={{margin:"1rem auto",padding:"1rem",maxWidth:900,border:"1px solid #4d728d",borderRadius:12}}><p>توجد نتائج تدريب قديمة محفوظة على هذا المتصفح دون هوية حساب مؤكدة. لن تُنسب لأي حساب تلقائيًا. استوردها فقط إذا كانت تخص حسابك الحالي.</p><button type="button" onClick={() => { if (!window.confirm("هل تؤكد أن النتائج القديمة تخص حساب CyberTrace الحالي؟ لا يمكن التحقق من مالكها السابق.")) return; const ok=importLegacyProgress(); if (ok) { setLegacyNotice(false); window.location.reload(); } else window.alert("تعذّر الاستيراد، أو توجد نتائج مسبقًا لهذا الحساب. لم تُحذف البيانات القديمة."); }}>استيراد نتائجي القديمة لهذا الحساب</button><button type="button" onClick={() => setLegacyNotice(false)}>ليس الآن</button></section>}
         <section className="hero">
           <div className="hero-content">
