@@ -19,7 +19,7 @@ const suggestionLabels = {
   daily: "اقتراح اليوم",
 };
 
-function InvestigationLibrary({ cases, onStart, onHome }) {
+function InvestigationLibrary({ cases, onStart, onHome, cloudSyncPanel }) {
   const [query, setQuery] = useState("");
   const [difficulty, setDifficulty] = useState("all");
   const [category, setCategory] = useState("all");
@@ -62,6 +62,7 @@ function InvestigationLibrary({ cases, onStart, onHome }) {
         <div className="nav-right"><XPBadge /><BlackBoxAccountButton /><button className="nav-button library-home" onClick={onHome}>الرئيسية <span aria-hidden="true">↗</span></button></div>
       </header>
       <main className="library-shell">
+        {cloudSyncPanel}
         <section className="library-heading" aria-labelledby="library-title">
           <div>
             <p className="library-eyebrow"><span aria-hidden="true">●</span> مركز تدريب محلّل الأمن</p>
@@ -80,7 +81,7 @@ function InvestigationLibrary({ cases, onStart, onHome }) {
         <section className="library-progress" aria-labelledby="progress-title">
           <div><h2 id="progress-title">رحلتك في التحقيق</h2><p>{completedCount === cases.length ? "أكملت المكتبة! يمكنك إعادة أي تحقيق أو بدء دورة عشوائية جديدة." : `بقيت ${cases.length - completedCount} قضية لتكمل مكتبة التدريب.`}</p></div>
           <div className="library-progress-meter"><span>{progress}% مكتمل</span><progress value={completedCount} max={cases.length || 1} aria-label="نسبة التحقيقات المكتملة" /></div>
-          <p className="library-storage-note">تُحفظ نتائجك على هذا الجهاز عند توفر التخزين المحلي؛ وإلا تبقى خلال الجلسة فقط.</p>
+          <p className="library-storage-note">تُحفظ نتائجك محليًا، ويمكنك تفعيل مزامنة CyberTrace السحابية من أعلى المكتبة لاستعادتها عبر الأجهزة.</p>
         </section>
         <section className="learning-plan" aria-labelledby="learning-plan-title">
           <div className="library-section-title"><div><p className="library-eyebrow">تعلّم بخطوة واضحة</p><h2 id="learning-plan-title">ما التحقيق المناسب لك الآن؟</h2></div></div>
