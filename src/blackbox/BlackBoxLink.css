@@ -48,3 +48,7 @@
   .bb-link-dialog { padding: 20px; }
   .bb-link-dialog h2 { font-size: 20px; }
 }
+
+/* Keep the response beside the action on narrow mobile dialogs; avoid requiring users to scroll to the top. */
+.bb-link-inline-feedback { margin: 10px 0 14px; overflow-wrap: anywhere; white-space: normal; }
+.bb-link-history .bb-link-inline-feedback { margin-bottom: 0; }
