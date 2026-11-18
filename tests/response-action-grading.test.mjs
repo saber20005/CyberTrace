@@ -8,7 +8,7 @@ test("response action points allow graded outcomes without requiring a perfect c
     for (const decision of incident.decisions) {
       assert.ok(Number.isInteger(decision.points), incident.id + " " + decision.id);
       assert.ok(decision.points >= 0 && decision.points <= 40, incident.id + " " + decision.id);
-      assert.equal(30 + decision.points, 30 + decision.points);
+      assert.ok(30 + decision.points <= 70);
     }
   }
 });
