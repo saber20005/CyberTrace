@@ -33,6 +33,9 @@ export default function BlackBoxLink({ dialogRef }) {
   const scoredCount = Object.entries(results).filter(([id, result]) => Object.hasOwn(CASE_META, id) && Number.isSafeInteger(result.bestScore) && result.bestScore >= 0 && result.bestScore <= MAX_CASE_SCORE).length;
   const unscoredCount = getCompletedCaseIds().filter(id => Object.hasOwn(CASE_META, id) && !Object.hasOwn(results, id)).length;
   const visibleOperation = operation?.uid === uid ? operation : null;
+  const linkedCount = Object.keys(status.receipts || {}).length;
+  const localCompletedCount = getCompletedCaseIds().filter(id => Object.hasOwn(CASE_META, id)).length;
+  const linkedOnlyCount = Object.keys(status.receipts || {}).filter(id => !getCompletedCaseIds().includes(id)).length;
 
   useEffect(() => { form.current?.reset(); }, [uid]);
 
@@ -60,6 +63,7 @@ export default function BlackBoxLink({ dialogRef }) {
       {connected ? <section className="bb-link-account">
         <div className="bb-link-identity"><span>تُرسل التحقيقات الجديدة إلى</span><strong dir="ltr">{status.user.email || status.user.displayName || "حساب BlackBox"}</strong></div>
         <p className="bb-link-note">تبدأ المزامنة التلقائية من التحقيقات التي تكملها أثناء الربط. يمكنك نقل النتائج المسجّلة على هذا المتصفح إلى الحساب المعروض باختيارك.</p>
+        <div className="bb-link-history" aria-label="مقارنة سجل التحقيقات"><h3>توضيح اختلاف الإنجازات</h3><p>التحقيقات المكتملة على هذا المتصفح: {localCompletedCount}. سجلات الإنجازات المرتبطة بحساب BlackBox: {linkedCount}.</p>{linkedOnlyCount > 0 && <p className="bb-link-note" role="status">يوجد {linkedOnlyCount} إنجازات في BlackBox لا تظهر كمكتملة على هذا المتصفح. قد تكون نتائج قديمة من جهاز أو جلسة ربط سابقة؛ لا يعني ظهورها أنها أُنجزت على حساب CyberTrace الحالي.</p>}<p className="bb-link-note">حساب CyberTrace وحساب BlackBox يعملان على مشروعي Firebase مستقلين. تطابق بريد Google لا يثبت تطابق سجل التحقيقات. لا تُستعاد الإنجازات من BlackBox تلقائيًا، ولن تُنقل أو تُحذف أي بيانات دون اختيارك.</p></div>
         <div className="bb-link-history"><h3>نتائج هذا المتصفح</h3><p>{scoredCount ? `${scoredCount} تحقيقات لها نتائج مسجّلة قابلة للنقل.` : "لا توجد نتائج مسجّلة قابلة للنقل على هذا المتصفح بعد."}</p>
           {unscoredCount > 0 && <p className="bb-link-note">{unscoredCount} تحقيقات قديمة دون نتيجة محفوظة. أعدها لتسجيل نقاط للمهارة.</p>}
           <button type="button" id="blackboxImportHistory" className="bb-link-secondary" disabled={busy || !ready || !scoredCount} onClick={() => run(() => bridge.importHistory(getCaseResults()), result => result.pending ? "نُقلت النتائج إلى قائمة انتظار هذا الحساب؛ راجع حالة المزامنة." : "اكتملت معالجة النتائج. تُحتسب أفضل نتيجة لكل تحقيق مرة واحدة.")}>نقل نتائجي المسجّلة إلى هذا الحساب</button>
