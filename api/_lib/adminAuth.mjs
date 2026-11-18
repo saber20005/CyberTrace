@@ -1,3 +1,4 @@
+import process from "node:process";
 const PROJECT_ID = "cybertrace-48ab0";
 let cachedAuth;
 
