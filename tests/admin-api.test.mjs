@@ -37,7 +37,8 @@ test("endpoint rejects missing authorization and unsupported methods", async () 
 test("rejects inconsistent signed Firebase token timestamps", async () => {
   const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
   const pem = publicKey.export({ type: "spki", format: "pem" });
-  const now = 1795000000000;
+  // Advance past the previous fixture's certificate cache TTL.
+  const now = 1795000120000;
   const sec = Math.floor(now / 1000);
   const make = (overrides) => {
     const h = Buffer.from(JSON.stringify({ alg: "RS256", kid: "timestamp-test" })).toString("base64url");
