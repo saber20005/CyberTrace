@@ -1,4 +1,4 @@
-import { doc, onSnapshot, runTransaction } from "firebase/firestore";
+import { doc, getDocFromServer, onSnapshot, runTransaction } from "firebase/firestore";
 import { db, auth } from "../firebase.js";
 import { getCaseResults, getCompletedCaseIds } from "./caseProgress.js";
 import { getXP } from "./xp.js";
@@ -50,30 +50,57 @@ export function startCloudSync(uid, onStatus) {
   const ref = doc(db, "cybertraceUsers", uid, "state", "progress");
   let active = true, remoteReady = false, busy = false, queued = false;
   const publish = async () => {
-    if (!active || !owner() || !remoteReady) return;
-    if (busy) { queued = true; return; }
+    if (!active || !owner() || !remoteReady) return false;
+    if (busy) { queued = true; onStatus("توجد مزامنة جارية؛ سيُعاد فحص تقدمك بعدها."); return false; }
     busy = true;
     try {
       await runTransaction(db, async tx => {
-        if (!owner()) throw new Error("تغيّر الحساب أثناء المزامنة.");
+        if (!active || !owner()) throw new Error("تغيّر الحساب أثناء المزامنة.");
         const snap = await tx.get(ref);
         const merged = mergeCloudProgress(snap.exists() ? snap.data() : {}, localSnapshot());
         if (!snap.exists() || JSON.stringify(mergeCloudProgress(snap.data(), {})) !== JSON.stringify(merged)) tx.set(ref, merged);
       });
-      if (active && owner()) onStatus("تم حفظ التقدم في حساب CyberTrace.");
-    } catch (error) { if (active) onStatus("فشلت المزامنة: " + error.message); }
-    finally { busy = false; if (queued) { queued = false; void publish(); } }
+      if (active && owner()) onStatus("تم التحقق من تقدم CyberTrace وحفظه في حسابك.");
+      return active && owner();
+    } catch (error) {
+      if (active && owner()) onStatus("فشلت مزامنة CyberTrace: " + (error.code || error.message));
+      return false;
+    } finally {
+      busy = false;
+      if (queued) { queued = false; void publish(); }
+    }
+  };
+  const syncNow = async () => {
+    if (!active || !owner()) { onStatus("تغيّر حساب CyberTrace؛ سجّل الدخول ثم حاول مجددًا."); return false; }
+    onStatus("جارٍ فحص التقدم السحابي من الخادم...");
+    try {
+      // A manual retry must reach the server rather than silently using an offline cache.
+      const snap = await getDocFromServer(ref);
+      if (!active || !owner()) return false;
+      if (snap.exists()) storeLocal(snap.data());
+      remoteReady = true;
+      return await publish();
+    } catch (error) {
+      if (active && owner()) onStatus("تعذّر الاتصال بمزامنة CyberTrace: " + (error.code || error.message));
+      return false;
+    }
   };
   const changed = () => { if (remoteReady) void publish(); };
   window.addEventListener("cybertrace-progress-changed", changed);
-  const unsubscribe = onSnapshot(ref, { includeMetadataChanges: false }, snap => {
+  const unsubscribe = onSnapshot(ref, { includeMetadataChanges: true }, snap => {
     if (!active || !owner()) return;
     try {
       if (snap.exists()) storeLocal(snap.data());
-      remoteReady = true;
-      onStatus("المزامنة السحابية مفعّلة لهذا الحساب.");
-      void publish();
+      remoteReady = !snap.metadata.fromCache;
+      onStatus(remoteReady ? "الاتصال السحابي جاهز؛ يمكنك مزامنة تقدمك الآن." : "تظهر نسخة محلية مؤقتًا؛ بانتظار تأكيد الاتصال بالخادم.");
+      if (remoteReady) void publish();
     } catch (error) { onStatus(error.message); }
-  }, error => { if (active) onStatus("تعذّر قراءة التقدم السحابي: " + error.message); });
-  return () => { active = false; unsubscribe(); window.removeEventListener("cybertrace-progress-changed", changed); };
+  }, error => { if (active && owner()) onStatus("تعذّر قراءة تقدم CyberTrace: " + (error.code || error.message)); });
+  const stop = () => {
+    active = false;
+    unsubscribe();
+    window.removeEventListener("cybertrace-progress-changed", changed);
+  };
+  stop.syncNow = syncNow;
+  return stop;
 }
