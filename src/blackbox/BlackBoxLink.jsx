@@ -36,20 +36,28 @@ export default function BlackBoxLink({ dialogRef }) {
   const linkedCount = Object.keys(status.receipts || {}).length;
   const localCompletedCount = getCompletedCaseIds().filter(id => Object.hasOwn(CASE_META, id)).length;
   const linkedOnlyCount = Object.keys(status.receipts || {}).filter(id => !getCompletedCaseIds().includes(id)).length;
+  const alreadyLinkedCount = Object.entries(results).filter(([id, result]) =>
+    Object.hasOwn(CASE_META, id) && Number.isSafeInteger(result.bestScore) &&
+    (status.receipts?.[id]?.bestScore ?? -1) >= result.bestScore
+  ).length;
+  const toSendCount = Math.max(0, scoredCount - alreadyLinkedCount);
+  const importFeedback = visibleOperation?.kind === "import" ? visibleOperation : null;
+  const retryFeedback = visibleOperation?.kind === "retry" ? visibleOperation : null;
 
   useEffect(() => { form.current?.reset(); }, [uid]);
 
   const close = () => { dialogRef.current?.close(); form.current?.reset(); };
-  async function run(action, successText = "") {
+  async function run(action, successText = "", kind = "general") {
     if (busy) return;
     const actionUid = uid;
     setBusy(true);
-    setOperation(null);
+    setOperation({ uid: actionUid, kind, text: "جارٍ تنفيذ الطلب...", error: false });
     try {
       const result = await action();
-      if (successText) setOperation({ uid: actionUid, text: typeof successText === "function" ? successText(result) : successText, error: false });
+      if (successText) setOperation({ uid: actionUid, kind, text: typeof successText === "function" ? successText(result) : successText, error: false });
+      else setOperation(null);
       form.current?.reset();
-    } catch (error) { setOperation({ uid: actionUid, text: friendlyError(error), error: true }); }
+    } catch (error) { setOperation({ uid: actionUid, kind, text: friendlyError(error), error: true }); }
     finally { setBusy(false); }
   }
 
@@ -58,17 +66,26 @@ export default function BlackBoxLink({ dialogRef }) {
       <header className="bb-link-dialog-head"><span>CYBERTRACE / BLACKBOX</span><button type="button" id="blackboxLinkClose" className="bb-link-close" onClick={close} aria-label="إغلاق نافذة ربط BlackBox">×</button></header>
       <h2 id="blackboxLinkTitle">{connected ? "حساب BlackBox المرتبط" : "اربط التحقيقات برحلة مهاراتك"}</h2>
       <p id="blackboxLinkDescription">تزيد أفضل نتيجة لكل تحقيق تقدّم مهارته في BlackBox. إعادة التحقيق لا تكرر النقاط؛ تحسين النتيجة يرفعها.</p>
-      {visibleOperation && <p className={`bb-link-message ${visibleOperation.error ? "has-error" : ""}`} role={visibleOperation.error ? "alert" : "status"}>{visibleOperation.text}</p>}
+      {visibleOperation && visibleOperation.kind === "general" && <p className={`bb-link-message ${visibleOperation.error ? "has-error" : ""}`} role={visibleOperation.error ? "alert" : "status"}>{visibleOperation.text}</p>}
       <p id="blackboxLinkStatus" className={`bb-link-service ${status.error ? "has-error" : ""}`} role="status" aria-live="polite">{status.memoryOnly ? "بعض النتائج في ذاكرة التبويب فقط. أبقِ هذا التبويب مفتوحًا وأعد المزامنة قبل إغلاقه." : status.error ? friendlyError(status.error) : status.message || (status.phase === "loading" ? "جارٍ تجهيز الربط…" : "يمكنك مواصلة التدريب دون ربط حساب.")}</p>
       {connected ? <section className="bb-link-account">
         <div className="bb-link-identity"><span>تُرسل التحقيقات الجديدة إلى</span><strong dir="ltr">{status.user.email || status.user.displayName || "حساب BlackBox"}</strong></div>
         <p className="bb-link-note">تبدأ المزامنة التلقائية من التحقيقات التي تكملها أثناء الربط. يمكنك نقل النتائج المسجّلة على هذا المتصفح إلى الحساب المعروض باختيارك.</p>
         <div className="bb-link-history" aria-label="مقارنة سجل التحقيقات"><h3>توضيح اختلاف الإنجازات</h3><p>التحقيقات المكتملة على هذا المتصفح: {localCompletedCount}. سجلات الإنجازات المرتبطة بحساب BlackBox: {linkedCount}.</p>{linkedOnlyCount > 0 && <p className="bb-link-note" role="status">يوجد {linkedOnlyCount} إنجازات في BlackBox لا تظهر كمكتملة على هذا المتصفح. قد تكون نتائج قديمة من جهاز أو جلسة ربط سابقة؛ لا يعني ظهورها أنها أُنجزت على حساب CyberTrace الحالي.</p>}<p className="bb-link-note">حساب CyberTrace وحساب BlackBox يعملان على مشروعي Firebase مستقلين. تطابق بريد Google لا يثبت تطابق سجل التحقيقات. لا تُستعاد الإنجازات من BlackBox تلقائيًا، ولن تُنقل أو تُحذف أي بيانات دون اختيارك.</p></div>
-        <div className="bb-link-history"><h3>نتائج هذا المتصفح</h3><p>{scoredCount ? `${scoredCount} تحقيقات لها نتائج مسجّلة قابلة للنقل.` : "لا توجد نتائج مسجّلة قابلة للنقل على هذا المتصفح بعد."}</p>
+        <div className="bb-link-history"><h3>نتائج هذا المتصفح</h3><p>{scoredCount ? `لديك ${scoredCount} نتائج مسجّلة على هذا المتصفح؛ ${alreadyLinkedCount} نتائجها موجودة بالفعل في BLACKBOX، و${toSendCount} قد تحتاج إلى إرسال أو تحديث.` : "لا توجد نتائج مسجّلة قابلة للإرسال من هذا المتصفح بعد."}</p>
           {unscoredCount > 0 && <p className="bb-link-note">{unscoredCount} تحقيقات قديمة دون نتيجة محفوظة. أعدها لتسجيل نقاط للمهارة.</p>}
-          <button type="button" id="blackboxImportHistory" className="bb-link-secondary" disabled={busy || !ready || !scoredCount} onClick={() => run(() => bridge.importHistory(getCaseResults()), result => result.pending ? "نُقلت النتائج إلى قائمة انتظار هذا الحساب؛ راجع حالة المزامنة." : "اكتملت معالجة النتائج. تُحتسب أفضل نتيجة لكل تحقيق مرة واحدة.")}>نقل نتائجي المسجّلة إلى هذا الحساب</button>
+          <button type="button" id="blackboxImportHistory" className="bb-link-secondary" disabled={busy || !ready || !scoredCount} onClick={() => run(() => bridge.importHistory(getCaseResults()), result => result.pending
+            ? `أُضيفت ${result.imported} نتائج إلى قائمة الإرسال، وما زالت ${result.pending} نتائج تنتظر تأكيد BLACKBOX. ${status.message || "تحقق من الاتصال وقواعد Firestore."}`
+            : result.imported
+              ? `عولج إرسال ${result.imported} نتائج إلى BLACKBOX، وتم تجاوز ${result.skipped} نتائج لأنها موجودة مسبقًا أو غير مؤهلة.`
+              : `لم تُرسَل نتائج جديدة: تم تجاوز ${result.skipped} نتائج لأنها موجودة مسبقًا أو غير مؤهلة. السجلان الإضافيان في BLACKBOX لا يمكن استعادتهما إلى CyberTrace بهذا الزر.`, "import")}>إرسال نتائج هذا المتصفح إلى BLACKBOX</button>
+          {importFeedback && <p className={`bb-link-message bb-link-inline-feedback ${importFeedback.error ? "has-error" : ""}`} role={importFeedback.error ? "alert" : "status"} aria-live="polite">{importFeedback.text}</p>}
         </div>
-        <div className="bb-link-action-row"><button type="button" id="blackboxRetryPending" className="bb-link-secondary" disabled={busy} onClick={() => run(bridge.retryPending, result => result ? (status.pending ? "تمت معالجة نتائج BLACKBOX المعلّقة." : "لا توجد نتائج معلّقة لإرسالها إلى BLACKBOX. لم تتغير بيانات CyberTrace.") : "لم تكتمل إعادة إرسال نتائج BLACKBOX. راجع رسالة حالة الربط أعلاه.")}>إعادة إرسال نتائج BLACKBOX</button><button type="button" id="blackboxDisconnect" className="bb-link-secondary" disabled={busy} onClick={() => run(bridge.disconnect)}>إلغاء الربط</button></div>
+        <div className="bb-link-action-row"><button type="button" id="blackboxRetryPending" className="bb-link-secondary" disabled={busy} onClick={() => run(bridge.retryPending, result => result
+          ? (status.pending ? "تمت معالجة النتائج المعلّقة في BLACKBOX." : "لا توجد نتائج معلّقة لإعادة إرسالها إلى BLACKBOX. هذا الزر لا يستعيد السجلات القديمة إلى CyberTrace.")
+          : "لم تنجح إعادة إرسال النتائج المعلّقة؛ تحقق من الرسالة أدناه.", "retry")}>إعادة إرسال نتائج BLACKBOX</button><button type="button" id="blackboxDisconnect" className="bb-link-secondary" disabled={busy} onClick={() => run(bridge.disconnect)}>إلغاء الربط</button></div>
+        {retryFeedback && <p className={`bb-link-message bb-link-inline-feedback ${retryFeedback.error ? "has-error" : ""}`} role={retryFeedback.error ? "alert" : "status"} aria-live="polite">{retryFeedback.text}</p>}
+        {status.error && <p className="bb-link-message has-error bb-link-inline-feedback" role="alert">فشل الاتصال بحساب BLACKBOX: {friendlyError(status.error)} ({String(status.error)}) — {status.message}</p>}
         {status.pending > 0 && <p className="bb-link-note">{status.memoryOnly ? "أبقِ التبويب مفتوحًا حتى تكتمل مزامنة النتائج المؤقتة." : "نتائج الانتظار تخص هذا الحساب، وتستأنف مزامنتها عند إعادة ربطه."}</p>}
         <a className="bb-link-destination" href="https://blackboxlab.dev/?view=skills&utm_source=cybertrace&utm_medium=referral&utm_campaign=linked_skills" target="_blank" rel="noopener noreferrer">عرض تقدّم المهارات في BlackBox ↗</a>
       </section> : <section>

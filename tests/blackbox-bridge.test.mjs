@@ -194,3 +194,32 @@ test('late callbacks from a replaced subscription cannot regress the same linked
   assert.equal(bridge.getStatus().receipts['INC-0417'].bestScore, 70);
   assert.equal(bridge.getStatus().error, null);
 });
+
+test('importing an already-linked result does not invent new receipts or pending work', async t => {
+  const backend = service('A');
+  backend.documents.set('A', new Map([['INC-0417', receipt('INC-0417', 70)]]));
+  const { bridge } = await setup(t, { backend });
+  const outcome = await bridge.importHistory({
+    'INC-0417': { attempts: 2, lastScore: 40, bestScore: 60, lastCompletedAt: now },
+  });
+  assert.deepEqual(outcome, { imported: 0, skipped: 1, pending: 0 });
+  assert.equal(await bridge.retryPending(), true);
+  assert.equal(backend.writes.length, 0);
+  assert.equal(bridge.getStatus().receipts['INC-0417'].bestScore, 70);
+});
+
+test('failed import leaves an actionable pending result and original case score intact', async t => {
+  const backend = service('A');
+  backend.beforeWrite = async () => { throw Object.assign(new Error('Rules rejected'), { code: 'permission-denied' }); };
+  const { bridge } = await setup(t, { backend });
+  const outcome = await bridge.importHistory({
+    'INC-1201': { attempts: 1, lastScore: 60, bestScore: 60, lastCompletedAt: now },
+  });
+  assert.deepEqual(outcome, { imported: 1, skipped: 0, pending: 1 });
+  assert.equal(bridge.getStatus().error, 'permission-denied');
+  assert.equal(bridge.getStatus().pending, 1);
+  backend.beforeWrite = undefined;
+  assert.equal(await bridge.retryPending(), true);
+  assert.equal(bridge.getStatus().pending, 0);
+  assert.equal(backend.documents.get('A').get('INC-1201').bestScore, 60);
+});
