@@ -1,19 +1,75 @@
-// Deploy to cybertrace-48ab0 only after merging with the project's existing rules.
-// Do NOT replace production rules wholesale: preserve existing admin/case access.
+// Target Firebase project: cybertrace-48ab0 only.
+// This is a reference ruleset. Back up deployed rules and merge the match block
+// into them before publishing; NEVER overwrite other production collections blindly.
+// Client-written completion/XP remain SELF-REPORTED, not verified certificates.
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function owner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+    function caseIds() {
+      return ['INC-0417', 'INC-0512', 'INC-0633', 'INC-0701', 'INC-0755', 'INC-0812', 'INC-0890', 'INC-0944', 'INC-1002', 'INC-1055', 'INC-1101', 'INC-1102', 'INC-1103', 'INC-1104', 'INC-1105', 'INC-1106', 'INC-1201', 'INC-1202', 'INC-1203', 'INC-1204', 'INC-1205', 'INC-1206', 'INC-1207', 'INC-1208', 'INC-1209', 'INC-1210', 'INC-1211', 'INC-1212'];
+    }
+    function validResult(row) {
+      return row is map
+        && row.keys().hasAll(['attempts', 'lastScore', 'bestScore', 'lastCompletedAt'])
+        && row.keys().hasOnly(['attempts', 'lastScore', 'bestScore', 'lastCompletedAt'])
+        && row.attempts is int && row.attempts >= 1 && row.attempts <= 1000000
+        && row.lastScore is int && row.lastScore >= 0 && row.lastScore <= 70
+        && row.bestScore is int && row.bestScore >= row.lastScore && row.bestScore <= 70
+        && row.lastCompletedAt is string && row.lastCompletedAt.size() <= 40;
+    }
+    function validResults(rows) {
+      return rows is map && rows.keys().hasOnly(caseIds())
+        && rows.size() <= 28
+        && (!('INC-0417' in rows) || validResult(rows['INC-0417']))
+        && (!('INC-0512' in rows) || validResult(rows['INC-0512']))
+        && (!('INC-0633' in rows) || validResult(rows['INC-0633']))
+        && (!('INC-0701' in rows) || validResult(rows['INC-0701']))
+        && (!('INC-0755' in rows) || validResult(rows['INC-0755']))
+        && (!('INC-0812' in rows) || validResult(rows['INC-0812']))
+        && (!('INC-0890' in rows) || validResult(rows['INC-0890']))
+        && (!('INC-0944' in rows) || validResult(rows['INC-0944']))
+        && (!('INC-1002' in rows) || validResult(rows['INC-1002']))
+        && (!('INC-1055' in rows) || validResult(rows['INC-1055']))
+        && (!('INC-1101' in rows) || validResult(rows['INC-1101']))
+        && (!('INC-1102' in rows) || validResult(rows['INC-1102']))
+        && (!('INC-1103' in rows) || validResult(rows['INC-1103']))
+        && (!('INC-1104' in rows) || validResult(rows['INC-1104']))
+        && (!('INC-1105' in rows) || validResult(rows['INC-1105']))
+        && (!('INC-1106' in rows) || validResult(rows['INC-1106']))
+        && (!('INC-1201' in rows) || validResult(rows['INC-1201']))
+        && (!('INC-1202' in rows) || validResult(rows['INC-1202']))
+        && (!('INC-1203' in rows) || validResult(rows['INC-1203']))
+        && (!('INC-1204' in rows) || validResult(rows['INC-1204']))
+        && (!('INC-1205' in rows) || validResult(rows['INC-1205']))
+        && (!('INC-1206' in rows) || validResult(rows['INC-1206']))
+        && (!('INC-1207' in rows) || validResult(rows['INC-1207']))
+        && (!('INC-1208' in rows) || validResult(rows['INC-1208']))
+        && (!('INC-1209' in rows) || validResult(rows['INC-1209']))
+        && (!('INC-1210' in rows) || validResult(rows['INC-1210']))
+        && (!('INC-1211' in rows) || validResult(rows['INC-1211']))
+        && (!('INC-1212' in rows) || validResult(rows['INC-1212']));
+    }
+    function validProgress(data) {
+      return data.keys().hasAll(['schemaVersion', 'results', 'completed', 'xp'])
+        && data.keys().hasOnly(['schemaVersion', 'results', 'completed', 'xp'])
+        && data.schemaVersion == 1
+        && validResults(data.results)
+        && data.completed is list
+        && data.completed.size() <= 28
+        && data.completed.hasOnly(caseIds())
+        && data.xp is int && data.xp >= 0 && data.xp <= 2000000;
+    }
     match /cybertraceUsers/{uid}/state/progress {
-      allow read: if request.auth != null && request.auth.uid == uid;
-      allow create, update: if request.auth != null && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(['schemaVersion', 'results', 'completed', 'xp'])
-        && request.resource.data.schemaVersion == 1
-        && request.resource.data.results is map
-        && request.resource.data.completed is list
-        && request.resource.data.completed.size() <= 100
-        && request.resource.data.xp is int
-        && request.resource.data.xp >= 0;
+      allow get: if owner(uid);
+      allow list: if false;
+      allow create, update: if owner(uid) && validProgress(request.resource.data);
       allow delete: if false;
     }
+    // Other collections stay denied in this standalone reference, but do not
+    // replace real production rules if your project has existing collections.
+    match /{document=**} { allow read, write: if false; }
   }
 }

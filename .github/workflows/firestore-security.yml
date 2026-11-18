@@ -1,0 +1,29 @@
+name: CyberTrace Firestore security rules
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  firestore-owner-boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci
+      - name: Install emulator tools for CI only
+        run: npm install --no-save --no-package-lock --no-audit --no-fund firebase-tools@15 @firebase/rules-unit-testing@5
+      - name: Test actual Firestore rules against the local emulator
+        run: ./node_modules/.bin/firebase emulators:exec --config security/firebase.cybertrace-emulator.json --project demo-cybertrace-progress --only firestore 'node --test tests/cybertrace-firestore.emulator.mjs'
