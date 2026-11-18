@@ -1,0 +1,19 @@
+// Deploy to cybertrace-48ab0 only after merging with the project's existing rules.
+// Do NOT replace production rules wholesale: preserve existing admin/case access.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /cybertraceUsers/{uid}/state/progress {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['schemaVersion', 'results', 'completed', 'xp'])
+        && request.resource.data.schemaVersion == 1
+        && request.resource.data.results is map
+        && request.resource.data.completed is list
+        && request.resource.data.completed.size() <= 100
+        && request.resource.data.xp is int
+        && request.resource.data.xp >= 0;
+      allow delete: if false;
+    }
+  }
+}

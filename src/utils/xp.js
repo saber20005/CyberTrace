@@ -71,6 +71,7 @@ export function addXP(amount) {
   const points = Number.isFinite(amount) ? Math.max(0, Math.round(amount)) : 0;
   const newXP = Math.min(Number.MAX_SAFE_INTEGER, previousXP + points);
   setXP(newXP);
+  if (typeof window !== "undefined") window.dispatchEvent(new Event("cybertrace-progress-changed"));
 
   const previousLevel = getLevelInfo(previousXP);
   const newLevel = getLevelInfo(newXP);
