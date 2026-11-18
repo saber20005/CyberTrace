@@ -58,7 +58,7 @@ export function startCloudSync(uid, onStatus) {
         if (!owner()) throw new Error("تغيّر الحساب أثناء المزامنة.");
         const snap = await tx.get(ref);
         const merged = mergeCloudProgress(snap.exists() ? snap.data() : {}, localSnapshot());
-        tx.set(ref, merged);
+        if (!snap.exists() || JSON.stringify(mergeCloudProgress(snap.data(), {})) !== JSON.stringify(merged)) tx.set(ref, merged);
       });
       if (active && owner()) onStatus("تم حفظ التقدم في حساب CyberTrace.");
     } catch (error) { if (active) onStatus("فشلت المزامنة: " + error.message); }
