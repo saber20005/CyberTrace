@@ -20,7 +20,6 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
   const [selectedDecision, setSelectedDecision] = useState(null);
   const [decisionChecked, setDecisionChecked] = useState(false);
   const [wrongEvidenceIds, setWrongEvidenceIds] = useState([]);
-  const [wrongDecisionIds, setWrongDecisionIds] = useState([]);
   const [awardInfo, setAwardInfo] = useState(null);
   const [resultInfo, setResultInfo] = useState(null);
   const [reportStatus, setReportStatus] = useState("");
@@ -34,7 +33,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
     shuffleArray(caseData.decisions)
   );
 
-  const investigationScore = Math.max(40, 100 - 10 * (wrongEvidenceIds.length + wrongDecisionIds.length));
+  const investigationScore = Math.max(40, 100 - 10 * (wrongEvidenceIds.length));
   const evidencePoints = selectedEvidence?.correct ? 30 : 10;
   const decisionPoints = selectedDecision?.points ?? 0;
   const totalScore = evidencePoints + decisionPoints;
@@ -71,17 +70,15 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
   };
 
   const confirmDecision = () => {
-    if (!selectedDecision) return;
-    if (selectedDecision.points !== 40) {
-      setWrongDecisionIds(ids => ids.includes(selectedDecision.id) ? ids : [...ids, selectedDecision.id]);
-      setDecisionChecked(true);
-      return;
-    }
+    if (!selectedDecision || decisionChecked) return;
+    // Decisions are graded by their canonical case points, including partial credit.
+    // Finalize the chosen action rather than forcing a perfect answer.
+    setDecisionChecked(true);
     completeInvestigation();
   };
 
   const completeInvestigation = () => {
-    if (awarded.current || !selectedEvidence?.correct || !evidenceChecked || selectedDecision?.points !== 40) return;
+    if (awarded.current || !selectedEvidence?.correct || !evidenceChecked || !selectedDecision || !Number.isInteger(selectedDecision.points) || selectedDecision.points < 0 || selectedDecision.points > 40) return;
     awarded.current = true;
     setAwardInfo(addXP(totalScore));
     setResultInfo(recordCaseResult(caseData.id, totalScore));
@@ -97,7 +94,6 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
     setSelectedDecision(null);
     setDecisionChecked(false);
     setWrongEvidenceIds([]);
-    setWrongDecisionIds([]);
     setAwardInfo(null);
     setResultInfo(null);
     setReportStatus("");
@@ -178,7 +174,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                   <span className="yellow">!</span> {caseData.evidenceQuestion}
                 </p>
 
-                <p className="inv-accuracy" role="status">دقة التحقيق: {investigationScore}/100 · كل خيار خاطئ مختلف −10 · الحد الأدنى 40</p>
+                <p className="inv-accuracy" role="status">دقة تحليل الأدلة: {investigationScore}/100 · كل خيار دليل خاطئ مختلف −10 · الحد الأدنى 40</p>
                 <div className="inv-options">
                   {evidenceOptions.map((opt) => (
                     <button
@@ -237,7 +233,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                   <span className="yellow">!</span> {caseData.decisionQuestion}
                 </p>
 
-                <p className="inv-accuracy" role="status">دقة التحقيق: {investigationScore}/100 · المحاولة متاحة حتى القرار الصحيح</p>
+                <p className="inv-accuracy" role="status">تقييم الإجراء: من 0 إلى 40 نقطة حسب جودة القرار · الاختيار نهائي لهذه المحاولة</p>
                 <div className="inv-options">
                   {decisionOptions.map((d) => (
                     <button
@@ -253,7 +249,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                   ))}
                 </div>
 
-                {decisionChecked && <p className="inv-feedback" role="status">✗ هذا ليس الإجراء الأفضل. راجع الأدلة واختر قرارًا آخر؛ لن تُخصم نقاط إضافية عند تكرار الخيار نفسه.</p>}
+
                 {selectedDecision && !decisionChecked && (
                   <button className="primary-button" onClick={confirmDecision}>
                     تنفيذ القرار <span>←</span>
@@ -270,7 +266,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
 
                 <div className="inv-score-box">
                   <span className="incident-label">النتيجة</span>
-                  <p>تقييم دقة التحقيق: {investigationScore} / 100 · {wrongEvidenceIds.length + wrongDecisionIds.length} خيارات خاطئة مختلفة</p>
+                  <p>تقييم دقة تحليل الأدلة: {investigationScore} / 100 · {wrongEvidenceIds.length} خيارات أدلة خاطئة مختلفة</p>
                   <strong>{totalScore} / 70 XP</strong>
                   <small>تم حل الحادثة {caseData.id}</small>
                 </div>
