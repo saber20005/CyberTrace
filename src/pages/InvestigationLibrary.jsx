@@ -82,6 +82,7 @@ function InvestigationLibrary({ cases, onStart, onHome, cloudSyncPanel }) {
           <div><h2 id="progress-title">رحلتك في التحقيق</h2><p>{completedCount === cases.length ? "أكملت المكتبة! يمكنك إعادة أي تحقيق أو بدء دورة عشوائية جديدة." : `بقيت ${cases.length - completedCount} قضية لتكمل مكتبة التدريب.`}</p></div>
           <div className="library-progress-meter"><span>{progress}% مكتمل</span><progress value={completedCount} max={cases.length || 1} aria-label="نسبة التحقيقات المكتملة" /></div>
           <p className="library-storage-note">تُحفظ نتائجك محليًا، ويمكنك تفعيل مزامنة CyberTrace السحابية من أعلى المكتبة لاستعادتها عبر الأجهزة.</p>
+          <p className="library-storage-note" role="note">نقاط XP ودرجات التحقيقات الحالية تقدّم تدريبي يُحتسب من المتصفح، وليس نتائج موثقة من خادم مستقل. لا تُستخدم لإثبات مهارة أو إصدار شهادة رسمية.</p>
         </section>
         <section className="learning-plan" aria-labelledby="learning-plan-title">
           <div className="library-section-title"><div><p className="library-eyebrow">تعلّم بخطوة واضحة</p><h2 id="learning-plan-title">ما التحقيق المناسب لك الآن؟</h2></div></div>
