@@ -33,3 +33,32 @@ test("endpoint rejects missing authorization and unsupported methods", async () 
   assert.equal((await request("GET")).code, 401);
   assert.equal((await request("POST")).code, 405);
 });
+
+test("rejects inconsistent signed Firebase token timestamps", async () => {
+  const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
+  const pem = publicKey.export({ type: "spki", format: "pem" });
+  const now = 1795000000000;
+  const sec = Math.floor(now / 1000);
+  const make = (overrides) => {
+    const h = Buffer.from(JSON.stringify({ alg: "RS256", kid: "timestamp-test" })).toString("base64url");
+    const claims = {
+      aud: "cybertrace-48ab0",
+      iss: "https://securetoken.google.com/cybertrace-48ab0",
+      sub: "uid1", iat: sec - 10, exp: sec + 60, auth_time: sec - 20, admin: true,
+      ...overrides,
+    };
+    const p = Buffer.from(JSON.stringify(claims)).toString("base64url");
+    return h + "." + p + "." + sign("RSA-SHA256", Buffer.from(h + "." + p), privateKey).toString("base64url");
+  };
+  const fetchCerts = async () => ({
+    ok: true,
+    json: async () => ({ "timestamp-test": pem }),
+    headers: { get: () => "max-age=60" },
+  });
+  await assert.rejects(verifyAdminToken(make({ auth_time: sec - 5 }), { now, fetchCerts }));
+  await assert.rejects(verifyAdminToken(make({ exp: sec - 11 }), { now, fetchCerts }));
+  assert.deepEqual(
+    await verifyAdminToken(make({}), { now, fetchCerts }),
+    { uid: "uid1", admin: true },
+  );
+});
