@@ -16,6 +16,7 @@ import { auth } from "./firebase";
 import { setProgressOwner, legacyProgressAvailable, importLegacyProgress } from "./utils/progressScope";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import logo from "./assets/logo.svg";
+import { startCloudSync, enableCloudSync, cloudSyncEnabled } from "./utils/cloudProgress";
 import { useBlackBox } from "./blackbox/useBlackBox";
 import BlackBoxAccountButton from "./blackbox/BlackBoxAccountButton";
 
@@ -38,6 +39,9 @@ function App() {
   const [user, setUser] = useState(null);
   const [authReady, setAuthReady] = useState(false);
   const [legacyNotice, setLegacyNotice] = useState(false);
+  const [syncStatus, setSyncStatus] = useState("");
+  const [syncEnabled, setSyncEnabled] = useState(false);
+  const [progressVersion, setProgressVersion] = useState(0);
   const initialVisitTracked = useRef(false);
   const { view, returnView } = route;
   const selectedCase = CASES.find(item => item.id === route.caseId);
@@ -46,12 +50,24 @@ function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setProgressOwner(firebaseUser?.uid ?? null);
+      setSyncEnabled(Boolean(firebaseUser && cloudSyncEnabled(firebaseUser.uid)));
       setUser(firebaseUser);
       setLegacyNotice(Boolean(firebaseUser && legacyProgressAvailable()));
       setAuthReady(true);
     });
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    const refresh = () => setProgressVersion(n => n + 1);
+    window.addEventListener("cybertrace-progress-synced", refresh);
+    return () => window.removeEventListener("cybertrace-progress-synced", refresh);
+  }, []);
+
+  useEffect(() => {
+    if (!user || !syncEnabled) return undefined;
+    return startCloudSync(user.uid, setSyncStatus);
+  }, [user, syncEnabled]);
 
   useEffect(() => {
     const initial = routeAtLocation();
@@ -109,7 +125,7 @@ function App() {
   }
 
   if (view === "library") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary key={user?.uid ?? "guest"} cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} /></Suspense>;
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary key={`${user?.uid ?? "guest"}:${progressVersion}`} cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} /></Suspense>;
   }
 
   if (view === "investigation" && selectedCase) {
@@ -157,6 +173,7 @@ function App() {
       </nav>
 
       <main>
+        {user && <section role="status" style={{margin:"1rem auto",padding:"1rem",maxWidth:900,border:"1px solid #4d728d",borderRadius:12}}><strong>مزامنة تقدم CyberTrace بين الأجهزة</strong><p>{syncEnabled ? (syncStatus || "جارٍ الاتصال بسجل حسابك...") : "تقدمك محفوظ على هذا الجهاز فقط. فعّل المزامنة إذا أردت استخدام الحساب نفسه على الهاتف والكمبيوتر. لا تُنقل نتائج BLACKBOX أو حسابات أخرى."}</p>{!syncEnabled && <button type="button" onClick={() => { try { enableCloudSync(user.uid); setSyncEnabled(true); } catch (error) { setSyncStatus(error.message); } }}>تفعيل مزامنة هذا الحساب</button>}</section>}
         {legacyNotice && <section role="status" style={{margin:"1rem auto",padding:"1rem",maxWidth:900,border:"1px solid #4d728d",borderRadius:12}}><p>توجد نتائج تدريب قديمة محفوظة على هذا المتصفح دون هوية حساب مؤكدة. لن تُنسب لأي حساب تلقائيًا. استوردها فقط إذا كانت تخص حسابك الحالي.</p><button type="button" onClick={() => { if (!window.confirm("هل تؤكد أن النتائج القديمة تخص حساب CyberTrace الحالي؟ لا يمكن التحقق من مالكها السابق.")) return; const ok=importLegacyProgress(); if (ok) { setLegacyNotice(false); window.location.reload(); } else window.alert("تعذّر الاستيراد، أو توجد نتائج مسبقًا لهذا الحساب. لم تُحذف البيانات القديمة."); }}>استيراد نتائجي القديمة لهذا الحساب</button><button type="button" onClick={() => setLegacyNotice(false)}>ليس الآن</button></section>}
         <section className="hero">
           <div className="hero-content">
