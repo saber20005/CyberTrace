@@ -18,6 +18,14 @@ export function describePage(route, cases = []) {
       noindex: false,
     };
   }
+  if (route?.view === "soc") {
+    return {
+      title: "مناوبة SOC التفاعلية | CyberTrace",
+      description: "تجربة مجانية قيد التطوير لتدريب فرز أربعة تنبيهات أمنية وقرارات الاستجابة وربط الأدلة. التقييم محلي وغير موثق.",
+      url: `${SITE_ORIGIN}/?view=soc`,
+      noindex: false,
+    };
+  }
   if (route?.view === "pro") {
     return {
       title: "CyberTrace × BLACKBOX Pro | قيد التطوير",
