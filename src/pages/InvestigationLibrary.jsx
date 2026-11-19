@@ -20,7 +20,7 @@ const suggestionLabels = {
   daily: "اقتراح اليوم",
 };
 
-function InvestigationLibrary({ cases, onStart, onHome, cloudSyncPanel }) {
+function InvestigationLibrary({ cases, onStart, onHome, onSoc, onPro, cloudSyncPanel }) {
   const [query, setQuery] = useState("");
   const [difficulty, setDifficulty] = useState("all");
   const [category, setCategory] = useState("all");
@@ -60,7 +60,7 @@ function InvestigationLibrary({ cases, onStart, onHome, cloudSyncPanel }) {
         <button className="logo logo-button" onClick={onHome} aria-label="CyberTrace — الرئيسية">
           <img src={logo} alt="" className="logo-mark" /><span>CyberTrace</span>
         </button>
-        <div className="nav-right"><XPBadge /><BlackBoxAccountButton /><button className="nav-button library-home" onClick={onHome}>الرئيسية <span aria-hidden="true">↗</span></button></div>
+        <div className="nav-right" role="group" aria-label="روابط التدريب والحساب" tabIndex={0}><button type="button" className="suite-nav-promo" onClick={onSoc}>مناوبات SOC</button><button type="button" className="suite-nav-promo" onClick={onPro}>Suite Pro</button><XPBadge /><BlackBoxAccountButton /><button type="button" className="nav-button library-home" onClick={onHome}>الرئيسية <span aria-hidden="true">↗</span></button></div>
       </header>
       <main className="library-shell">
         {cloudSyncPanel}
