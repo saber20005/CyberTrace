@@ -1,7 +1,8 @@
 // Repository structure check: no dependencies, no Firebase/Vercel credentials required.
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
-import { dirname, extname, join, relative, resolve, sep } from "node:path";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import process from "node:process";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const failures = [];
