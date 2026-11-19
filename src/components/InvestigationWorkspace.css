@@ -62,3 +62,14 @@
   .iw-notebook-footer button { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) { .iw-event { transition: none; } }
+
+/* Evidence comparison is deliberately non-scoring: chronological correlation alone is not proof. */
+.iw-correlation { margin-top: 12px; padding: 16px; border: 1px solid #385461; border-radius: 9px; background: #101c25; }
+.iw-compare-controls { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+.iw-compare-controls label { min-width: 0; display: grid; gap: 7px; color: #d6dce6; font-size: 12px; }
+.iw-compare-controls select { min-width: 0; width: 100%; background: #0a1117; color: #f3e8d9; border: 1px solid #486176; border-radius: 6px; padding: 11px 9px; font: inherit; font-size: 12px; }
+.iw-compare-controls select:focus-visible { outline: 2px solid #d5a56c; outline-offset: 3px; }
+.iw-compare-result { padding: 12px; border-inline-start: 3px solid #d5a56c; border-radius: 4px; background: #32271d; color: #f2dcc2; line-height: 1.85; font-size: 13px; }
+.iw-compare-result strong { color: #f5cc89; }
+.iw-compare-warning { color: #a9bbc9; font-size: 11px; line-height: 1.8; margin: 11px 0 0; }
+@media (max-width: 760px) { .iw-compare-controls { grid-template-columns: minmax(0,1fr); } }

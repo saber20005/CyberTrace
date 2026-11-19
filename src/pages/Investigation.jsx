@@ -11,7 +11,7 @@ import { useBlackBox } from "../blackbox/useBlackBox";
 import BlackBoxResult from "../blackbox/BlackBoxResult";
 import BlackBoxAccountButton from "../blackbox/BlackBoxAccountButton";
 import InvestigationWorkspace from "../components/InvestigationWorkspace";
-import { PILOT_CASE_ID } from "../data/investigationWorkspace";
+import { getWorkspaceCase } from "../data/investigationWorkspace";
 import "./Investigation.css";
 
 function Investigation({ caseData, onBack, onNext, backLabel = "العودة لمكتبة التحقيقات" }) {
@@ -28,7 +28,8 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
   const awarded = useRef(false);
   const details = getCaseDetails(caseData);
   const partner = getBlackBoxLearningLink(caseData.id);
-  const hasAdvancedWorkspace = caseData.id === PILOT_CASE_ID;
+  const workspace = getWorkspaceCase(caseData.id);
+  const hasAdvancedWorkspace = Boolean(workspace);
   const [evidenceOptions, setEvidenceOptions] = useState(() =>
     shuffleArray(caseData.evidenceOptions)
   );
@@ -152,7 +153,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                 </div>
 
                 <p className="inv-description">{caseData.brief}</p>
-                {hasAdvancedWorkspace && <p className="inv-accuracy">نسخة تجريبية: هذا التحقيق يتضمن مركز تحليل متقدمًا يضم 12 سجلًا متسلسلًا ودفتر فرضيات وأدلة قابلة للتثبيت. لن يغيّر ذلك نظام نقاطك الحالي.</p>}
+                {hasAdvancedWorkspace && <p className="inv-accuracy">هذا التحقيق يتضمن مركز تحليل متقدمًا يضم {workspace.events.length} سجلًا متسلسلًا ودفتر فرضيات ومقارنة بين الأدلة المثبّتة. يظل نظام نقاطك الحالي دون تغيير.</p>}
 
                 <button className="primary-button" onClick={() => setStep(1)}>
                   ابدأ التحليل <span>←</span>
