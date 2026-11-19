@@ -23,3 +23,23 @@
 .soc-learning-feedback p{font-size:12px;color:#c0dfd1;margin:7px 0;line-height:1.9}
 @media(max-width:850px){.soc-shift-cards{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.soc-shift-cards{grid-template-columns:1fr}.soc-switcher{padding:13px}.soc-score-breakdown{grid-template-columns:1fr 1fr}.soc-score-breakdown span:last-child{grid-column:1/-1}}
+
+
+/* SOC panels and decisions share CyberTrace touch targets and hierarchy. */
+.soc-page .soc-main { max-width: var(--ct-width); }
+.soc-page .soc-topbar { background: #131518f3; border-color: #574633; }
+.soc-page .soc-topbar nav button { min-height: 43px; border-radius: 9px; }
+.soc-page .soc-inbox,.soc-page .soc-workbench,.soc-page .soc-correlation,.soc-page .soc-report,.soc-page .soc-switcher { box-shadow: var(--ct-shadow); }
+.soc-page .soc-shift-card { min-height: 145px; }
+.soc-page .soc-alert { min-height: 100px; }
+.soc-page .soc-primary,.soc-page .soc-secondary { min-height: 47px; display: inline-flex; justify-content: center; align-items: center; text-align: center; }
+.soc-page .soc-actions label,.soc-page .soc-priorities label { min-height: 47px; }
+.soc-page .soc-evidence-viewport { scrollbar-width: thin; }
+@media(max-width:620px) {
+  .soc-page .soc-main { padding: 25px 15px 45px; }
+  .soc-page .soc-topbar { padding: 12px 15px; }
+  .soc-page .soc-shift-card { min-height: 0; }
+  .soc-page .soc-alert { min-height: 0; }
+  .soc-page .soc-report-actions { display: grid; grid-template-columns: minmax(0,1fr); }
+  .soc-page .soc-report-actions :is(button,a) { width: 100%; text-align: center; justify-content: center; }
+}
