@@ -18,6 +18,14 @@ export function describePage(route, cases = []) {
       noindex: false,
     };
   }
+  if (route?.view === "pro") {
+    return {
+      title: "CyberTrace × BLACKBOX Pro | قيد التطوير",
+      description: "رؤية مستقبلية لاشتراك موحد بين CyberTrace وBLACKBOX. لا توجد مدفوعات أو اشتراكات مفعّلة حاليًا.",
+      url: `${SITE_ORIGIN}/?view=pro`,
+      noindex: false,
+    };
+  }
   if (route?.view === "library") {
     const count = Array.isArray(cases) ? cases.length : 0;
     return {
