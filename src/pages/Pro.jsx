@@ -15,7 +15,7 @@ const currentFeatures = [
   "المزامنة القائمة وربط مهارات BLACKBOX الحالي",
 ];
 
-export default function Pro({ onHome, onLibrary, onSoc }) {
+export default function Pro({ onHome, onLibrary, onSoc, onVerify }) {
   return <div className="suite-pro-page" dir="rtl">
     <header className="suite-pro-nav">
       <button type="button" className="suite-pro-logo" onClick={onHome} aria-label="العودة إلى الرئيسية">
@@ -83,6 +83,7 @@ export default function Pro({ onHome, onLibrary, onSoc }) {
             <div className="suite-pro-coming" role="note">
               <strong>لم يبدأ البيع بعد</strong>
               <p>لا توجد مدفوعات أو تجربة اشتراك أو سعر نهائي أو صلاحيات Pro مفعّلة الآن.</p>
+              <button type="button" className="suite-pro-verify-link" onClick={onVerify}>اطّلع على محرك التقييم الخادمي قيد التجهيز ←</button>
             </div>
           </article>
         </div>
