@@ -1,15 +1,16 @@
-import { SOC_SHIFT_ID, SOC_ALERTS, SOC_PRIORITIES, SOC_LINK_CHOICES, SOC_SHIFT_MAX_SCORE } from "../data/socShift.js";
+import { SOC_SHIFT_ID } from "../data/socShift.js";
+import { getSocShift, SOC_PRIORITIES, socShiftMaxScore } from "../data/socShiftCatalog.js";
 import { progressKey } from "./progressScope.js";
 
 const MAX_NOTE_LENGTH = 350;
 const FALLBACK = () => ({ version: 1, responses: {}, correlationId: null });
-const alertIds = new Set(SOC_ALERTS.map(item => item.id));
 const priorityIds = new Set(SOC_PRIORITIES.map(item => item.id));
 
-export function normalizeSocSession(raw) {
+export function normalizeSocSession(raw, shiftId = SOC_SHIFT_ID) {
+  const shift = getSocShift(shiftId);
   if (!raw || typeof raw !== "object" || Array.isArray(raw) || raw.version !== 1) return FALLBACK();
   const responses = {};
-  for (const alert of SOC_ALERTS) {
+  for (const alert of shift.alerts) {
     const choice = raw.responses && typeof raw.responses === "object" ? raw.responses[alert.id] : null;
     if (!choice || !priorityIds.has(choice.priorityId) ||
         !alert.actions.some(action => action.id === choice.actionId)) continue;
@@ -19,37 +20,40 @@ export function normalizeSocSession(raw) {
       note: typeof choice.note === "string" ? choice.note.slice(0, MAX_NOTE_LENGTH) : "",
     };
   }
-  const complete = SOC_ALERTS.every(alert => Object.hasOwn(responses, alert.id));
+  const complete = shift.alerts.every(alert => Object.hasOwn(responses, alert.id));
   return {
     version: 1,
     responses,
-    correlationId: complete && SOC_LINK_CHOICES.some(row => row.id === raw.correlationId) ? raw.correlationId : null,
+    correlationId: complete && shift.links.some(row => row.id === raw.correlationId) ? raw.correlationId : null,
   };
 }
 
-export function commitSocAlert(current, alertId, priorityId, actionId, note = "") {
-  const currentState = normalizeSocSession(current);
-  const alert = SOC_ALERTS.find(row => row.id === alertId);
-  if (!alert || !alertIds.has(alertId) || !priorityIds.has(priorityId) ||
+export function commitSocAlert(current, alertId, priorityId, actionId, note = "", shiftId = SOC_SHIFT_ID) {
+  const shift = getSocShift(shiftId);
+  const currentState = normalizeSocSession(current, shift.id);
+  const alert = shift.alerts.find(row => row.id === alertId);
+  if (!alert || !priorityIds.has(priorityId) ||
       !alert.actions.some(action => action.id === actionId) ||
       Object.hasOwn(currentState.responses, alertId) || currentState.correlationId) return null;
   return normalizeSocSession({
     version: 1,
     responses: { ...currentState.responses, [alertId]: { priorityId, actionId, note } },
     correlationId: null,
-  });
+  }, shift.id);
 }
 
-export function finalizeSocShift(current, correlationId) {
-  const state = normalizeSocSession(current);
-  if (!SOC_ALERTS.every(row => Object.hasOwn(state.responses, row.id)) ||
-      state.correlationId || !SOC_LINK_CHOICES.some(choice => choice.id === correlationId)) return null;
-  return normalizeSocSession({ ...state, correlationId });
+export function finalizeSocShift(current, correlationId, shiftId = SOC_SHIFT_ID) {
+  const shift = getSocShift(shiftId);
+  const state = normalizeSocSession(current, shift.id);
+  if (!shift.alerts.every(row => Object.hasOwn(state.responses, row.id)) ||
+      state.correlationId || !shift.links.some(choice => choice.id === correlationId)) return null;
+  return normalizeSocSession({ ...state, correlationId }, shift.id);
 }
 
-export function gradeSocSession(input) {
-  const state = normalizeSocSession(input);
-  const assessments = SOC_ALERTS.map(alert => {
+export function gradeSocSession(input, shiftId = SOC_SHIFT_ID) {
+  const shift = getSocShift(shiftId);
+  const state = normalizeSocSession(input, shift.id);
+  const assessments = shift.alerts.map(alert => {
     const response = state.responses[alert.id];
     const chosenAction = alert.actions.find(action => action.id === response?.actionId);
     const priorityPoints = response?.priorityId === alert.priority ? 8 : 0;
@@ -66,56 +70,73 @@ export function gradeSocSession(input) {
       total: priorityPoints + (chosenAction?.points ?? 0),
     };
   });
-  const correlation = SOC_LINK_CHOICES.find(row => row.id === state.correlationId);
+  const correlation = shift.links.find(row => row.id === state.correlationId);
   const complete = assessments.every(row => row.complete) && Boolean(correlation);
   const score = complete ? assessments.reduce((sum, row) => sum + row.total, 0) + correlation.points : null;
+  const missedPriority = complete ? assessments.filter(row => row.priorityPoints === 0).length : 0;
+  const weakResponse = complete ? assessments.filter(row => row.actionPoints < 12).length : 0;
   return {
-    shiftId: SOC_SHIFT_ID,
-    complete, score, maxScore: SOC_SHIFT_MAX_SCORE,
+    shiftId: shift.id, complete, score, maxScore: socShiftMaxScore(shift),
     handled: assessments.filter(item => item.complete).length,
-    totalAlerts: SOC_ALERTS.length,
-    assessments,
+    totalAlerts: shift.alerts.length, assessments,
+    priorityScore: assessments.reduce((sum, row) => sum + row.priorityPoints, 0),
+    responseScore: assessments.reduce((sum, row) => sum + row.actionPoints, 0),
+    priorityMax: shift.alerts.length * 8,
+    responseMax: shift.alerts.length * 12,
     correlationPoints: correlation?.points ?? 0,
     correlationFeedback: correlation?.feedback ?? "",
+    coaching: !complete ? null : {
+      missedPriority,
+      weakResponse,
+      correlationNeedsWork: correlation.points !== 20,
+    },
     level: !complete ? null : score >= 85 ? "ممتاز" : score >= 65 ? "جيد" : "يحتاج مراجعة",
   };
 }
 
-export function socSessionKey() {
-  return progressKey("cybertrace_soc_shift:" + SOC_SHIFT_ID);
+// INC-01 keeps its exact preexisting storage key; each new level gets its own key.
+export function socSessionKey(shiftId = SOC_SHIFT_ID) {
+  const shift = getSocShift(shiftId);
+  return progressKey("cybertrace_soc_shift:" + shift.id);
 }
 
-export function loadSocSession(storage = globalThis.localStorage) {
+export function loadSocSession(storage = globalThis.localStorage, shiftId = SOC_SHIFT_ID) {
   try {
-    const raw = storage.getItem(socSessionKey());
-    return raw ? normalizeSocSession(JSON.parse(raw)) : FALLBACK();
+    const raw = storage.getItem(socSessionKey(shiftId));
+    return raw ? normalizeSocSession(JSON.parse(raw), shiftId) : FALLBACK();
   } catch {
     return FALLBACK();
   }
 }
 
-export function saveSocSession(session, storage = globalThis.localStorage) {
-  const cleaned = normalizeSocSession(session);
-  storage.setItem(socSessionKey(), JSON.stringify(cleaned));
+export function saveSocSession(session, storage = globalThis.localStorage, shiftId = SOC_SHIFT_ID) {
+  const cleaned = normalizeSocSession(session, shiftId);
+  storage.setItem(socSessionKey(shiftId), JSON.stringify(cleaned));
   return cleaned;
 }
 
-export function makeSocShiftReport(input) {
-  const state = normalizeSocSession(input);
-  const grade = gradeSocSession(state);
+export function makeSocShiftReport(input, shiftId = SOC_SHIFT_ID) {
+  const shift = getSocShift(shiftId);
+  const state = normalizeSocSession(input, shift.id);
+  const grade = gradeSocSession(state, shift.id);
   if (!grade.complete) return null;
   const lines = [
-    "# تقرير مناوبة SOC التدريبية — " + SOC_SHIFT_ID,
+    "# تقرير مناوبة SOC التدريبية — " + shift.id,
     "",
     "> محاكاة تعليمية. هذا التقرير ناتج محلي غير موثوق من خادم، وليس شهادة مهنية أو نتيجة رسمية أو تحقيقًا حقيقيًا.",
     "",
-    "## النتيجة",
-    grade.score + " / " + grade.maxScore + " — " + grade.level,
+    "## المناوبة",
+    shift.title + " — " + shift.level,
+    "",
+    "## النتيجة", grade.score + " / " + grade.maxScore + " — " + grade.level,
+    "الأولويات: " + grade.priorityScore + " / " + grade.priorityMax,
+    "الاستجابة: " + grade.responseScore + " / " + grade.responseMax,
+    "الارتباط: " + grade.correlationPoints + " / 20",
     "",
     "## تصنيف التنبيهات والإجراءات",
   ];
   for (const assessment of grade.assessments) {
-    const alert = SOC_ALERTS.find(row => row.id === assessment.id);
+    const alert = shift.alerts.find(row => row.id === assessment.id);
     const response = state.responses[alert.id];
     const action = alert.actions.find(row => row.id === response.actionId);
     lines.push(
@@ -128,10 +149,20 @@ export function makeSocShiftReport(input) {
       "ملاحظة المحلل: " + (response.note || "لم تُسجّل ملاحظة."),
     );
   }
-  const link = SOC_LINK_CHOICES.find(row => row.id === state.correlationId);
+  const link = shift.links.find(row => row.id === state.correlationId);
   lines.push("", "## ربط التنبيهات", link.label, link.feedback,
     "درجة الربط: " + link.points + " / 20",
+    "", "## خطة المراجعة الشخصية",
+    (grade.coaching.missedPriority
+      ? "راجع " + grade.coaching.missedPriority + " أخطاء في ترتيب الأولوية وفق خطر النشاط الفعلي."
+      : "ترتيب الأولويات في هذه المناوبة متسق مع السيناريو."),
+    (grade.coaching.weakResponse
+      ? "راجع " + grade.coaching.weakResponse + " إجراءات لم تحصل على الدرجة الكاملة، وافصل الاحتواء عن جمع الأدلة."
+      : "كل إجراءات الاستجابة حققت الدرجة الكاملة."),
+    (grade.coaching.correlationNeedsWork
+      ? "راجع العلاقة المحتملة بين الأحداث دون تحويلها إلى يقين غير مدعوم."
+      : "تمييز جيد بين الترابط والسببية."),
     "", "## متابعة تدريبية",
-    "أعد المناوبة عند الحاجة لتجربة ترتيب أولويات مختلف. لا تُمنح XP أو إيصالات BLACKBOX من هذه المحاكاة.");
+    "لا تُمنح XP أو إيصالات BLACKBOX من هذه المحاكاة. سجل كل مناوبة محلي ومنفصل عن بيانات التحقيقات السابقة.");
   return lines.join("\n");
 }
