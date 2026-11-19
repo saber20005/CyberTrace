@@ -9,6 +9,7 @@ import { getBlackBoxLearningLink, getShareURL } from "../utils/routes";
 import { trackEvent } from "../utils/analytics";
 import { buildLearningPlan } from "../utils/learningPlan";
 import BlackBoxAccountButton from "../blackbox/BlackBoxAccountButton";
+import { WORKSPACE_CASE_IDS } from "../data/investigationWorkspace.js";
 import "./InvestigationLibrary.css";
 
 const dateFormat = new Intl.DateTimeFormat("ar", { day: "numeric", month: "short", year: "numeric" });
@@ -135,7 +136,7 @@ function InvestigationLibrary({ cases, onStart, onHome, cloudSyncPanel }) {
                 <div className="case-card-top"><span className="case-category">{details.categoryLabel}</span><span className={`case-status ${isCompleted ? "is-complete" : ""}`}>{isCompleted ? "✓ مكتملة" : "جاهزة للتحقيق"}</span></div>
                 <div className="case-code"><span>{caseData.id}</span><span className={`case-difficulty difficulty-${details.difficulty}`}>{details.difficultyLabel}</span></div>
                 <h3>{details.title}</h3><p className="case-description">{caseData.brief}</p>
-                <div className="case-facts"><span>{caseData.evidenceOptions.length} خيارات للأدلة</span><span>حتى 70 XP</span>{caseData.id === "INC-0417" && <span className="iw-pilot-label">◆ مركز تحقيق متقدم · نسخة تجريبية</span>}</div>
+                <div className="case-facts"><span>{caseData.evidenceOptions.length} خيارات للأدلة</span><span>حتى 70 XP</span>{WORKSPACE_CASE_IDS.includes(caseData.id) && <span className="iw-pilot-label">◆ مركز تحقيق متقدم · تحليل الأدلة</span>}</div>
                 <div className="case-record">
                   {result ? <><dl><div><dt>أفضل نتيجة</dt><dd>{result.bestScore} / 70</dd></div><div><dt>آخر نتيجة</dt><dd>{result.lastScore} / 70</dd></div><div><dt>المحاولات</dt><dd>{result.attempts}</dd></div></dl><p>آخر إكمال: <time dateTime={result.lastCompletedAt}>{dateFormat.format(new Date(result.lastCompletedAt))}</time></p></> : <p>{isCompleted ? "مكتملة سابقًا. أعد التحقيق لتسجيل نتيجتك وتتبّع تحسّنك." : "حلّل السجلات، حدّد الدليل، ثم اتخذ قرارك."}</p>}
                 </div>
