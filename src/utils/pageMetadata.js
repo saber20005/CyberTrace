@@ -1,4 +1,5 @@
 import { getCaseDetails } from "../data/caseCatalog.js";
+import { getSocShift, isSocShiftId } from "../data/socShiftCatalog.js";
 
 export const SITE_ORIGIN = "https://cybertracelab.dev";
 const HOME_TITLE = "CyberTrace | منصة التحقيقات الأمنية";
@@ -19,10 +20,11 @@ export function describePage(route, cases = []) {
     };
   }
   if (route?.view === "soc") {
+    const shift = getSocShift(route.shiftId);
     return {
-      title: "مناوبة SOC التفاعلية | CyberTrace",
-      description: "تجربة مجانية قيد التطوير لتدريب فرز أربعة تنبيهات أمنية وقرارات الاستجابة وربط الأدلة. التقييم محلي وغير موثق.",
-      url: `${SITE_ORIGIN}/?view=soc`,
+      title: route.shiftId ? shift.title + " | CyberTrace" : "مناوبات SOC التفاعلية | CyberTrace",
+      description: "تجارب مجانية من ثلاثة مستويات لفرز تنبيهات أمنية وقرارات الاستجابة وربط الأدلة. التقييم محلي وغير موثق.",
+      url: `${SITE_ORIGIN}/?view=soc${isSocShiftId(route.shiftId) ? "&shift=" + route.shiftId : ""}`,
       noindex: false,
     };
   }
