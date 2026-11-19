@@ -28,6 +28,14 @@ export function describePage(route, cases = []) {
       noindex: false,
     };
   }
+  if (route?.view === "verified-soc") {
+    return {
+      title: "التقييم الخادمي SOC | قيد التجهيز | CyberTrace",
+      description: "واجهة اختبار لمحرك تصحيح مستقل يتطلب هوية BLACKBOX وApp Check، وليست خدمة نتائج موثقة منشورة بعد.",
+      url: `${SITE_ORIGIN}/?view=verified-soc`,
+      noindex: true,
+    };
+  }
   if (route?.view === "pro") {
     return {
       title: "CyberTrace × BLACKBOX Pro | قيد التطوير",
