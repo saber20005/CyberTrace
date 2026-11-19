@@ -617,7 +617,7 @@ footer p {
   .app .navbar .logo-button { justify-self: start; }
   .app .navbar .nav-links { display: none; }
   .app .navbar .nav-right {
-    display: flex; flex-wrap: nowrap; width: 100%; overflow-x: auto; overflow-y: hidden;
+    display: flex; flex-wrap: nowrap; justify-content: flex-start; direction: rtl; width: 100%; overflow-x: auto; overflow-y: hidden;
     gap: 7px; padding: 2px 1px 8px; scrollbar-width: thin; scrollbar-color: #95734b transparent;
     overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch;
   }
