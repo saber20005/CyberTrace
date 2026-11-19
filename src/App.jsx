@@ -193,10 +193,10 @@ function App() {
         <div className="nav-links">
           <a href="#about">عن المنصة</a>
           <a href="#how">كيف تعمل؟</a>
-          <button type="button" className="nav-button" onClick={() => navigate({ view: "pro" })}>Pro · قريبًا</button>
         </div>
 
         <div className="nav-right">
+          <button type="button" className="suite-nav-promo" onClick={() => navigate({ view: "pro" })}>Suite Pro · قريبًا</button>
           <XPBadge />
           <BlackBoxAccountButton />
           <button className="nav-library" onClick={goLibrary}>مكتبة التحقيقات</button>
