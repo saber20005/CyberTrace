@@ -36,6 +36,7 @@ test("sitewide tokens and responsive layouts cover all main training routes", ()
   assert(design.includes("prefers-reduced-motion"));
   assert(home.includes("ct-learning-hub"));
   assert(home.includes("overflow-x: auto"));
+  assert.match(home, /flex-wrap: nowrap; justify-content: flex-start; direction: rtl; width: 100%; overflow-x: auto;/);
   assert(home.includes("overscroll-behavior-x: contain"));
   assert(library.includes(".library-page .case-actions"));
   assert(library.includes(".library-page .library-filters"));
