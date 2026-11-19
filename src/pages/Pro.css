@@ -135,3 +135,7 @@
   .suite-pro-footer { justify-content: center; text-align: center; padding: 18px; }
 }
 @media (prefers-reduced-motion: reduce) { .suite-pro-page * { transition: none !important; animation: none !important; } }
+
+/* Future verification route is informative; not a subscription or an active grade. */
+.suite-pro-coming .suite-pro-verify-link{display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:43px;margin-top:11px;padding:9px 13px;background:#181d24;color:#e8caa3;border:1px solid #806446;border-radius:9px;font:700 12px/1.8 "Cairo",sans-serif;text-align:center}
+.suite-pro-coming .suite-pro-verify-link:hover{border-color:#e1b77e;background:#242932}
