@@ -4,6 +4,7 @@ const Auth = lazy(() => import("./pages/Auth"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Investigation = lazy(() => import("./pages/Investigation"));
 const InvestigationLibrary = lazy(() => import("./pages/InvestigationLibrary"));
+const Pro = lazy(() => import("./pages/Pro"));
 import XPBadge from "./components/XPBadge";
 import LoadingScreen from "./components/LoadingScreen";
 import { CASES } from "./data/cases";
@@ -161,6 +162,10 @@ function App() {
     return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل صفحة الحساب..." />}><Auth onBack={goHome} /></Suspense>;
   }
 
+  if (view === "pro") {
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل خطة CyberTrace × BLACKBOX Pro..." />}><Pro onHome={goHome} onLibrary={goLibrary} /></Suspense>;
+  }
+
   if (view === "library") {
     return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary key={`${user?.uid ?? "guest"}:${progressVersion}`} cloudSyncPanel={cloudSyncPanel} cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} /></Suspense>;
   }
@@ -191,6 +196,7 @@ function App() {
         </div>
 
         <div className="nav-right">
+          <button type="button" className="suite-nav-promo" onClick={() => navigate({ view: "pro" })}>Suite Pro · قريبًا</button>
           <XPBadge />
           <BlackBoxAccountButton />
           <button className="nav-library" onClick={goLibrary}>مكتبة التحقيقات</button>

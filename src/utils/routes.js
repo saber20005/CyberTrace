@@ -18,7 +18,7 @@ export function readRoute(value, cases = []) {
     return { view: "library" };
   }
   const views = params.getAll("view");
-  if (views.length === 1 && ["library", "auth"].includes(views[0])) return { view: views[0] };
+  if (views.length === 1 && ["library", "auth", "pro"].includes(views[0])) return { view: views[0] };
   return { view: "home" };
 }
 
@@ -27,7 +27,7 @@ export function createRouteURL(route, currentURL, { preserveHash = false } = {})
   const current = parseURL(currentURL);
   const next = new URL(route.view === "admin" ? "/admin" : "/", current.origin);
   if (route.view === "investigation" && route.caseId) next.searchParams.set("case", route.caseId);
-  else if (["library", "auth"].includes(route.view)) next.searchParams.set("view", route.view);
+  else if (["library", "auth", "pro"].includes(route.view)) next.searchParams.set("view", route.view);
   for (const key of CAMPAIGN_KEYS) {
     const value = current.searchParams.get(key)?.trim();
     if (value) next.searchParams.set(key, value.slice(0, 200));
