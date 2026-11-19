@@ -1,3 +1,4 @@
+import { isSocShiftId } from "../data/socShiftCatalog.js";
 export const SITE_ORIGIN = "https://cyber-trace-psi.vercel.app";
 const CAMPAIGN_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
 
@@ -18,7 +19,12 @@ export function readRoute(value, cases = []) {
     return { view: "library" };
   }
   const views = params.getAll("view");
-  if (views.length === 1 && ["library", "auth", "pro", "soc"].includes(views[0])) return { view: views[0] };
+  if (views.length === 1 && views[0] === "soc") {
+    const shift = params.getAll("shift");
+    return shift.length === 1 && isSocShiftId(shift[0])
+      ? { view: "soc", shiftId: shift[0] } : { view: "soc" };
+  }
+  if (views.length === 1 && ["library", "auth", "pro"].includes(views[0])) return { view: views[0] };
   return { view: "home" };
 }
 
@@ -28,6 +34,7 @@ export function createRouteURL(route, currentURL, { preserveHash = false } = {})
   const next = new URL(route.view === "admin" ? "/admin" : "/", current.origin);
   if (route.view === "investigation" && route.caseId) next.searchParams.set("case", route.caseId);
   else if (["library", "auth", "pro", "soc"].includes(route.view)) next.searchParams.set("view", route.view);
+  if (route.view === "soc" && isSocShiftId(route.shiftId)) next.searchParams.set("shift", route.shiftId);
   for (const key of CAMPAIGN_KEYS) {
     const value = current.searchParams.get(key)?.trim();
     if (value) next.searchParams.set(key, value.slice(0, 200));
