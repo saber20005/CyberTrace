@@ -7,7 +7,7 @@ const futureFeatures = [
   ["تطبيق عملي مع BLACKBOX", "الانتقال إلى تمارين متقدمة مكملة للتحقيقات."],
 ];
 
-export default function Pro({ onHome, onLibrary }) {
+export default function Pro({ onHome, onLibrary, onSoc }) {
   return <div className="suite-pro-page" dir="rtl">
     <nav className="suite-pro-nav" aria-label="التنقل">
       <button type="button" onClick={onHome}>CyberTrace</button>
@@ -26,10 +26,11 @@ export default function Pro({ onHome, onLibrary }) {
           <p>نحافظ على المحتوى والتقدّم والأدوات المجانية الحالية دون سحبها لإجبار المستخدم على الدفع.</p>
           <ul><li>مكتبة التحقيقات الحالية وXP</li><li>مركز التحقيق المتقدم المتاح حاليًا</li><li>تقدّم CyberTrace وربط BLACKBOX القائم</li><li>مسارات التدريب والتقارير المجانية</li></ul>
           <button type="button" onClick={onLibrary}>استكشف التحقيقات المجانية ←</button>
+          <button type="button" onClick={onSoc}>جرّب مناوبة SOC التدريبية ←</button>
         </article>
         <article className="suite-pro-card planned">
           <span>ميزات مخطط لها، لا تتوفر للبيع</span><h2>Suite Pro</h2>
-          <p>ستُطوّر الميزات الجديدة وتُختبر قبل اتخاذ قرار إطلاق الاشتراك أو تسعيره.</p>
+          <p>بدأت تجربة مناوبة SOC تعليمية مجانية؛ بقية الميزات المدفوعة وتقييمها الموثوق ما زالت قيد التطوير.</p>
           <ul>{futureFeatures.map(([title,detail]) => <li key={title}><strong>{title}</strong><small>{detail}</small></li>)}</ul>
           <p className="suite-pro-disclaimer">لا توجد مدفوعات أو تجربة اشتراك أو سعر نهائي أو صلاحيات Pro مفعّلة الآن.</p>
         </article>
