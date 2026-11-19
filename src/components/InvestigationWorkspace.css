@@ -73,3 +73,18 @@
 .iw-compare-result strong { color: #f5cc89; }
 .iw-compare-warning { color: #a9bbc9; font-size: 11px; line-height: 1.8; margin: 11px 0 0; }
 @media (max-width: 760px) { .iw-compare-controls { grid-template-columns: minmax(0,1fr); } }
+
+
+/* Evidence workspace: consistent data-panel spacing and phone-safe controls. */
+.iw-workspace { border-radius: 14px; }
+.iw-workspace .iw-timeline,.iw-workspace .iw-inspector,.iw-workspace .iw-notebook,.iw-workspace .iw-correlation { border-radius: 10px; }
+.iw-workspace .iw-pin-button,.iw-workspace .iw-notebook-footer button { min-height: 45px; border-radius: 9px; }
+.iw-workspace .iw-event { min-height: 53px; }
+.iw-workspace .iw-notebook select { min-height: 45px; }
+@media(max-width:600px) {
+  .iw-workspace { padding: 13px; }
+  .iw-workspace .iw-heading h2 { font-size: 21px; }
+  .iw-workspace .iw-grid { grid-template-columns: minmax(0,1fr); }
+  .iw-workspace .iw-pin-button { width: 100%; }
+  .iw-workspace .iw-filters button { min-height: 39px; }
+}

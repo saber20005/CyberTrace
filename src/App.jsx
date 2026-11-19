@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import "./App.css";
+import "./styles/design-system.css";
 const Auth = lazy(() => import("./pages/Auth"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Investigation = lazy(() => import("./pages/Investigation"));
@@ -171,7 +172,7 @@ function App() {
   }
 
   if (view === "library") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary key={`${user?.uid ?? "guest"}:${progressVersion}`} cloudSyncPanel={cloudSyncPanel} cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} /></Suspense>;
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary key={`${user?.uid ?? "guest"}:${progressVersion}`} cloudSyncPanel={cloudSyncPanel} cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} onSoc={() => navigate({ view: "soc" })} onPro={() => navigate({ view: "pro" })} /></Suspense>;
   }
 
   if (view === "investigation" && selectedCase) {
@@ -199,7 +200,7 @@ function App() {
           <a href="#how">كيف تعمل؟</a>
         </div>
 
-        <div className="nav-right">
+        <div className="nav-right" role="group" aria-label="الانتقال إلى التدريب والحساب" tabIndex={0}>
           <button type="button" className="suite-nav-promo" onClick={() => navigate({ view: "soc" })}>مناوبة SOC</button>
           <button type="button" className="suite-nav-promo" onClick={() => navigate({ view: "pro" })}>Suite Pro · قريبًا</button>
           <XPBadge />
@@ -318,6 +319,33 @@ function App() {
           </div>
         </section>
 
+        <section className="ct-learning-hub" aria-labelledby="ct-learning-hub-title">
+          <div className="ct-learning-hub-heading">
+            <span>اختر مسارك</span>
+            <h2 id="ct-learning-hub-title">التحقيق. الاستجابة. التطبيق.</h2>
+            <p>مسارات واضحة بدل التنقل بين صفحات منفصلة دون معرفة الخطوة التالية.</p>
+          </div>
+          <div className="ct-learning-hub-grid">
+            <article className="ct-learning-tile">
+              <span className="ct-tile-index">01 / INVESTIGATE</span>
+              <h3>مكتبة التحقيقات</h3>
+              <p>اختر حادثة، افحص الأدلة واتخذ قرار الاستجابة مع حفظ تقدمك المعتاد.</p>
+              <button type="button" onClick={goLibrary}>استكشف التحقيقات <span aria-hidden="true">←</span></button>
+            </article>
+            <article className="ct-learning-tile">
+              <span className="ct-tile-index">02 / RESPOND</span>
+              <h3>مناوبات SOC</h3>
+              <p>تدرّب على 3 مستويات من فرز التنبيهات وربط السجلات ومراجعة أخطاء القرار.</p>
+              <button type="button" onClick={() => navigate({ view: "soc" })}>ابدأ مناوبة مجانية <span aria-hidden="true">←</span></button>
+            </article>
+            <article className="ct-learning-tile">
+              <span className="ct-tile-index">03 / GROW</span>
+              <h3>CyberTrace × BLACKBOX</h3>
+              <p>تعرف على خطة التجربة الموحدة القادمة دون اشتراكات مدفوعة حاليًا.</p>
+              <button type="button" onClick={() => navigate({ view: "pro" })}>اطّلع على خارطة الطريق <span aria-hidden="true">←</span></button>
+            </article>
+          </div>
+        </section>
         <section className="features" id="about">
           <div className="section-heading">
             <span>01 — لماذا CyberTrace؟</span>

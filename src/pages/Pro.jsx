@@ -1,46 +1,116 @@
+import logo from "../assets/logo.svg";
 import "./Pro.css";
 
 const futureFeatures = [
-  ["مناوبات SOC موسعة بتقييم خادمي", "التوسع بمناوبات جديدة ونتائج موثوقة بعد تجهيز خدمة خادمية آمنة."],
-  ["تحقيقات متقدمة مترابطة", "ربط الأدلة والفرضيات عبر سيناريوهات جديدة منفصلة عن المحتوى المجاني."],
-  ["تقارير أداء موسّعة", "تقييم مهارات إضافي بعد توفير درجات موثوقة من الخادم."],
-  ["تطبيق عملي مع BLACKBOX", "الانتقال إلى تمارين متقدمة مكملة للتحقيقات."],
+  ["مناوبات SOC موسعة بتقييم خادمي", "مناوبات جديدة متعددة المراحل، مع تقييم يُتحقق منه على الخادم بعد إنجاز البنية الأمنية."],
+  ["تحقيقات متقدمة مترابطة", "سيناريوهات جديدة لربط الأحداث والأدلة والتحقيقات عبر مراحل متصلة."],
+  ["تقارير أداء موسّعة", "قراءة أعمق لمهارات التحليل والاستجابة بعد تأسيس نتائج موثوقة."],
+  ["تطبيق عملي مع BLACKBOX", "مسارات تدريب مكملة تربط تحليل الحادثة بالتجربة العملية في المختبر."],
+];
+
+const currentFeatures = [
+  "مكتبة التحقيقات الحالية والتقدم ونقاط XP",
+  "مركز التحقيق المتقدم وأدوات تحليل الأدلة",
+  "ثلاث مناوبات SOC تدريبية بمستويات مختلفة",
+  "المزامنة القائمة وربط مهارات BLACKBOX الحالي",
 ];
 
 export default function Pro({ onHome, onLibrary, onSoc }) {
   return <div className="suite-pro-page" dir="rtl">
-    <nav className="suite-pro-nav" aria-label="التنقل">
-      <button type="button" onClick={onHome}>CyberTrace</button>
-      <a href="https://blackboxlab.dev/pro.html" target="_blank" rel="noopener noreferrer">BLACKBOX Pro ↗</a>
-    </nav>
-    <main>
-      <section className="suite-pro-hero">
-        <span className="suite-pro-status">قيد التطوير · لا يوجد اشتراك مدفوع متاح الآن</span>
-        <p className="suite-pro-eyebrow">ONE JOURNEY. TWO LABS.</p>
-        <h1>CyberTrace <span>×</span> BLACKBOX <strong>Pro</strong></h1>
-        <p>نطوّر اشتراكًا واحدًا يربط التحقيق في الحوادث الأمنية بالتدريب العملي. ما تراه هنا خريطة منتج مستقبلية، وليست صفحة شراء.</p>
+    <header className="suite-pro-nav">
+      <button type="button" className="suite-pro-logo" onClick={onHome} aria-label="العودة إلى الرئيسية">
+        <img src={logo} alt="" />
+        <span>CyberTrace</span>
+      </button>
+      <nav className="suite-pro-nav-actions" aria-label="صفحات التدريب">
+        <button type="button" onClick={onLibrary}>التحقيقات</button>
+        <button type="button" onClick={onSoc}>مناوبات SOC</button>
+        <a href="https://blackboxlab.dev/pro.html" target="_blank" rel="noopener noreferrer">BLACKBOX ↗</a>
+      </nav>
+    </header>
+
+    <main className="suite-pro-main">
+      <section className="suite-pro-hero" aria-labelledby="suite-pro-title">
+        <span className="suite-pro-status"><span aria-hidden="true" className="suite-pro-status-dot" /> الاشتراك الموحّد قيد التطوير — لا يوجد دفع حاليًا</span>
+        <p className="suite-pro-eyebrow">CYBERTRACE × BLACKBOX / ONE LEARNING JOURNEY</p>
+        <h1 id="suite-pro-title">تحقيقات أعمق.<br /><span>تدريب عملي أقوى.</span></h1>
+        <p className="suite-pro-lead">نبني تجربة تجمع التحقيق في الحوادث الأمنية داخل CyberTrace مع المختبرات العملية في BLACKBOX، من دون إلغاء ما هو مجاني اليوم.</p>
+        <div className="suite-pro-hero-actions">
+          <button type="button" className="suite-pro-button suite-pro-button-primary" onClick={onSoc}>استكشف مناوبات SOC <span aria-hidden="true">←</span></button>
+          <button type="button" className="suite-pro-button suite-pro-button-outline" onClick={onLibrary}>تصفح مكتبة التحقيقات</button>
+        </div>
+        <p className="suite-pro-hero-note">التجربة الحالية مجانية · لا اشتراك ولا بطاقة دفع · الدرجات الحالية تدريبية وغير موثّقة خادميًا</p>
       </section>
-      <section className="suite-pro-grid" aria-label="المجاني والنسخة المستقبلية">
-        <article className="suite-pro-card">
-          <span>متاح حاليًا</span><h2>Free</h2>
-          <p>نحافظ على المحتوى والتقدّم والأدوات المجانية الحالية دون سحبها لإجبار المستخدم على الدفع.</p>
-          <ul><li>مكتبة التحقيقات الحالية وXP</li><li>مركز التحقيق المتقدم المتاح حاليًا</li><li>تقدّم CyberTrace وربط BLACKBOX القائم</li><li>مسارات التدريب والتقارير المجانية</li></ul>
-          <button type="button" onClick={onLibrary}>استكشف التحقيقات المجانية ←</button>
-          <button type="button" onClick={onSoc}>جرّب مناوبة SOC التدريبية ←</button>
-        </article>
-        <article className="suite-pro-card planned">
-          <span>ميزات مخطط لها، لا تتوفر للبيع</span><h2>Suite Pro</h2>
-          <p>أصبحت ثلاث مناوبات SOC تعليمية مجانية متاحة بمستويات مختلفة؛ بقية الميزات المدفوعة وتقييمها الموثوق ما زالت قيد التطوير.</p>
-          <ul>{futureFeatures.map(([title,detail]) => <li key={title}><strong>{title}</strong><small>{detail}</small></li>)}</ul>
-          <p className="suite-pro-disclaimer">لا توجد مدفوعات أو تجربة اشتراك أو سعر نهائي أو صلاحيات Pro مفعّلة الآن.</p>
-        </article>
+
+      <section className="suite-pro-plans" aria-labelledby="suite-pro-plans-title">
+        <div className="suite-pro-section-heading">
+          <div>
+            <span className="suite-pro-kicker">الخطة الحالية والمستقبلية</span>
+            <h2 id="suite-pro-plans-title">اختر ما تريد تعلمه، لا ما يجب عليك دفعه.</h2>
+          </div>
+          <p>التفريق واضح بين الأدوات المنشورة فعلًا والميزات التي ما زلنا نطوّرها.</p>
+        </div>
+
+        <div className="suite-pro-grid">
+          <article className="suite-pro-card suite-pro-free">
+            <div className="suite-pro-card-top">
+              <span className="suite-pro-plan-label">متاحة الآن</span>
+              <span className="suite-pro-plan-marker">FREE ACCESS</span>
+            </div>
+            <h3>Free</h3>
+            <p className="suite-pro-card-intro">تدريب حقيقي ومفيد دون قيود مدفوعة على المحتوى الحالي.</p>
+            <ul className="suite-pro-feature-list">{currentFeatures.map(feature => <li key={feature}>{feature}</li>)}</ul>
+            <div className="suite-pro-card-actions" aria-label="الخيارات المجانية">
+              <button type="button" className="suite-pro-button suite-pro-button-primary" onClick={onLibrary}>
+                <span>استكشف التحقيقات المجانية</span><span aria-hidden="true">←</span>
+              </button>
+              <button type="button" className="suite-pro-button suite-pro-button-secondary" onClick={onSoc}>
+                <span>جرّب مناوبة SOC التدريبية</span><span aria-hidden="true">←</span>
+              </button>
+            </div>
+          </article>
+
+          <article className="suite-pro-card suite-pro-planned">
+            <div className="suite-pro-card-top">
+              <span className="suite-pro-plan-label">قيد التطوير</span>
+              <span className="suite-pro-plan-marker">FUTURE RELEASE</span>
+            </div>
+            <h3>Suite <span>Pro</span></h3>
+            <p className="suite-pro-card-intro">ميزات جديدة أكثر عمقًا، وليست إقفالًا لميزات المستخدمين الحاليين.</p>
+            <ul className="suite-pro-feature-list suite-pro-planned-features">
+              {futureFeatures.map(([title, detail]) => <li key={title}><strong>{title}</strong><small>{detail}</small></li>)}
+            </ul>
+            <div className="suite-pro-coming" role="note">
+              <strong>لم يبدأ البيع بعد</strong>
+              <p>لا توجد مدفوعات أو تجربة اشتراك أو سعر نهائي أو صلاحيات Pro مفعّلة الآن.</p>
+            </div>
+          </article>
+        </div>
       </section>
+
+      <section className="suite-pro-journey" aria-labelledby="suite-journey-title">
+        <div>
+          <span className="suite-pro-kicker">من التحقيق إلى التطبيق</span>
+          <h2 id="suite-journey-title">رحلتك التعليمية بين المنصتين</h2>
+          <p>ابدأ بتحليل الأدلة، اختبر قراراتك في مناوبة SOC، ثم انتقل إلى مسارات BLACKBOX العملية. الروابط التعليمية متاحة الآن، لكن لا يوجد نظام اشتراكات مدفوعة مشترك بعد.</p>
+        </div>
+        <div className="suite-pro-journey-steps">
+          <div><span>01</span><strong>حلّل</strong><small>CyberTrace</small></div>
+          <div><span>02</span><strong>استجب</strong><small>SOC Shift</small></div>
+          <div><span>03</span><strong>طبّق</strong><small>BLACKBOX</small></div>
+        </div>
+      </section>
+
       <section className="suite-pro-safety">
-        <h2>اشتراك موحّد، دون خلط الحسابات</h2>
-        <p>يستخدم CyberTrace وBLACKBOX مشروعَي Firebase مستقلين. لن نستنتج أن حسابين متطابقان من البريد فقط. ستعتمد العضوية مستقبلًا على هوية BLACKBOX بعد تحقق آمن على الخادم؛ ولا تتغير بيانات التحقيقات والتقدّم والمزامنة الحالية.</p>
-        <a href="https://blackboxlab.dev/pro.html" target="_blank" rel="noopener noreferrer">اطّلع على التصور من BLACKBOX ↗</a>
+        <div className="suite-pro-safety-icon" aria-hidden="true">◇</div>
+        <div>
+          <h2>أمان الحسابات والتقدم أولًا</h2>
+          <p>يستخدم CyberTrace وBLACKBOX مشروعَي Firebase مستقلين؛ لذلك لا نعتمد على تطابق البريد لربط الحسابات. حقوق الاشتراك المستقبلية ستُراجع من الخادم، بينما تبقى بيانات المستخدمين وميزات التدريب المجانية كما هي.</p>
+          <a href="https://blackboxlab.dev/pro.html" target="_blank" rel="noopener noreferrer">اطّلع على الخطة في BLACKBOX <span aria-hidden="true">↗</span></a>
+        </div>
       </section>
     </main>
-    <footer>CyberTrace × BLACKBOX · بناء تدريجي قبل تفعيل الاشتراكات</footer>
+
+    <footer className="suite-pro-footer"><span>CyberTrace × BLACKBOX</span><span>تدريب عملي. قرارات أفضل. دون وعود مدفوعة مبكرة.</span></footer>
   </div>;
 }

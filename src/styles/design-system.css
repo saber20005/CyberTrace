@@ -1,0 +1,50 @@
+/* CyberTrace's shared interface tokens. No authentication, storage or scoring logic. */
+:root {
+  --ct-bg: #100f11;
+  --ct-bg-elevated: #18171b;
+  --ct-surface: #211d1b;
+  --ct-surface-deep: #11171d;
+  --ct-border: #493b32;
+  --ct-border-strong: #856546;
+  --ct-gold: #d5a56c;
+  --ct-gold-bright: #f0c68f;
+  --ct-fg: #f3e9de;
+  --ct-muted: #c6b8ab;
+  --ct-muted-blue: #b6c6d4;
+  --ct-radius: 14px;
+  --ct-radius-sm: 10px;
+  --ct-width: 1240px;
+  --ct-page-gutter: clamp(15px,4vw,46px);
+  --ct-shadow: 0 12px 36px #00000027;
+}
+html { scroll-padding-top: 94px; }
+body { overflow-x: clip; }
+#root { min-width: 0; }
+:where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) {
+  font-family: "Cairo", system-ui, sans-serif;
+  accent-color: var(--ct-gold);
+  color: var(--ct-fg);
+}
+:where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) :where(button,a,input,select,textarea,summary):focus-visible {
+  outline: 2px solid var(--ct-gold-bright);
+  outline-offset: 3px;
+}
+:where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) button:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+:where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) :where(p,li,h1,h2,h3,button,a) {
+  overflow-wrap: break-word;
+}
+:where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) :where(input,select,textarea) {
+  max-width: 100%;
+  font-family: inherit;
+}
+:where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) :where(pre,code) { overflow-wrap: anywhere; }
+@media(max-width:600px) {
+  html { scroll-padding-top: 130px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  html { scroll-behavior: auto; }
+  :where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) :where(button,a) { transition: none !important; }
+}

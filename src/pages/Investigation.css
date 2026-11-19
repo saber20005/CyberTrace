@@ -421,3 +421,30 @@
 
 .inv-accuracy{margin:14px 0 16px;padding:10px 14px;border:1px solid #765b3d;border-radius:8px;background:rgba(213,165,108,.07);color:#e0bd8e;font-size:12px;line-height:1.9}
 .inv-score-box p{margin:10px 0;color:#e0bd8e;font-size:13px;line-height:1.8}
+
+
+/* Consistent investigation controls and safe small-screen evidence presentation. */
+.inv-screen { padding-top: 23px; padding-bottom: 65px; }
+.inv-screen .inv-wrapper { max-width: 730px; }
+.inv-screen .inv-wrapper.iw-expanded { max-width: 1100px; }
+.inv-screen .inv-topbar { max-width: 1100px; margin-bottom: 20px; }
+.inv-screen .inv-card { border-radius: 15px; overflow: hidden; border-color: #594434; box-shadow: var(--ct-shadow); }
+.inv-screen .inv-progress { border-radius: 10px; overflow: hidden; background: #191b20; border-color: #564232; }
+.inv-screen .inv-progress-step { color: #c1b2a3; }
+.inv-screen .inv-progress-step.active { background: #30241c; color: #f1be7f; }
+.inv-screen .inv-body { min-width: 0; }
+.inv-screen .inv-option { border-radius: 9px; min-height: 47px; text-align: right; }
+.inv-screen .inv-actions { flex-wrap: wrap; align-items: stretch; gap: 11px; }
+.inv-screen .inv-actions :is(.primary-button,.secondary-button) { min-height: 47px; display: inline-flex; align-items: center; justify-content: center; text-align: center; line-height: 1.7; }
+.inv-screen .inv-back { border: 1px solid #5c4a3a; background: #211c1a; padding: 10px 13px; border-radius: 10px; color: #e8c69b; }
+.inv-screen .inv-back:hover { border-color: #d5a56c; }
+.inv-screen .inv-log { border-radius: 9px; }
+.inv-screen .inv-review { border-radius: 12px; }
+@media(max-width:600px) {
+  .inv-screen { padding: 15px 14px 44px; }
+  .inv-screen .inv-progress-step { padding: 10px 5px; font-size: 10px; }
+  .inv-screen .inv-body { padding: 18px 15px; }
+  .inv-screen .inv-title { font-size: 19px; }
+  .inv-screen .inv-actions :is(.primary-button,.secondary-button) { width: 100%; }
+  .inv-screen .inv-personal-record { grid-template-columns: minmax(0,1fr) minmax(0,1fr); padding: 12px; }
+}
