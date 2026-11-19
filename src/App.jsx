@@ -5,6 +5,7 @@ const Admin = lazy(() => import("./pages/Admin"));
 const Investigation = lazy(() => import("./pages/Investigation"));
 const InvestigationLibrary = lazy(() => import("./pages/InvestigationLibrary"));
 const Pro = lazy(() => import("./pages/Pro"));
+const SocShift = lazy(() => import("./pages/SocShift"));
 import XPBadge from "./components/XPBadge";
 import LoadingScreen from "./components/LoadingScreen";
 import { CASES } from "./data/cases";
@@ -162,8 +163,11 @@ function App() {
     return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل صفحة الحساب..." />}><Auth onBack={goHome} /></Suspense>;
   }
 
+  if (view === "soc") {
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح مناوبة SOC التدريبية..." />}><SocShift key={user?.uid ?? "guest"} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} /></Suspense>;
+  }
   if (view === "pro") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل خطة CyberTrace × BLACKBOX Pro..." />}><Pro onHome={goHome} onLibrary={goLibrary} /></Suspense>;
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل خطة CyberTrace × BLACKBOX Pro..." />}><Pro onHome={goHome} onLibrary={goLibrary} onSoc={() => navigate({ view: "soc" })} /></Suspense>;
   }
 
   if (view === "library") {
@@ -196,6 +200,7 @@ function App() {
         </div>
 
         <div className="nav-right">
+          <button type="button" className="suite-nav-promo" onClick={() => navigate({ view: "soc" })}>مناوبة SOC</button>
           <button type="button" className="suite-nav-promo" onClick={() => navigate({ view: "pro" })}>Suite Pro · قريبًا</button>
           <XPBadge />
           <BlackBoxAccountButton />
