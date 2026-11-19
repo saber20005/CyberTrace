@@ -229,3 +229,22 @@
   outline: 2px solid #d5a56c;
   outline-offset: 4px;
 }
+
+
+/* Authentication follows the same cards, button scale and mobile spacing. */
+.auth-screen { padding-top: 22px; background: radial-gradient(ellipse at 76% 0%,#6b422a1e,transparent 36%),#100f11; }
+.auth-screen .auth-topbar { max-width: 1040px; }
+.auth-screen .auth-back { border: 1px solid #604a38; background: #241e1b; color: #dfc19c; border-radius: 10px; padding: 9px 13px; }
+.auth-screen .auth-card { max-width: 455px; border-color: #5c4736; border-radius: 15px; overflow: hidden; box-shadow: var(--ct-shadow); }
+.auth-screen .auth-tabs { border-radius: 9px; overflow: hidden; }
+.auth-screen .auth-tabs button { min-height: 43px; color: #c9baaa; }
+.auth-screen .auth-tabs button.active { background: #32271d; color: #f4c78e; }
+.auth-screen .auth-form input { min-height: 46px; border-radius: 8px; border-color: #584738; }
+.auth-screen .auth-form input::placeholder { color: #9f8d7c; }
+.auth-screen .auth-submit { min-height: 49px; border-radius: 10px; }
+.auth-screen .auth-mode-link { min-height: 39px; }
+@media(max-width:600px) {
+  .auth-screen { padding: 15px 15px 37px; gap: 23px; }
+  .auth-screen .auth-card { max-width: 100%; margin-block: 28px auto; }
+  .auth-screen .auth-body { padding: 22px 18px; }
+}
