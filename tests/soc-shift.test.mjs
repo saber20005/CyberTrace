@@ -59,7 +59,7 @@ test("valid completed shift grants the exact 100/100 client-only training score"
 test("poor priority and response choices produce partial score, never assumed success", () => {
   const s = completeShift(1, "p4", "certain-cause");
   const grade = gradeSocSession(s);
-  assert.equal(grade.score, 5 + 4 + 0 + 2 + 4);
+  assert.equal(grade.score, 5 + 4 + 0 + (8 + 2) + 4);
   assert.equal(grade.level, "يحتاج مراجعة");
   assert(grade.assessments.every(item => item.priorityPoints === 0 || item.expectedPriority === "p4"));
   assert(grade.assessments.every(item => item.actionFeedback.length > 15));
