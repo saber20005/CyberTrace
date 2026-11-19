@@ -10,6 +10,8 @@ import { trackEvent } from "../utils/analytics";
 import { useBlackBox } from "../blackbox/useBlackBox";
 import BlackBoxResult from "../blackbox/BlackBoxResult";
 import BlackBoxAccountButton from "../blackbox/BlackBoxAccountButton";
+import InvestigationWorkspace from "../components/InvestigationWorkspace";
+import { PILOT_CASE_ID } from "../data/investigationWorkspace";
 import "./Investigation.css";
 
 function Investigation({ caseData, onBack, onNext, backLabel = "العودة لمكتبة التحقيقات" }) {
@@ -26,6 +28,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
   const awarded = useRef(false);
   const details = getCaseDetails(caseData);
   const partner = getBlackBoxLearningLink(caseData.id);
+  const hasAdvancedWorkspace = caseData.id === PILOT_CASE_ID;
   const [evidenceOptions, setEvidenceOptions] = useState(() =>
     shuffleArray(caseData.evidenceOptions)
   );
@@ -112,7 +115,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
         <div className="inv-topbar-actions"><BlackBoxAccountButton /><ShareLink url={getShareURL({ view: "investigation", caseId: caseData.id })} label="نسخ رابط هذا التحقيق" /></div>
       </header>
 
-      <div className="inv-wrapper">
+      <div className={`inv-wrapper ${hasAdvancedWorkspace && step === 1 ? "iw-expanded" : ""}`}>
         <nav className="inv-progress" aria-label="مراحل التحقيق">
           {["الحادثة", "الأدلة", "القرار", "النتيجة"].map((label, i) => (
             <div key={label} className={`inv-progress-step ${i <= step ? "active" : ""}`} aria-current={i === step ? "step" : undefined}>
@@ -149,6 +152,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                 </div>
 
                 <p className="inv-description">{caseData.brief}</p>
+                {hasAdvancedWorkspace && <p className="inv-accuracy">نسخة تجريبية: هذا التحقيق يتضمن مركز تحليل متقدمًا يضم 12 سجلًا متسلسلًا ودفتر فرضيات وأدلة قابلة للتثبيت. لن يغيّر ذلك نظام نقاطك الحالي.</p>}
 
                 <button className="primary-button" onClick={() => setStep(1)}>
                   ابدأ التحليل <span>←</span>
@@ -162,13 +166,13 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                   <span className="green">$</span> {caseData.logCommand}
                 </p>
 
-                <div className="inv-log">
+                {hasAdvancedWorkspace ? <InvestigationWorkspace caseId={caseData.id} /> : <div className="inv-log">
                   {caseData.logLines.map((line, i) => (
                     <p key={i} className="inv-log-line">
                       {line}
                     </p>
                   ))}
-                </div>
+                </div>}
 
                 <p className="inv-question">
                   <span className="yellow">!</span> {caseData.evidenceQuestion}
