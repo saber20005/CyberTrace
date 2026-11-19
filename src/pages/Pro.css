@@ -20,7 +20,7 @@
 .suite-pro-nav-actions :is(button,a) {
   display: inline-flex; align-items: center; justify-content: center; min-height: 40px;
   background: #211b1c; border: 1px solid #544638; padding: 8px 14px;
-  border-radius: 9px; color: #e8d1b5; font: 700 12px/1.5 inherit; text-decoration: none;
+  border-radius: 9px; color: #e8d1b5; font-family: inherit; font-size: 12px; font-weight: 700; line-height: 1.5; text-decoration: none;
 }
 .suite-pro-nav-actions :is(button,a):hover { border-color: var(--pro-gold); background: #31271f; }
 .suite-pro-main { width: min(1140px,calc(100% - 44px)); margin: 0 auto; padding: 56px 0 85px; }
