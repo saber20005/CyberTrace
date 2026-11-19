@@ -7,6 +7,7 @@ const Investigation = lazy(() => import("./pages/Investigation"));
 const InvestigationLibrary = lazy(() => import("./pages/InvestigationLibrary"));
 const Pro = lazy(() => import("./pages/Pro"));
 const SocShift = lazy(() => import("./pages/SocShift"));
+const VerifiedSoc = lazy(() => import("./pages/VerifiedSoc"));
 import XPBadge from "./components/XPBadge";
 import LoadingScreen from "./components/LoadingScreen";
 import { CASES } from "./data/cases";
@@ -167,8 +168,13 @@ function App() {
   if (view === "soc") {
     return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح مناوبة SOC التدريبية..." />}><SocShift key={`${user?.uid ?? "guest"}:${route.shiftId ?? "SOC-SHIFT-01"}`} shiftId={route.shiftId} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} onSelectShift={shiftId => navigate({ view: "soc", shiftId })} /></Suspense>;
   }
+  if (view === "verified-soc") {
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح واجهة التقييم الخادمي..." />}>
+      <VerifiedSoc key={blackBox.status.user?.uid ?? "guest"} onHome={goHome} onSoc={() => navigate({ view: "soc" })} onPro={() => navigate({ view: "pro" })} />
+    </Suspense>;
+  }
   if (view === "pro") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل خطة CyberTrace × BLACKBOX Pro..." />}><Pro onHome={goHome} onLibrary={goLibrary} onSoc={() => navigate({ view: "soc" })} /></Suspense>;
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل خطة CyberTrace × BLACKBOX Pro..." />}><Pro onHome={goHome} onLibrary={goLibrary} onSoc={() => navigate({ view: "soc" })} onVerify={() => navigate({ view: "verified-soc" })} /></Suspense>;
   }
 
   if (view === "library") {
