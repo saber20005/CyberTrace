@@ -164,7 +164,7 @@ function App() {
   }
 
   if (view === "soc") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح مناوبة SOC التدريبية..." />}><SocShift key={user?.uid ?? "guest"} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} /></Suspense>;
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح مناوبة SOC التدريبية..." />}><SocShift key={`${user?.uid ?? "guest"}:${route.shiftId ?? "SOC-SHIFT-01"}`} shiftId={route.shiftId} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} onSelectShift={shiftId => navigate({ view: "soc", shiftId })} /></Suspense>;
   }
   if (view === "pro") {
     return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل خطة CyberTrace × BLACKBOX Pro..." />}><Pro onHome={goHome} onLibrary={goLibrary} onSoc={() => navigate({ view: "soc" })} /></Suspense>;
