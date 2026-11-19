@@ -143,3 +143,39 @@
 .library-filters,.library-progress,.learning-skill-details{border-color:#493b32;border-radius:12px}
 .case-card:hover{border-color:#d5a56c;box-shadow:0 12px 30px #00000030}
 .library-filters input:focus-visible,.library-filters select:focus-visible{outline:2px solid #d5a56c;outline-offset:2px}
+
+
+/* Shared layout rhythm, readable filters and touch-friendly training cards. */
+.library-page .library-shell { width: min(var(--ct-width),calc(100% - 2 * var(--ct-page-gutter))); padding-top: 43px; padding-bottom: 78px; }
+.library-page .library-heading { margin-bottom: 25px; }
+.library-page .library-heading h1 { font-size: clamp(29px,4vw,48px); line-height: 1.5; }
+.library-page .library-stats { gap: 13px; }
+.library-page .library-stats article, .library-page .case-card, .library-page .learning-suggestion { border-color: var(--ct-border); border-radius: var(--ct-radius); background: linear-gradient(150deg,#211e1d,#171719); box-shadow: var(--ct-shadow); }
+.library-page .library-stats article { padding: 18px 20px; }
+.library-page .library-progress { border-radius: var(--ct-radius); margin-bottom: 42px; background: #231d1a; }
+.library-page .library-filters { border: 1px solid #574639; background: #1b1c20; border-radius: var(--ct-radius); }
+.library-page .library-filters :is(input,select) { border-radius: 8px; min-height: 45px; background: #13151a; color: #f0e3d7; border-color: #605044; }
+.library-page .case-card { min-width: 0; padding: 23px; }
+.library-page .case-card h3 { overflow-wrap: anywhere; }
+.library-page .case-description { line-height: 1.9; }
+.library-page .case-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; }
+.library-page .case-start { min-height: 46px; padding-inline: 15px; border-radius: 9px; justify-content: center; gap: 8px; }
+.library-page .library-random { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; font-size: 13px; }
+.library-page .library-storage-note { overflow-wrap: anywhere; }
+.library-page .learning-suggestion .case-start { min-height: 44px; }
+@media(max-width:800px) {
+  .library-page .library-shell { width: calc(100% - 30px); padding-top: 28px; }
+  .library-page .library-heading { gap: 17px; }
+  .library-page .library-progress { padding: 20px; }
+}
+@media(max-width:540px) {
+  .library-page .library-stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .library-page .library-stats article { padding: 15px; }
+  .library-page .library-stats strong { font-size: 26px; }
+  .library-page .library-progress { margin-bottom: 33px; }
+  .library-page .case-card { padding: 19px; }
+  .library-page .case-actions { display: grid; grid-template-columns: minmax(0,1fr); }
+  .library-page .case-start { width: 100%; }
+  .library-page .library-filters { padding: 15px; gap: 12px; }
+  .library-page .library-random { width: 100%; }
+}
