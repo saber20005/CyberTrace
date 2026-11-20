@@ -36,8 +36,8 @@ test("navigation retains bounded campaign data while dropping unrelated query st
 });
 
 test("shared links are canonical production links without personal or campaign query data", () => {
-  assert.equal(getShareURL({ view: "library" }), "https://cyber-trace-psi.vercel.app/?view=library");
-  assert.equal(getShareURL({ view: "investigation", caseId: "INC-1101" }), "https://cyber-trace-psi.vercel.app/?case=INC-1101");
+  assert.equal(getShareURL({ view: "library" }), "https://www.cybertracelab.dev/?view=library");
+  assert.equal(getShareURL({ view: "investigation", caseId: "INC-1101" }), "https://www.cybertracelab.dev/?case=INC-1101");
 });
 
 test("partner journeys use existing BlackBox track routes and explicit referral attribution", () => {
