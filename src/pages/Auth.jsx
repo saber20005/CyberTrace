@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./Auth.css";
 import BlackBoxAccountButton from "../blackbox/BlackBoxAccountButton";
+import { signInToCyberTraceWithGoogle, googleSignInErrorMessage } from "../utils/googleAuth";
 import { auth } from "../firebase";
 import {
   createUserWithEmailAndPassword,
@@ -93,6 +94,22 @@ function Auth({ onBack }) {
       setSuccess(true);
     } catch (err) {
       setError(ERROR_MESSAGES[err.code] || "حدث خطأ، حاول مرة أخرى");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    if (loading) return;
+    setError("");
+    setLoading(true);
+    try {
+      const user = await signInToCyberTraceWithGoogle(auth);
+      setDisplayName(user.displayName || user.email?.split("@")[0] || "");
+      setSuccess(true);
+    } catch (err) {
+      const message = googleSignInErrorMessage(err);
+      if (message) setError(message);
     } finally {
       setLoading(false);
     }
@@ -200,7 +217,7 @@ function Auth({ onBack }) {
                   </label>
                 )}
 
-                {error && <p className="auth-error">! {error}</p>}
+                {error && <p className="auth-error" role="alert">! {error}</p>}
 
                 <button
                   className="primary-button auth-submit"
@@ -211,6 +228,20 @@ function Auth({ onBack }) {
                   <span>←</span>
                 </button>
               </form>
+              {!isReset && <div className="auth-google-section">
+                <div className="auth-divider" aria-hidden="true"><span>أو</span></div>
+                <button
+                  type="button"
+                  className="auth-google-button"
+                  onClick={handleGoogleSignIn}
+                  disabled={loading}
+                  aria-label={isSignup ? "إنشاء حساب CyberTrace باستخدام Google" : "تسجيل الدخول إلى CyberTrace باستخدام Google"}
+                >
+                  <span className="auth-google-icon" aria-hidden="true">G</span>
+                  {loading ? "جارٍ الاتصال..." : isSignup ? "إنشاء حساب باستخدام Google" : "المتابعة باستخدام Google"}
+                </button>
+                <p className="auth-google-note">هذا الخيار يسجّلك في CyberTrace فقط. ربط حساب BLACKBOX خطوة منفصلة.</p>
+              </div>}
               {!isSignup && <button type="button" className="auth-mode-link" onClick={() => switchMode(isReset ? "login" : "reset")}>
                 {isReset ? "العودة إلى تسجيل الدخول" : "نسيت كلمة المرور؟"}
               </button>}
