@@ -1,5 +1,5 @@
 import { isSocShiftId } from "../data/socShiftCatalog.js";
-export const SITE_ORIGIN = "https://cyber-trace-psi.vercel.app";
+export const SITE_ORIGIN = "https://www.cybertracelab.dev";
 const CAMPAIGN_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
 
 function parseURL(value) {
