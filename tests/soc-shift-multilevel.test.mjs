@@ -144,7 +144,7 @@ test("level-specific links survive route parsing and strip garbage or personal d
   assert.deepEqual(readRoute("https://cybertracelab.dev/?view=soc&shift=invalid"),{view:"soc"});
   assert.deepEqual(readRoute("https://cybertracelab.dev/?view=soc&shift=SOC-SHIFT-02&shift=SOC-SHIFT-03"),{view:"soc"});
   for(const shift of SOC_SHIFTS) {
-    const url="https://cybertracelab.dev/?view=soc&shift="+shift.id;
+    const url="https://www.cybertracelab.dev/?view=soc&shift="+shift.id;
     assert.deepEqual(readRoute(url),{view:"soc",shiftId:shift.id});
     const generated=createRouteURL({view:"soc",shiftId:shift.id},"https://cybertracelab.dev/?email=private%40test.org&utm_source=ref");
     assert.equal(generated.searchParams.get("shift"),shift.id);
