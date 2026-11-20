@@ -133,7 +133,7 @@ test("public SOC route is clean, shareable and independent of subscription claim
   assert.equal(url.searchParams.has("email"), false);
   assert.equal(url.searchParams.get("utm_source"), "linkedin");
   const page = describePage({ view: "soc" }, CASES);
-  assert.equal(page.url, "https://cybertracelab.dev/?view=soc");
+  assert.equal(page.url, "https://www.cybertracelab.dev/?view=soc");
   assert(page.title.includes("SOC"));
   assert(page.description.includes("غير موثق"));
 });
