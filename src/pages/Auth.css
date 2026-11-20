@@ -248,3 +248,25 @@
   .auth-screen .auth-card { max-width: 100%; margin-block: 28px auto; }
   .auth-screen .auth-body { padding: 22px 18px; }
 }
+
+/* Google login is an alternative CyberTrace identity provider, not a BlackBox link. */
+.auth-google-section { margin-top: 17px; display: grid; gap: 12px; }
+.auth-divider { display: flex; align-items: center; gap: 12px; color: #baa99c; font-size: 12px; }
+.auth-divider::before, .auth-divider::after { content: ""; height: 1px; flex: 1; background: #584738; }
+.auth-google-button {
+  width: 100%; min-height: 48px; padding: 10px 16px;
+  border-radius: 10px; border: 1px solid #cbd5e1;
+  background: #f8fafc; color: #192439;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  cursor: pointer; font: inherit; font-size: 14px; font-weight: 700;
+  transition: background-color .18s, border-color .18s, box-shadow .18s;
+}
+.auth-google-button:hover:not(:disabled) { background: #eaf1f9; border-color: #93b5d6; }
+.auth-google-button:focus-visible { outline: 3px solid #62b4f0; outline-offset: 3px; }
+.auth-google-button:disabled { opacity: .65; cursor: progress; }
+.auth-google-icon { font: 800 19px/1 Arial, sans-serif; color: #4285f4; direction: ltr; }
+.auth-google-note { color: #b9a99e; font-size: 12px; line-height: 1.75; text-align: center; margin: 0; }
+@media (max-width: 600px) {
+  .auth-google-section { margin-top: 16px; }
+  .auth-google-button { min-height: 49px; }
+}
