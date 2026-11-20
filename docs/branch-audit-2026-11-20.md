@@ -8,9 +8,9 @@
 |---|---:|
 | `main` | 1 |
 | فروع طلبات دمج مكتملة `merged` | 40 |
-| فروع طلبات دمج مفتوحة `open` | 2 |
+| فروع طلبات دمج مفتوحة `open` | 3 |
 | فروع طلبات دمج مغلقة دون دمج `closed-unmerged` | 0 |
-| فروع دون PR مرتبط `unlinked` | 1 |
+| فروع دون PR مرتبط `unlinked` | 0 |
 | **المجموع** | **44** |
 
 ## فروع يجب الحفاظ عليها — طلبات دمج مفتوحة
@@ -18,13 +18,15 @@
 - `feature/firebase-admin-revocation-gate` — [PR #26](https://github.com/saber20005/CyberTrace/pull/26) open
 - `preview/electric-blue-identity` — [PR #19](https://github.com/saber20005/CyberTrace/pull/19) open
 
+- `chore/audit-old-branches` — [PR #43](https://github.com/saber20005/CyberTrace/pull/43) open (جرد الفروع الجاري)
+
 ## فروع يجب مراجعتها يدويًا — مغلقة دون دمج
 
 لا يوجد.
 
 ## فروع دون طلب دمج مرتبط
 
-- `chore/audit-old-branches`
+لا يوجد.
 
 ## مرشحات تنظيف — طلبات دمج أُنجزت
 
