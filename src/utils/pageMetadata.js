@@ -1,7 +1,7 @@
 import { getCaseDetails } from "../data/caseCatalog.js";
 import { getSocShift, isSocShiftId } from "../data/socShiftCatalog.js";
 
-export const SITE_ORIGIN = "https://cybertracelab.dev";
+export const SITE_ORIGIN = "https://www.cybertracelab.dev";
 const HOME_TITLE = "CyberTrace | منصة التحقيقات الأمنية";
 const HOME_DESCRIPTION = "CyberTrace منصة تدريب تفاعلية على التحقيق في الحوادث الأمنية وتحليل الأدلة الرقمية.";
 

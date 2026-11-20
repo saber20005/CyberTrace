@@ -5,6 +5,10 @@ import { CASES } from "../src/data/cases.js";
 import { getCaseDetails } from "../src/data/caseCatalog.js";
 import { describePage, applyPageMetadata, SITE_ORIGIN } from "../src/utils/pageMetadata.js";
 
+test("canonical origin matches the live Vercel www redirect destination", () => {
+  assert.equal(SITE_ORIGIN, "https://www.cybertracelab.dev");
+});
+
 test("metadata gives each known case an Arabic title and a stable production canonical", () => {
   for (const caseData of CASES) {
     const page = describePage({ view: "investigation", caseId: caseData.id, utm_source: "community" }, CASES);
@@ -40,9 +44,11 @@ test("sitemap contains exactly the real home, library and current case URLs", as
 
 test("static sharing tags provide a PNG card for crawlers that do not execute JavaScript", async () => {
   const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
-  assert(html.includes('property="og:image" content="https://cybertracelab.dev/social-preview.png"'));
+  assert(html.includes('property="og:image" content="https://www.cybertracelab.dev/social-preview.png"'));
   assert(html.includes('property="og:image:width" content="1200"'));
   assert(html.includes('property="og:image:height" content="630"'));
   assert(html.includes('name="twitter:card" content="summary_large_image"'));
-  assert(html.includes('rel="canonical" href="https://cybertracelab.dev/"'));
+  assert(html.includes('property="og:url" content="https://www.cybertracelab.dev/"'));
+  assert(html.includes('name="twitter:image" content="https://www.cybertracelab.dev/social-preview.png"'));
+  assert(html.includes('rel="canonical" href="https://www.cybertracelab.dev/"'));
 });

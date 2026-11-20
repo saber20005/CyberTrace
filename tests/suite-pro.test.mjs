@@ -13,7 +13,7 @@ test("Suite Pro is a public informational route with canonical metadata", () => 
   assert.equal(url.searchParams.has("email"), false);
   assert.equal(url.searchParams.get("utm_source"), "linkedin");
   const page = describePage({ view: "pro" }, CASES);
-  assert.equal(page.url, "https://cybertracelab.dev/?view=pro");
+  assert.equal(page.url, "https://www.cybertracelab.dev/?view=pro");
   assert.equal(page.noindex, false);
   assert(page.title.includes("BLACKBOX Pro"));
 });

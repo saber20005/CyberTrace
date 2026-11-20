@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://cybertracelab.dev/sitemap.xml
+Sitemap: https://www.cybertracelab.dev/sitemap.xml
