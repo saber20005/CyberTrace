@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import logo from "../assets/logo.svg";
 import blackBoxLogo from "../assets/joint-blackbox-cube.svg";
 import "./JointCertificatePreview.css";
@@ -10,6 +10,30 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
   const displayName = sampleName.trim() || "اسم المتدرّب";
   const viewportRef = useRef(null);
   const folioRef = useRef(null);
+  const stageRef = useRef(null);
+  const closeButtonRef = useRef(null);
+  const openButtonRef = useRef(null);
+  const [immersive, setImmersive] = useState(false);
+  const closeImmersive = () => {
+    setImmersive(false);
+    setZoomed(false);
+    openButtonRef.current?.focus();
+  };
+
+  useEffect(() => {
+    if (!immersive) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+    const onKeyDown = event => {
+      if (event.key === "Escape") closeImmersive();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [immersive]);
   const [zoomed, setZoomed] = useState(false);
   const [display, setDisplay] = useState({ scale: 1, height: 730 });
 
@@ -18,7 +42,9 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
     const folio = folioRef.current;
     if (!viewport || !folio) return undefined;
     const measure = () => {
-      const scale = zoomed ? 1 : Math.min(1, (viewport.clientWidth || 1120) / 1120);
+      const availableHeight = immersive ? (stageRef.current?.clientHeight || folio.offsetHeight) : folio.offsetHeight;
+      const scale = zoomed ? 1 : Math.min(1, (viewport.clientWidth || 1120) / 1120,
+        availableHeight / folio.offsetHeight);
       const height = Math.ceil(folio.offsetHeight * scale);
       setDisplay(previous => previous.scale === scale && previous.height === height
         ? previous : { scale, height });
@@ -26,10 +52,11 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
     const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
     observer?.observe(viewport);
     observer?.observe(folio);
+    if (stageRef.current) observer?.observe(stageRef.current);
     window.addEventListener("resize", measure);
     measure();
     return () => { observer?.disconnect(); window.removeEventListener("resize", measure); };
-  }, [zoomed, sampleName]);
+  }, [zoomed, sampleName, immersive]);
 
   return <div className="joint-preview-page" dir="rtl">
     <header className="joint-page-nav">
@@ -39,23 +66,40 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
     <main className="joint-preview-main">
       <section className="joint-preview-intro" aria-labelledby="joint-title">
         <span className="joint-kicker" dir="ltr">BLACKBOX LAB × CYBERTRACE / JOINT PATHWAY</span>
-        <h1 id="joint-title">الشهادة المشتركة — معاينة التصميم المعتمد</h1>
-        <p>معاينة تحاكي التصميم السينمائي المختار، وليست شهادة صادرة أو دليلًا على اجتياز تقييم.</p>
+        <h1 id="joint-title">معاينة الشهادة المشتركة</h1>
+        <p>التصميم المعتمد لـ BLACKBOX × CyberTrace، بدون إصدار أو توثيق فعلي.</p>
         <label className="joint-sample-label" htmlFor="joint-sample-name">جرّب عرض اسم على النموذج
           <input id="joint-sample-name" type="text" maxLength={70} autoComplete="off"
             value={sampleName} onChange={event => setSampleName(event.target.value)}
             placeholder="اسم المتدرّب (اختياري)" />
         </label>
-        <p className="joint-privacy-note">الاسم للعرض المؤقت فقط، ولا يُحفظ في الحساب أو يُرسل للخادم.</p>
-        <p className="joint-release-status" role="note"><strong>الإصدار غير متاح حاليًا.</strong> هذه معاينة فنية لا تمنح أي شهادة، ولا تدّعي تحقق نتائج BLACKBOX أو CyberTrace.</p>
+        <p className="joint-release-status" role="note"><strong>غير صادرة.</strong> الاسم تجريبي ولا يُحفظ، ولا توجد نتائج موثقة لهذه المعاينة.</p>
       </section>
       <div className="joint-preview-controls">
-        <p>الشهادة أفقية كما في التصميم المختار. على الهاتف يمكنك تكبيرها ثم تمريرها أفقيًا لقراءة التفاصيل.</p>
-        <button type="button" aria-pressed={zoomed} onClick={() => setZoomed(value => !value)}>
-          {zoomed ? "إظهار الشهادة كاملة" : "تكبير لقراءة التفاصيل"}
-        </button>
+        <p>الشهادة أفقية. للقراءة افتح العرض الكبير أو أدر هاتفك أفقيًا.</p>
+        <div className="joint-preview-actions">
+          <button ref={openButtonRef} className="joint-fullscreen-action" type="button"
+            onClick={() => { setImmersive(true); setZoomed(false); }}>
+            عرض الشهادة بملء الشاشة
+          </button>
+          <button type="button" aria-pressed={zoomed} onClick={() => setZoomed(value => !value)}>
+            {zoomed ? "إظهار الشهادة كاملة" : "تكبير لقراءة التفاصيل"}
+          </button>
+        </div>
       </div>
 
+      <div className={`joint-presentation-shell${immersive ? " is-immersive" : ""}`}
+        role={immersive ? "dialog" : undefined} aria-modal={immersive || undefined}
+        aria-label={immersive ? "عرض كبير للشهادة المشتركة" : undefined}>
+        {immersive && <div className="joint-immersive-toolbar">
+          <button ref={closeButtonRef} type="button" onClick={closeImmersive}
+            aria-label="إغلاق العرض الكبير">إغلاق ✕</button>
+          <span>أدر هاتفك أفقيًا للقراءة المريحة</span>
+          <button type="button" aria-pressed={zoomed} onClick={() => setZoomed(value => !value)}>
+            {zoomed ? "احتواء الصورة" : "تكبير"}
+          </button>
+        </div>}
+        <div className="joint-presentation-stage" ref={stageRef}>
       <div ref={viewportRef} className={`joint-folio-viewport${zoomed ? " is-zoomed" : ""}`}
         style={{ height: `${display.height}px`, "--joint-fit-scale": display.scale }}
         role="region"
@@ -114,11 +158,13 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
         </footer>
         <div className="joint-watermark" aria-hidden="true">نموذج غير صادر</div>
       </section>
+        </div>
       </div>
-      <div className="joint-preview-postnote" role="note">
-        <strong>متى نصدرها فعليًا؟</strong>
-        <p>بعد توثيق ملكية الحسابين، والتحقق من إنجازات مصححة على الخادم، وتوفير سجل إصدار قابل للإلغاء والتحقق بموافقة المستخدم. لا تُصدر الشهادة بناءً على بيانات المتصفح أو نقاط XP وحدها.</p>
       </div>
+      <details className="joint-preview-postnote">
+        <summary>ما شروط إصدار الشهادة الفعلية؟</summary>
+        <p>توثيق ملكية الحسابين، وتقييم نتائج التدريب على الخادم، ثم توفير سجل إصدار قابل للإلغاء والتحقق بموافقة المستخدم. لا تكفي نتائج المتصفح أو نقاط XP وحدها.</p>
+      </details>
     </main>
   </div>;
 }
