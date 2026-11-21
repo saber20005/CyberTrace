@@ -10,6 +10,7 @@ test("all public case links resolve the intended case without relying on a previ
   assert.deepEqual(readRoute("https://example.test/?view=library", CASES), { view: "library" });
   assert.deepEqual(readRoute("https://example.test/?view=auth", CASES), { view: "auth" });
   assert.deepEqual(readRoute("https://example.test/?view=certificates", CASES), { view: "certificates" });
+  assert.deepEqual(readRoute("https://example.test/?view=joint-certificate", CASES), { view: "joint-certificate" });
   assert.deepEqual(readRoute("https://example.test/?case=INC-1101&view=library", CASES), { view: "investigation", caseId: "INC-1101" });
 });
 
@@ -39,6 +40,7 @@ test("navigation retains bounded campaign data while dropping unrelated query st
 test("shared links are canonical production links without personal or campaign query data", () => {
   assert.equal(getShareURL({ view: "library" }), "https://www.cybertracelab.dev/?view=library");
   assert.equal(getShareURL({ view: "certificates" }), "https://www.cybertracelab.dev/?view=certificates");
+  assert.equal(getShareURL({ view: "joint-certificate" }), "https://www.cybertracelab.dev/?view=joint-certificate");
   assert.equal(getShareURL({ view: "investigation", caseId: "INC-1101" }), "https://www.cybertracelab.dev/?case=INC-1101");
 });
 
