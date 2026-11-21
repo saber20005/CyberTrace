@@ -68,3 +68,30 @@ test("personal certificate pages and route hooks remain separate from this non-i
   assert(app.includes('view === "joint-certificate"'));
   assert(app.includes('onCertificates={() => navigate({ view: "certificates" })}'));
 });
+
+test("both owner-supplied original logos replace embedded symbols at four positions each", async () => {
+  const page = await readFile(pageUrl, "utf8");
+  const css = await readFile(cssUrl, "utf8");
+  const bb = await readFile(new URL("../src/assets/blackbox-original-brand.webp", import.meta.url));
+  const ct = await readFile(new URL("../src/assets/cybertrace-original-brand.webp", import.meta.url));
+  for (const asset of [bb, ct]) {
+    assert.equal(asset.toString("ascii", 0, 4), "RIFF");
+    assert.equal(asset.toString("ascii", 8, 12), "WEBP");
+  }
+  assert(page.includes('import blackBoxOriginal from "../assets/blackbox-original-brand.webp"'));
+  assert(page.includes('import cyberTraceOriginal from "../assets/cybertrace-original-brand.webp"'));
+  assert.equal((page.match(/src={blackBoxOriginal}/g) || []).length, 4);
+  assert.equal((page.match(/src={cyberTraceOriginal}/g) || []).length, 4);
+  assert(page.includes('className="joint-brand-swaps"'));
+  for (const side of ["bb", "ct"]) {
+    for (const place of ["header", "crest", "milestone", "medallion"]) {
+      assert(css.includes(`.joint-swap-${side}-${place}{`));
+      assert(page.includes(`joint-swap-${side}-${place}`));
+    }
+  }
+  assert(page.includes("joint-template-qr-placeholder"));
+  assert(page.includes("التحقق غير متاح"));
+  assert(!page.includes("3 / 3"));
+  assert(!page.includes("CT-BB-"));
+  assert(!/setDoc\(|addDoc\(|window\.print\(/.test(page));
+});
