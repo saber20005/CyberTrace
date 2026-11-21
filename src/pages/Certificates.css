@@ -1,0 +1,44 @@
+.ct-certificate-page{min-height:100vh;background:radial-gradient(circle at 82% 4%,#15364b,transparent 38%),#07121f;color:#e9f4fc}
+.ct-cert-nav{max-width:1100px;padding:22px;margin:auto;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.ct-cert-nav nav{display:flex;gap:12px;flex-wrap:wrap}
+.ct-cert-nav button{display:flex;align-items:center;gap:9px;color:#e8f5fc;background:#11283a;border:1px solid #3c6c87;border-radius:10px;padding:9px 13px;cursor:pointer;font:inherit}
+.ct-cert-nav img{width:31px;height:31px}
+.ct-cert-main{max-width:1100px;margin:auto;padding:20px 22px 65px}
+.ct-cert-eyebrow{color:#65c9ed;font-size:12px;letter-spacing:.15em}
+.ct-cert-intro h1{font-size:clamp(29px,4vw,44px);margin:8px 0}
+.ct-cert-intro>p{max-width:860px;line-height:1.85;color:#bed3e2}
+.ct-cert-intro>.ct-cert-warning{background:#13384a;color:#e8f4fa;padding:14px;border-inline-start:4px solid #59c3e7}
+.ct-cert-layout{display:grid;grid-template-columns:minmax(255px,330px) minmax(0,1fr);gap:24px;margin-top:25px;align-items:start}
+.ct-cert-controls{background:#102438;border:1px solid #385e75;border-radius:15px;padding:22px;display:grid;gap:15px}
+.ct-cert-controls h2,.ct-cert-controls h3{margin:0}
+.ct-cert-controls label{display:grid;gap:8px;font-weight:700}
+.ct-cert-controls select,.ct-cert-controls input{width:100%;box-sizing:border-box;min-width:0;background:#081a2a;color:#e6f4ff;border:1px solid #63869a;border-radius:8px;font:inherit;padding:11px}
+.ct-cert-controls :is(select,input):focus-visible,.ct-cert-nav button:focus-visible,.ct-cert-action:focus-visible{outline:3px solid #56c6ed;outline-offset:3px}
+.ct-cert-small{font-size:13px;line-height:1.7;color:#acc7d7;margin:0}
+.ct-cert-action{font:inherit;font-weight:800;color:#082030;background:#60c9ed;border:0;border-radius:9px;padding:14px;cursor:pointer}
+.ct-cert-action:disabled{opacity:.48;cursor:not-allowed}
+.ct-cert-upcoming{border-top:1px solid #416178;padding-top:13px;color:#cedee8;font-size:14px}
+.ct-cert-upcoming p{line-height:1.75}
+.ct-cert-display{min-width:0}
+.ct-cert-display>h2{font-size:20px;margin:0 0 15px}
+.ct-cert-empty{border:1px dashed #577b97;border-radius:13px;padding:60px 20px;text-align:center;color:#a9c8d9}
+.ct-cert-paper{position:relative;overflow:hidden;box-sizing:border-box;border:8px double #1d4e74;background:white;color:#152e44;min-height:400px;padding:clamp(22px,4vw,45px);text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;box-shadow:0 12px 42px #0006}
+.ct-cert-paper p{line-height:1.65;margin:0}
+.ct-cert-monogram{position:absolute;top:12px;left:22px;font-size:54px;font-weight:900;color:#1d4e741f}
+.ct-cert-brand{letter-spacing:.19em;color:#215b80;font-weight:800}
+.ct-cert-eng{letter-spacing:.12em;color:#627b91;font-size:12px}
+.ct-cert-paper h2{font-size:clamp(26px,3vw,36px);color:#123851;margin:0}
+.ct-cert-paper h3{font-size:clamp(19px,2.5vw,26px);color:#245676;margin:0}
+.ct-cert-name{font-size:clamp(23px,3vw,34px);overflow-wrap:anywhere;max-width:100%;unicode-bidi:plaintext}
+.ct-cert-detail{font-size:13px;color:#496278}
+.ct-cert-paper .ct-cert-disclaimer{border:1px solid #ac6666;background:#fff4f4;color:#742f2f;padding:13px;margin-top:12px;max-width:95%;font-size:13px}
+@media(max-width:760px){.ct-cert-layout{grid-template-columns:1fr}.ct-cert-paper{min-height:380px}}
+@page{size:A4 landscape;margin:12mm}
+@media print{
+  html,body,#root{margin:0!important;padding:0!important;background:white!important;color:#152e44!important}
+  .ct-certificate-page{background:white!important;color:#152e44!important;min-height:0!important}
+  .ct-cert-nav,.ct-cert-screen,.ct-cert-intro,.ct-cert-controls{display:none!important}
+  .ct-cert-main,.ct-cert-layout,.ct-cert-display{padding:0!important;margin:0!important;max-width:none!important;display:block!important;width:100%!important}
+  .ct-cert-paper{box-shadow:none!important;min-height:170mm;border-width:5px!important;break-inside:avoid;color:#152e44!important;background:white!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .ct-cert-paper .ct-cert-disclaimer{color:#742f2f!important;background:#fff4f4!important}
+}
