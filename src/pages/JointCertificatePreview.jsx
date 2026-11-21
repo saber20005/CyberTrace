@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import logo from "../assets/logo.svg";
 import blackBoxLogo from "../assets/joint-blackbox-cube.svg";
 import "./JointCertificatePreview.css";
@@ -14,11 +14,11 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
   const closeButtonRef = useRef(null);
   const openButtonRef = useRef(null);
   const [immersive, setImmersive] = useState(false);
-  const closeImmersive = () => {
+  const closeImmersive = useCallback(() => {
     setImmersive(false);
     setZoomed(false);
     openButtonRef.current?.focus();
-  };
+  }, []);
 
   useEffect(() => {
     if (!immersive) return undefined;
@@ -33,7 +33,7 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previousOverflow;
     };
-  }, [immersive]);
+  }, [immersive, closeImmersive]);
   const [zoomed, setZoomed] = useState(false);
   const [display, setDisplay] = useState({ scale: 1, height: 730 });
 
