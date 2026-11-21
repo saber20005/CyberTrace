@@ -54,7 +54,6 @@
 .joint-folio>[class^="joint-template"]{position:absolute;z-index:2;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.2;box-sizing:border-box}
 .joint-template-name{left:25%;width:50%;top:41.6%;height:9.1%;color:#ffde9f;font-weight:900;font-size:44px;text-shadow:0 3px 10px #000d}
 .joint-template-name span{overflow-wrap:anywhere;unicode-bidi:plaintext;max-width:95%;max-height:100%;overflow:hidden}
-.joint-template-preview-en{left:23%;width:54%;top:58.6%;height:8%;padding:0 10px;color:#d7e0e9;text-shadow:0 1px 5px #000;font:600 16px/1.5 system-ui,sans-serif}
 .joint-template-score{height:5.1%;top:72.5%;width:9.5%;font:900 34px/1 system-ui,sans-serif;color:#fff;direction:ltr;text-shadow:0 1px 4px #000}
 .joint-template-score-bb{left:31.5%}
 .joint-template-score-ct{left:64.5%}
