@@ -45,8 +45,10 @@ export function startCloudSync(uid, onStatus) {
       await runTransaction(db, async tx => {
         if (!active || !owner()) throw new Error("تغيّر الحساب أثناء المزامنة.");
         const snap = await tx.get(ref);
-        const merged = mergeCloudProgress(snap.exists() ? snap.data() : {}, localSnapshot());
-        if (needsCloudWrite(snap.exists(), snap.exists() ? snap.data() : null, localSnapshot())) tx.set(ref, merged);
+        const latestLocal = localSnapshot();
+        const remote = snap.exists() ? snap.data() : null;
+        const merged = mergeCloudProgress(remote ?? {}, latestLocal);
+        if (needsCloudWrite(snap.exists(), remote, latestLocal)) tx.set(ref, merged);
       });
       if (active && owner()) onStatus("تم التحقق من تقدم CyberTrace وحفظه في حسابك.");
       return active && owner();
