@@ -158,7 +158,8 @@ function App() {
     trackStart(next, source);
   };
 
-  if (!authReady) return <LoadingScreen message="جارٍ التحقق من حساب التدريب..." />;
+  // Public credential authenticity lookup must not require a Firebase login.
+  if (!authReady && view !== "verify-certificate") return <LoadingScreen message="جارٍ التحقق من حساب التدريب..." />;
 
   if (view === "admin") {
     return <Suspense fallback={<LoadingScreen inline message="جارٍ التحقق من صلاحيات الإدارة..." />}><Admin user={user} onHome={goHome} /></Suspense>;
