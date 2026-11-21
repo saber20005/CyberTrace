@@ -10,7 +10,7 @@ const Certificates = lazy(() => import("./pages/Certificates"));
 const JointCertificatePreview = lazy(() => import("./pages/JointCertificatePreview"));
 const SocShift = lazy(() => import("./pages/SocShift"));
 const VerifiedSoc = lazy(() => import("./pages/VerifiedSoc"));
-import XPBadge from "./components/XPBadge";
+import HomeNavbar from "./components/HomeNavbar";
 import LoadingScreen from "./components/LoadingScreen";
 import { CASES } from "./data/cases";
 import { pickRandomCase } from "./utils/caseProgress";
@@ -24,7 +24,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import logo from "./assets/logo.svg";
 import { startCloudSync, enableCloudSync, cloudSyncEnabled } from "./utils/cloudProgress";
 import { useBlackBox } from "./blackbox/useBlackBox";
-import BlackBoxAccountButton from "./blackbox/BlackBoxAccountButton";
+
 import QuickDock from "./components/QuickDock";
 
 function routeAtLocation() {
@@ -202,38 +202,15 @@ function App() {
 
   return (
     <div className="app" dir="rtl">
-      <nav className="navbar">
-        <button className="logo logo-button" onClick={goHome} aria-label="CyberTrace — الرئيسية">
-          <img src={logo} alt="CyberTrace" className="logo-mark" />
-          <span>CyberTrace</span>
-        </button>
-
-        <div className="nav-links">
-          <a href="#about">عن المنصة</a>
-          <a href="#how">كيف تعمل؟</a>
-        </div>
-
-        <div className="nav-right" role="group" aria-label="الانتقال إلى التدريب والحساب" tabIndex={0}>
-          <button type="button" className="suite-nav-promo" onClick={() => navigate({ view: "soc" })}>مناوبة SOC</button>
-          <button type="button" className="suite-nav-promo" onClick={() => navigate({ view: "certificates" })}>شهاداتي</button>
-          <button type="button" className="suite-nav-promo" onClick={() => navigate({ view: "pro" })}>Suite Pro · قريبًا</button>
-          <XPBadge />
-          <BlackBoxAccountButton />
-          <button className="nav-library" onClick={goLibrary}>مكتبة التحقيقات</button>
-          {user ? (
-            <div className="nav-user">
-              <span>مرحبًا، {user.displayName || user.email.split("@")[0]}</span>
-              <button className="nav-logout" onClick={handleLogout}>
-                خروج
-              </button>
-            </div>
-          ) : (
-            <button className="nav-button" onClick={() => navigate({ view: "auth" })}>
-              تسجيل الدخول
-            </button>
-          )}
-        </div>
-      </nav>
+      <HomeNavbar user={user} onHome={goHome} onLibrary={goLibrary}
+        onSoc={() => navigate({ view: "soc" })}
+        onCertificates={() => navigate({ view: "certificates" })}
+        onPro={() => navigate({ view: "pro" })}
+        onAuth={() => navigate({ view: "auth" })}
+        onLogout={handleLogout}
+        onBlackBoxLink={blackBox.openLink}
+        blackBoxEnabled={blackBox.status.enabled}
+        blackBoxConnected={Boolean(blackBox.status.user)} />
 
       <main>
         {cloudSyncPanel}
