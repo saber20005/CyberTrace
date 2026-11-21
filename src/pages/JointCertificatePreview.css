@@ -16,7 +16,7 @@
 .joint-folio{
   --joint-gold:#bf965f;--joint-blue:#3988ff;
   position:relative;isolation:isolate;overflow:hidden;box-sizing:border-box;
-  width:100%;margin:0 auto;max-width:1120px;min-height:660px;
+  width:1120px;min-width:1120px;max-width:none;margin:0;min-height:660px;
   background:
     radial-gradient(ellipse at 8% 28%,#0b65ba3c,transparent 36%),
     radial-gradient(ellipse at 91% 25%,#a36b1933,transparent 39%),
@@ -90,32 +90,25 @@
 .joint-preview-postnote{max-width:1120px;margin:28px auto 0;padding:19px 24px;border:1px solid #506181;border-radius:12px;background:#111d31}
 .joint-preview-postnote strong{color:#f5cb8c}
 .joint-preview-postnote p{color:#cbd5e5;line-height:1.9;margin:7px 0 0}
+
+/* An A4 landscape sheet must remain landscape on phones. Fit whole sheet first;
+   optional full-size horizontal panning keeps its text legible. */
+.joint-preview-controls{max-width:1120px;margin:12px auto 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.joint-preview-controls p{color:#cdd7e8;font-size:12px;line-height:1.7;margin:0}
+.joint-preview-controls button{font:inherit;font-weight:800;white-space:nowrap;color:#09182d;background:#e9bb72;border:1px solid #f2c98e;border-radius:9px;padding:9px 13px;cursor:pointer}
+.joint-preview-controls button:focus-visible{outline:3px solid #f0c787;outline-offset:3px}
+.joint-folio-viewport{position:relative;direction:ltr;margin:0 auto;max-width:1120px;width:100%;overflow:hidden;isolation:isolate}
+.joint-folio-viewport:not(.is-zoomed) .joint-folio{
+  position:absolute;top:0;left:0;transform:scale(var(--joint-fit-scale,1));transform-origin:top left
+}
+.joint-folio-viewport.is-zoomed{overflow-x:auto;overflow-y:hidden;height:auto!important;overscroll-behavior-x:contain}
+.joint-folio-viewport.is-zoomed .joint-folio{position:relative;transform:none}
+.joint-folio-viewport.is-zoomed:focus-visible{outline:3px solid #e9bb72;outline-offset:3px}
 @media(max-width:680px){
   .joint-preview-main{padding:6px 11px 50px}
   .joint-page-nav{padding:16px 12px}
-  .joint-brand-bar{padding:17px 15px 10px;grid-template-columns:minmax(0,1fr) 17px minmax(0,1fr);gap:6px}
-  .joint-brand{gap:5px}
-  .joint-brand img{width:35px;height:35px;padding:2px}
-  .joint-brand strong{font-size:clamp(11px,3vw,16px)}
-  .joint-brand small{font-size:7px;line-height:1.25}
-  .joint-brand-bridge{font-size:18px}
-  .joint-folio-body{padding:7px 17px 20px}
-  .joint-seal{height:78px;width:78px;margin-top:8px}
-  .joint-seal img{width:28px;height:28px}
-  .joint-seal b{font-size:16px}
-  .joint-pillars{grid-template-columns:1fr;gap:9px}
-  .joint-pillars>div{grid-template-columns:44px minmax(0,1fr);padding:10px 12px}
-  .joint-reference-fields{gap:7px 13px}
-  .joint-folio-footer strong{font-size:11px}
-  .joint-folio-footer span{font-size:10px}
-  .joint-watermark{font-size:clamp(30px,7vw,55px)}
-}
-@media(max-width:400px){
-  .joint-brand img{width:31px;height:31px}
-  .joint-brand strong{font-size:11px}
-  .joint-brand small{display:none}
-  .joint-honoree-placeholder{min-width:100%}
-  .joint-reference-fields{display:grid;gap:6px}
+  .joint-preview-controls{flex-direction:column;align-items:stretch}
+  .joint-preview-controls button{align-self:flex-start}
 }
 @page{size:A4 landscape;margin:12mm}
 @media print{
@@ -123,6 +116,16 @@
   .joint-preview-page{background:white!important;min-height:0!important}
   .joint-page-nav,.joint-preview-intro,.joint-preview-postnote{display:none!important}
   .joint-preview-main{padding:0!important;margin:0!important;max-width:none!important}
+  .joint-preview-controls{display:none!important}
+  .joint-folio-viewport,.joint-folio-viewport.is-zoomed{
+    height:auto!important;width:100%!important;max-width:none!important;
+    overflow:visible!important;margin:0!important
+  }
+  .joint-folio-viewport .joint-folio{
+    position:relative!important;top:auto!important;left:auto!important;
+    width:100%!important;min-width:0!important;max-width:none!important;
+    transform:none!important
+  }
   .joint-folio{
     min-height:174mm!important;max-width:none!important;box-shadow:none!important;
     border:2px solid #bf965f!important;break-inside:avoid!important;
