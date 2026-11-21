@@ -22,6 +22,6 @@ test("printable records disclose no certification, numbers or fake verification"
   assert(page.includes("window.print()"));
   assert(page.includes("لا رقم شهادة · لا رمز QR · لا توقيع رقمي"));
   assert(page.includes("validLearnerName(name)"));
-  assert(!/setDoc\\(|addDoc\\(|verify\\?id=/.test(page));
+  assert(!page.includes("setDoc(") && !page.includes("addDoc(") && !page.includes("verify?id="));
   assert(DRAFT_NOTICE.includes("غير موثّقة"));
 });
