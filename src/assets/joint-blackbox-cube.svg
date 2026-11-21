@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="BLACKBOX Lab — مكعب تصميم الشهادة المشتركة">
+<defs>
+<linearGradient id="top" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#71e9ff"/><stop offset="1" stop-color="#1e93ff"/></linearGradient>
+<linearGradient id="front" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1689ee"/><stop offset="1" stop-color="#003f9d"/></linearGradient>
+<linearGradient id="side" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d2f7ff"/><stop offset="1" stop-color="#6b94b8"/></linearGradient>
+</defs>
+<path d="M50 6 91 28v45L50 95 9 73V28z" fill="#091527" stroke="#62dcff" stroke-width="2"/>
+<path d="M50 9 88 30 50 51 12 30z" fill="url(#top)" stroke="#d7faff" stroke-width="1.6"/>
+<path d="M12 32 49 54v37L12 71z" fill="url(#front)"/>
+<path d="M51 54 88 32v39L51 91z" fill="url(#side)"/>
+<path d="m27 31 22 12 22-12M49 43v20" stroke="#051d35" stroke-width="6" fill="none" stroke-linecap="square"/>
+<path d="m12 30 38 21 38-21M50 51v42" stroke="#7ddfff" stroke-width="2" fill="none"/>
+</svg>
