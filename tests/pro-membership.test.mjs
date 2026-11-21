@@ -35,7 +35,7 @@ test("no browser check may grant Pro, create a membership, or identify owner by 
   assert.match(backend,/getAuth\(app\)\.currentUser\?\.uid !== uid/);
   assert.match(backend,/getFunctions\(app, "us-central1"\), "getSuiteMembership"/);
   assert.match(backend,/ReCaptchaEnterpriseProvider/);
-  assert.match(backend,/requireConnectedBlackBox\(uid\);\n  return parseSuiteMembership/);
+  assert.match(backend,/requireConnectedBlackBox\(uid\);\n\s+return parseSuiteMembership/);
   assert.doesNotMatch(backend,/setDoc\(|updateDoc\(|signInWithEmailAndPassword|email ===/);
   assert.match(panel,/key=\{uid \?\? "unlinked"\}/);
   assert.match(page,/لا توجد مدفوعات|لا يوجد دفع/);
