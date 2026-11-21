@@ -25,3 +25,16 @@ test("printable records disclose no certification, numbers or fake verification"
   assert(!page.includes("setDoc(") && !page.includes("addDoc(") && !page.includes("verify?id="));
   assert(DRAFT_NOTICE.includes("غير موثّقة"));
 });
+
+test("CyberTrace uses its own forensic gold brand and explicit printable facts", async () => {
+  const page = await readFile(new URL("../src/pages/Certificates.jsx", import.meta.url), "utf8");
+  const css = await readFile(new URL("../src/pages/Certificates.css", import.meta.url), "utf8");
+  assert(page.includes("ct-cert-paper-brand"));
+  assert(page.includes("src={logo}"));
+  assert(page.includes("ct-cert-facts"));
+  assert(page.includes('dir="ltr">{chosen.score} / 70'));
+  assert(!page.includes("BLACKBOX LAB"));
+  assert(css.includes("#d5a56c"));
+  assert(css.includes("@media print"));
+  assert(css.includes("print-color-adjust:exact"));
+});
