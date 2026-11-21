@@ -9,6 +9,12 @@ test("canonical origin matches the live Vercel www redirect destination", () => 
   assert.equal(SITE_ORIGIN, "https://www.cybertracelab.dev");
 });
 
+test("personal certificate records are excluded from search indexes", () => {
+  const page = describePage({ view: "certificates" }, CASES);
+  assert.equal(page.noindex, true);
+  assert.equal(page.url, `${SITE_ORIGIN}/?view=certificates`);
+});
+
 test("metadata gives each known case an Arabic title and a stable production canonical", () => {
   for (const caseData of CASES) {
     const page = describePage({ view: "investigation", caseId: caseData.id, utm_source: "community" }, CASES);
