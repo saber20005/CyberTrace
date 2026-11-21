@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import approvedArt from "../assets/joint-certificate-approved.webp";
+import blackBoxOriginal from "../assets/blackbox-original-brand.webp";
+import cyberTraceOriginal from "../assets/cybertrace-original-brand.webp";
 import "./JointCertificatePreview.css";
 
 // Approved reference is displayed directly, not approximated with CSS.
@@ -108,6 +110,18 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
         aria-label="معاينة التصميم الأصلي للشهادة المشتركة دون إصدار أو توثيق">
         <img src={approvedArt} className="joint-approved-image" alt=""
           draggable="false" />
+        {/* Exact original logos supplied by the owner. They replace the old cube
+            and stylized fingerprint embedded in the approved unsigned artwork. */}
+        <div className="joint-brand-swaps" aria-hidden="true">
+          <span className="joint-brand-swap joint-swap-bb-header"><img src={blackBoxOriginal} alt="" /></span>
+          <span className="joint-brand-swap joint-swap-ct-header"><img src={cyberTraceOriginal} alt="" /></span>
+          <span className="joint-brand-swap joint-swap-bb-crest"><img src={blackBoxOriginal} alt="" /></span>
+          <span className="joint-brand-swap joint-swap-ct-crest"><img src={cyberTraceOriginal} alt="" /></span>
+          <span className="joint-brand-swap joint-swap-bb-milestone"><img src={blackBoxOriginal} alt="" /></span>
+          <span className="joint-brand-swap joint-swap-ct-milestone"><img src={cyberTraceOriginal} alt="" /></span>
+          <span className="joint-brand-swap joint-swap-bb-medallion"><img src={blackBoxOriginal} alt="" /></span>
+          <span className="joint-brand-swap joint-swap-ct-medallion"><img src={cyberTraceOriginal} alt="" /></span>
+        </div>
         <div className="joint-template-name" aria-label="الاسم التجريبي">
           <span>{displayName}</span>
         </div>

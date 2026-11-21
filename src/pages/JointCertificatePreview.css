@@ -26,6 +26,31 @@
 .joint-folio-viewport.is-zoomed:focus-visible{outline:3px solid #edc27c;outline-offset:3px}
 .joint-folio{box-sizing:border-box;position:relative;direction:rtl;overflow:hidden;width:1120px;min-width:1120px;max-width:none;height:747px;margin:0;color:#ffdfa6;background:#061323;border:0;box-shadow:0 0 0 1px #d5ac6a,0 18px 60px #000a}
 .joint-approved-image{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:fill;user-select:none;pointer-events:none}
+
+/* All eight brand marks use the supplied original logo artwork, not the
+   previous cube or a recreated vector. Placement is relative to the same
+   1536×1024 approved composition so scaling and A4 printing stay aligned. */
+.joint-brand-swaps{position:absolute;inset:0;z-index:1;pointer-events:none}
+.joint-brand-swap{
+  position:absolute;display:block;overflow:hidden;
+  background:#070f20;border-radius:13%;isolation:isolate;
+  box-shadow:0 0 8px #040d1d75
+}
+.joint-brand-swap img{
+  position:absolute;left:50%;top:50%;
+  width:172%;height:172%;max-width:none;
+  transform:translate(-50%,-50%);
+  display:block;object-fit:cover
+}
+.joint-swap-bb-header{left:8.5%;top:5.2%;width:6.0%;height:10.0%;background:#061025}
+.joint-swap-ct-header{left:67.4%;top:5.0%;width:7.3%;height:11.5%;background:#101019;border-radius:50%}
+.joint-swap-bb-crest{left:44.7%;top:6.1%;width:3.9%;height:6.7%;background:#071326}
+.joint-swap-ct-crest{left:51.6%;top:6.2%;width:3.9%;height:6.7%;background:#111321;border-radius:50%}
+.joint-swap-bb-milestone{left:22.0%;top:69.9%;width:3.6%;height:6.1%;background:#082349}
+.joint-swap-ct-milestone{left:54.1%;top:69.9%;width:3.6%;height:6.1%;background:#211706;border-radius:50%}
+.joint-swap-bb-medallion{left:85.9%;top:75.6%;width:3.7%;height:5.6%;background:#111020}
+.joint-swap-ct-medallion{left:90.8%;top:75.6%;width:3.7%;height:5.6%;background:#17100f;border-radius:50%}
+
 .joint-folio>[class^="joint-template"]{position:absolute;z-index:2;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.2;box-sizing:border-box}
 .joint-template-name{left:25%;width:50%;top:41.6%;height:9.1%;color:#ffde9f;font-weight:900;font-size:44px;text-shadow:0 3px 10px #000d}
 .joint-template-name span{overflow-wrap:anywhere;unicode-bidi:plaintext;max-width:95%;max-height:100%;overflow:hidden}
