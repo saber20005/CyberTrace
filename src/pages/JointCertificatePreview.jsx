@@ -14,6 +14,7 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
   const closeButtonRef = useRef(null);
   const openButtonRef = useRef(null);
   const [immersive, setImmersive] = useState(false);
+  const [zoomed, setZoomed] = useState(false);
   const closeImmersive = useCallback(() => {
     setImmersive(false);
     setZoomed(false);
@@ -34,7 +35,6 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
       document.body.style.overflow = previousOverflow;
     };
   }, [immersive, closeImmersive]);
-  const [zoomed, setZoomed] = useState(false);
   const [display, setDisplay] = useState({ scale: 1, height: 730 });
 
   useLayoutEffect(() => {
