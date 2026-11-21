@@ -22,3 +22,14 @@ To issue real joint certificates: require the server to validate ownership of bo
 The joint preview is now a dark graphite/navy **blue-and-gold** interactive layout matching the approved concept, with the original CyberTrace and BLACKBOX SVG marks **both in the center seal**. A user may enter a temporary display name for layout testing. This input is held only in component memory; it is not tied to account identity, passed to the URL or saved.
 
 The preview continues to show **نموذج غير صادر** on screen and in print, and does not issue identifiers, QR codes, verification links or claimed results. Its component is intentionally independent of progress, auth and backend. Its CSS supports smartphone view and A4 landscape printing, though printing from actual completed-account data is **not** a feature of this mockup. This is not a professional certification.
+
+
+## Approved artwork exact-match revision (2026-11-21)
+
+The joint preview now displays the **user-approved cinematic image itself** as `src/assets/joint-certificate-approved.webp`, rather than recreating its shield, laurel, investigators, seal and borders from basic CSS shapes. The source was converted to a compressed WebP asset for site delivery.
+
+For privacy and integrity, the source has had its **person's name**, English sentence naming a person, fake `3/3` achievements, fabricated certificate number/date and nonfunctional QR obscured. Those locations are overlaid with React preview-only placeholders. No identifying name is hard-coded into the published asset. A temporary sample name is held in memory and not persisted.
+
+The design retains its image aspect ratio and the immersive full-screen phone viewer. A visual-only comparison is separate from real issuance. No verification endpoint, certificate number, award, wallet, signature, or eligibility upgrade is implemented or implied.
+
+Do not restore a QR/ID/issue date or `3/3` count on the preview without actual server-side issuance and verified linked-user results.
