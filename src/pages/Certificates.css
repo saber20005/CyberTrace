@@ -96,3 +96,8 @@
   .ct-cert-series{display:block!important}
   .ct-cert-disclaimer{border-color:#b89b78!important;color:#4c3425!important}
 }
+
+
+.ct-cert-joint-preview-link{display:block;width:100%;margin-top:12px;padding:11px 14px;border:1px solid #d5a56c;border-radius:9px;background:#32261f;color:#f6ddba;font:inherit;font-weight:800;cursor:pointer;text-align:center}
+.ct-cert-joint-preview-link:hover{background:#4a3424}
+.ct-cert-joint-preview-link:focus-visible{outline:3px solid #f2c78e;outline-offset:3px}

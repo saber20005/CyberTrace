@@ -1,0 +1,38 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+
+test("a single canonical joint design is explicitly a non-issued demonstration", async () => {
+  const source = await readFile(new URL("../src/pages/JointCertificatePreview.jsx", import.meta.url), "utf8");
+  assert(source.includes("نموذج غير صادر"));
+  assert(source.includes("نموذج تصميم غير صادر"));
+  assert(source.includes("حالة الشهادة:"));
+  assert(source.includes("غير صادرة"));
+  assert(source.includes("لا توقيع رقمي · لا رقم تحقق · لا رمز QR"));
+  assert(source.includes("blackBoxLogo"));
+  assert(source.includes("logo"));
+  assert(source.includes("JOINT TRAINING ACHIEVEMENT CERTIFICATE"));
+  assert(!source.includes("setDoc(") && !source.includes("addDoc("));
+  assert(!source.includes("window.print(") && !source.includes("getCaseResults("));
+  assert(!source.includes("getXP(") && !source.includes("cloudSync("));
+});
+
+test("joint demo has responsive styles, persistent non-issued watermark and print-safe labeling", async () => {
+  const css = await readFile(new URL("../src/pages/JointCertificatePreview.css", import.meta.url), "utf8");
+  assert(css.includes("#3988ff"));
+  assert(css.includes("#bf965f"));
+  assert(css.includes("@media(max-width:680px)"));
+  assert(css.includes("@media print"));
+  assert(css.includes(".joint-watermark"));
+  assert(css.includes("opacity:.28!important"));
+  assert(css.includes("print-color-adjust:exact"));
+});
+
+test("preview only opens from the certificate hub and is not a real issued award", async () => {
+  const hub = await readFile(new URL("../src/pages/Certificates.jsx", import.meta.url), "utf8");
+  const app = await readFile(new URL("../src/App.jsx", import.meta.url), "utf8");
+  assert(hub.includes("onJointPreview"));
+  assert(hub.includes("معاينة التصميم المشترك"));
+  assert(app.includes('view === "joint-certificate"'));
+  assert(app.includes('onCertificates={() => navigate({ view: "certificates" })}'));
+});

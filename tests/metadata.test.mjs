@@ -15,6 +15,13 @@ test("personal certificate records are excluded from search indexes", () => {
   assert.equal(page.url, `${SITE_ORIGIN}/?view=certificates`);
 });
 
+test("the joint certificate mockup is nonindexable and cannot be mistaken for issuance", () => {
+  const page = describePage({ view: "joint-certificate" }, CASES);
+  assert.equal(page.noindex, true);
+  assert.equal(page.url, `${SITE_ORIGIN}/?view=joint-certificate`);
+  assert.match(page.description, /ليست شهادة صادرة/);
+});
+
 test("metadata gives each known case an Arabic title and a stable production canonical", () => {
   for (const caseData of CASES) {
     const page = describePage({ view: "investigation", caseId: caseData.id, utm_source: "community" }, CASES);

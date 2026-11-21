@@ -5,7 +5,7 @@ import { buildCaseDrafts, validLearnerName, DRAFT_NOTICE } from "../utils/certif
 import logo from "../assets/logo.svg";
 import "./Certificates.css";
 
-export default function Certificates({ cases, onHome, onLibrary, onPro }) {
+export default function Certificates({ cases, onHome, onLibrary, onPro, onJointPreview }) {
   const [name, setName] = useState("");
   const [selectedId, setSelectedId] = useState("");
   const drafts = buildCaseDrafts(cases, getCaseResults());
@@ -47,7 +47,7 @@ export default function Certificates({ cases, onHome, onLibrary, onPro }) {
           <p className="ct-cert-small">لن يُحفظ هذا الاسم في المنصة أو يُرسل إلى الخادم.</p>
           <button type="button" className="ct-cert-action" disabled={!ready} onClick={() => { if (ready) window.print(); }}>طباعة / حفظ PDF</button>
           <p className="ct-cert-small">في نافذة الطباعة اختر «حفظ بتنسيق PDF» إذا كان متصفحك يدعم ذلك.</p>
-          <div className="ct-cert-upcoming"><h3>الشهادة المشتركة والموثقة</h3><p>قيد التطوير. تتطلب تقييمًا خادميًا وإصدارًا يمكن التحقق منه؛ لا تُمنح بناءً على XP.</p></div>
+          <div className="ct-cert-upcoming"><h3>الشهادة المشتركة والموثقة</h3><p>قيد التطوير. تتطلب تقييمًا خادميًا وإصدارًا يمكن التحقق منه؛ لا تُمنح بناءً على XP.</p><button type="button" className="ct-cert-joint-preview-link" onClick={onJointPreview}>معاينة التصميم المشترك ←</button></div>
         </section>
         <section className="ct-cert-display" aria-label="معاينة إفادة التدريب">
           <h2 className="ct-cert-screen">المعاينة</h2>
