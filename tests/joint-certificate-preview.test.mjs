@@ -20,7 +20,7 @@ test("a single canonical joint design is explicitly a non-issued demonstration",
 test("joint demo has responsive styles, persistent non-issued watermark and print-safe labeling", async () => {
   const css = await readFile(new URL("../src/pages/JointCertificatePreview.css", import.meta.url), "utf8");
   assert(css.includes("#3988ff"));
-  assert(css.includes("#bf965f"));
+  assert(css.includes("#e2b970"));
   assert(css.includes("@media(max-width:680px)"));
   assert(css.includes("@media print"));
   assert(css.includes(".joint-watermark"));
@@ -49,7 +49,7 @@ test("premium mockup uses both real brand SVGs inside the central seal and an in
   assert(!/localStorage|sessionStorage|fetch\(|setDoc\(|addDoc\(|getCaseResults\(|getXP\(|window\.print\(/.test(source));
   assert(css.includes("linear-gradient(130deg,#060f1e"));
   assert(css.includes("#3988ff"));
-  assert(css.includes("#bf965f"));
+  assert(css.includes("#e2b970"));
   assert(css.includes("joint-folio-footer"));
 });
 
