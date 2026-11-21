@@ -9,3 +9,11 @@ Existing CyberTrace login, Firebase, XP, cloud sync, and BlackBox bridge must re
 Phase 2 (not live): server-side validated assessment and protected issuance, non-guessable verification IDs, revocation, privacy-consent controls, and linked BlackBox completion proof from separately authenticated accounts.
 
 Free completion records remain free. Advanced verified joint certification may be a future Pro feature, subject to a separately reviewed secure backend.
+
+
+## Third joint design preview (phase 1.5)
+The canonical **CyberTrace × BLACKBOX** visual template is available as a demonstration only at `https://www.cybertracelab.dev/?view=joint-certificate`. Both certificate centers may link there. It uses actual logo artwork from both projects, a distinctive split gold/blue identity, and a permanent `نموذج غير صادر` watermark, including when printed from the browser.
+
+This route deliberately performs no data reads/writes, login linking, assessment, issuance, scoring, signature, QR or verification. It is marked `noindex` and cannot be used as evidence of a user's achievement.
+
+To issue real joint certificates: require the server to validate ownership of both identities and separate trusted assessment receipts, issue uniquely verifiable revocable records with consent-sensitive verification pages, and log all lifecycle transitions. Only then replace demonstration placeholders with backed certificate attributes.
