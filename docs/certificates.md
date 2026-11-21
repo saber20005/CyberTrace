@@ -33,3 +33,6 @@ For privacy and integrity, the source has had its **person's name**, English sen
 The design retains its image aspect ratio and the immersive full-screen phone viewer. A visual-only comparison is separate from real issuance. No verification endpoint, certificate number, award, wallet, signature, or eligibility upgrade is implemented or implied.
 
 Do not restore a QR/ID/issue date or `3/3` count on the preview without actual server-side issuance and verified linked-user results.
+
+## Display cleanup (2026-11-21)
+The redundant English two-line `VISUAL PREVIEW ONLY / NO CERTIFICATE HAS BEEN ISSUED` overlay is removed from the visual artwork to reduce clutter. Clear non-issuance labeling remains visible in Arabic (`نموذج غير صادر`, `غير صادرة`), including the printable template, while all proof, results and QR fields stay explicitly unavailable.
