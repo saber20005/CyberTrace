@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import logo from "../assets/logo.svg";
 import blackBoxLogo from "../assets/blackbox-partner.svg";
 import "./JointCertificatePreview.css";
@@ -8,6 +8,33 @@ import "./JointCertificatePreview.css";
 export default function JointCertificatePreview({ onCertificates, onHome }) {
   const [sampleName, setSampleName] = useState("");
   const displayName = sampleName.trim() || "اسم المتدرّب";
+  const viewportRef = useRef(null);
+  const folioRef = useRef(null);
+  const [zoomed, setZoomed] = useState(false);
+  const [display, setDisplay] = useState({ scale: 1, height: 740 });
+
+  // Keep the certificate's desktop landscape composition on narrow screens.
+  // Only the outside viewport scales; the document and its print layout do not reflow.
+  useLayoutEffect(() => {
+    const viewport = viewportRef.current;
+    const folio = folioRef.current;
+    if (!viewport || !folio) return undefined;
+    const measure = () => {
+      const scale = zoomed ? 1 : Math.min(1, (viewport.clientWidth || 1120) / 1120);
+      const height = Math.ceil(folio.offsetHeight * scale);
+      setDisplay(previous => previous.scale === scale && previous.height === height
+        ? previous : { scale, height });
+    };
+    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
+    observer?.observe(viewport);
+    observer?.observe(folio);
+    window.addEventListener("resize", measure);
+    measure();
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [zoomed, sampleName]);
 
   return <div className="joint-preview-page" dir="rtl">
     <header className="joint-page-nav">
@@ -30,7 +57,21 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
         <p className="joint-release-status" role="note"><strong>الإصدار غير متاح حاليًا.</strong> لا تُمنح شهادة مشتركة موثّقة قبل تشغيل تقييم خادمي آمن والتحقق من إنجازات الحسابين.</p>
       </section>
 
-      <section className="joint-folio" aria-label="النموذج البصري للشهادة المشتركة غير الصادرة">
+      <div className="joint-preview-controls">
+        <p>عرض أفقي ثابت يحافظ على مقاسات الشهادة. على الهاتف يمكنك تكبيرها ثم تحريكها لقراءة التفاصيل.</p>
+        <button type="button" aria-pressed={zoomed} onClick={() => setZoomed(value => !value)}>
+          {zoomed ? "إظهار الشهادة كاملة" : "تكبير لقراءة التفاصيل"}
+        </button>
+      </div>
+      <div
+        ref={viewportRef}
+        className={`joint-folio-viewport${zoomed ? " is-zoomed" : ""}`}
+        style={{ height: `${display.height}px`, "--joint-fit-scale": display.scale }}
+        role="region"
+        aria-label={zoomed ? "الشهادة المشتركة بالحجم الكامل: حرّكها أفقيًا لقراءة التفاصيل" : "الشهادة المشتركة بالحجم الملائم للشاشة"}
+        tabIndex={zoomed ? 0 : undefined}
+      >
+      <section ref={folioRef} className="joint-folio" aria-label="النموذج البصري للشهادة المشتركة غير الصادرة">
         <div className="joint-folio-frame" aria-hidden="true"></div>
         <div className="joint-folio-topline" aria-hidden="true"><span></span><span></span></div>
         <header className="joint-brand-bar">
@@ -82,6 +123,7 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
         </footer>
         <div className="joint-watermark" aria-hidden="true">نموذج غير صادر</div>
       </section>
+      </div>
       <div className="joint-preview-postnote" role="note">
         <strong>متى نصدرها فعليًا؟</strong>
         <p>بعد توثيق ملكية الحسابين، والتحقق من إنجازات مصححة على الخادم، وتوفير سجل إصدار قابل للإلغاء والتحقق بموافقة المستخدم. نقاط XP والنتائج المحلية وحدها لا تصلح لإصدار شهادة موثّقة.</p>

@@ -52,3 +52,21 @@ test("premium mockup uses both real brand SVGs inside the central seal and an in
   assert(css.includes("#bf965f"));
   assert(css.includes("joint-folio-footer"));
 });
+
+test("mobile viewer preserves landscape aspect and allows keyboard-accessible full-size pan", async () => {
+  const source = await readFile(new URL("../src/pages/JointCertificatePreview.jsx", import.meta.url), "utf8");
+  const css = await readFile(new URL("../src/pages/JointCertificatePreview.css", import.meta.url), "utf8");
+  assert(source.includes("ResizeObserver"));
+  assert(source.includes("useLayoutEffect"));
+  assert(source.includes("joint-folio-viewport"));
+  assert(source.includes("aria-pressed={zoomed}"));
+  assert(source.includes("setZoomed(value => !value)"));
+  assert(source.includes("tabIndex={zoomed ? 0 : undefined}"));
+  assert(source.includes("تكبير لقراءة التفاصيل"));
+  assert(css.includes("width:1120px;min-width:1120px"));
+  assert(css.includes("transform:scale(var(--joint-fit-scale,1))"));
+  assert(css.includes("overflow-x:auto"));
+  assert(css.includes("@media print"));
+  assert(css.includes("transform:none!important"));
+  assert(!source.includes("localStorage") && !source.includes("getCaseResults("));
+});
