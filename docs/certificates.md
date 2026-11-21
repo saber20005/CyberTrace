@@ -17,3 +17,8 @@ The canonical **CyberTrace × BLACKBOX** visual template is available as a demon
 This route deliberately performs no data reads/writes, login linking, assessment, issuance, scoring, signature, QR or verification. It is marked `noindex` and cannot be used as evidence of a user's achievement.
 
 To issue real joint certificates: require the server to validate ownership of both identities and separate trusted assessment receipts, issue uniquely verifiable revocable records with consent-sensitive verification pages, and log all lifecycle transitions. Only then replace demonstration placeholders with backed certificate attributes.
+
+## Premium joint-preview refinement
+The joint preview is now a dark graphite/navy **blue-and-gold** interactive layout matching the approved concept, with the original CyberTrace and BLACKBOX SVG marks **both in the center seal**. A user may enter a temporary display name for layout testing. This input is held only in component memory; it is not tied to account identity, passed to the URL or saved.
+
+The preview continues to show **نموذج غير صادر** on screen and in print, and does not issue identifiers, QR codes, verification links or claimed results. Its component is intentionally independent of progress, auth and backend. Its CSS supports smartphone view and A4 landscape printing, though printing from actual completed-account data is **not** a feature of this mockup. This is not a professional certification.

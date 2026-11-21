@@ -36,3 +36,19 @@ test("preview only opens from the certificate hub and is not a real issued award
   assert(app.includes('view === "joint-certificate"'));
   assert(app.includes('onCertificates={() => navigate({ view: "certificates" })}'));
 });
+
+test("premium mockup uses both real brand SVGs inside the central seal and an in-memory name", async () => {
+  const source = await readFile(new URL("../src/pages/JointCertificatePreview.jsx", import.meta.url), "utf8");
+  const css = await readFile(new URL("../src/pages/JointCertificatePreview.css", import.meta.url), "utf8");
+  assert(source.includes('<img src={blackBoxLogo} alt="BLACKBOX" />'));
+  assert(source.includes('<img src={logo} alt="CyberTrace" />'));
+  assert(source.includes("const [sampleName, setSampleName] = useState"));
+  assert(source.includes("const displayName = sampleName.trim()"));
+  assert(source.includes("maxLength={70}"));
+  assert(source.includes("نموذج عرض باسم تجريبي لا يمثل إثبات إنجاز"));
+  assert(!/localStorage|sessionStorage|fetch\(|setDoc\(|addDoc\(|getCaseResults\(|getXP\(|window\.print\(/.test(source));
+  assert(css.includes("linear-gradient(130deg,#070e1b"));
+  assert(css.includes("#3988ff"));
+  assert(css.includes("#bf965f"));
+  assert(css.includes("joint-folio-footer"));
+});
