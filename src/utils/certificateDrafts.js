@@ -15,5 +15,5 @@ export function buildCaseDrafts(cases, results) {
 }
 export function validLearnerName(name) {
   return typeof name === "string" && name.trim().length >= 2 && name.trim().length <= 70 &&
-    !/[\u0000-\u001f\u007f<>]/.test(name);
+    [...name].every(character => { const point = character.codePointAt(0); return point >= 32 && point !== 127 && character !== '<' && character !== '>'; });
 }
