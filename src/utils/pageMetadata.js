@@ -39,6 +39,9 @@ export function describePage(route, cases = []) {
   if (route?.view === "certificates") {
     return { title: "مركز الشهادات | CyberTrace", description: "إفادات إتمام تدريب غير موثّقة من سجل المتصفح.", url: `${SITE_ORIGIN}/?view=certificates`, noindex: true };
   }
+  if (route?.view === "joint-certificate") {
+    return { title: "نموذج الشهادة المشتركة | CyberTrace × BLACKBOX", description: "معاينة تصميم فقط للشهادة المشتركة؛ ليست شهادة صادرة أو موثّقة.", url: `${SITE_ORIGIN}/?view=joint-certificate`, noindex: true };
+  }
   if (route?.view === "pro") {
     return {
       title: "CyberTrace × BLACKBOX Pro | قيد التطوير",
