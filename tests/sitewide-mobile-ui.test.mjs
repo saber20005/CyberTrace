@@ -35,9 +35,11 @@ test("sitewide tokens and responsive layouts cover all main training routes", ()
   assert(design.includes(":focus-visible"));
   assert(design.includes("prefers-reduced-motion"));
   assert(home.includes("ct-learning-hub"));
-  assert(home.includes("overflow-x: auto"));
-  assert.match(home, /flex-wrap: nowrap; justify-content: flex-start; direction: rtl; width: 100%; overflow-x: auto;/);
-  assert(home.includes("overscroll-behavior-x: contain"));
+  const navCSS = read("../src/components/HomeNavbar.css");
+  assert.match(navCSS, /\.app \.ct-home-navbar \.nav-right\.ct-nav-actions/);
+  assert.match(navCSS, /overflow:visible/);
+  assert.match(navCSS, /\.ct-mobile-account \{display:grid/);
+  assert.match(navCSS, /max-width:680px/);
   assert(library.includes(".library-page .case-actions"));
   assert(library.includes(".library-page .library-filters"));
   assert(auth.includes(".auth-screen .auth-form input"));
@@ -53,8 +55,11 @@ test("training and original navigation remain wired and no scoring code was touc
   assert(app.includes("onSelectShift={shiftId"));
   assert(app.includes("onSoc={() => navigate({ view: \"soc\" })}"));
   assert(app.includes("onPro={() => navigate({ view: \"pro\" })}"));
+  const shared = read("../src/components/HomeNavbar.jsx");
   assert(library.includes('onSoc, onPro'));
-  assert(library.includes('onClick={onSoc}'));
-  assert(library.includes('onClick={onPro}'));
+  assert(library.includes('<HomeNavbar active="library"'));
+  assert(library.includes('onSoc={onSoc} onCertificates={onCertificates} onPro={onPro}'));
+  assert(shared.includes('onClick={() => go(onSoc)}'));
+  assert(shared.includes('onClick={() => go(onPro)}'));
   assert(!app.includes("getSuiteMembership("));
 });
