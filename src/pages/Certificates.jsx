@@ -51,18 +51,30 @@ export default function Certificates({ cases, onHome, onLibrary, onPro }) {
         </section>
         <section className="ct-cert-display" aria-label="معاينة إفادة التدريب">
           <h2 className="ct-cert-screen">المعاينة</h2>
-          {ready ? <article className="ct-cert-paper">
-            <span className="ct-cert-monogram" aria-hidden="true">CT</span>
-            <p className="ct-cert-brand">CYBERTRACE</p>
-            <p className="ct-cert-eng">TRAINING COMPLETION RECORD</p>
-            <h2>إفادة إتمام تدريب</h2>
-            <p>سجل شخصي لإكمال نشاط تدريبي مسجل داخل المنصة</p>
-            <strong className="ct-cert-name">{name.trim()}</strong>
-            <p>أنهى التحقيق التدريبي التالي:</p>
-            <h3>{getCaseDetails(caseData).title}</h3>
-            <p className="ct-cert-detail">رقم التحقيق: {chosen.id} · أفضل نتيجة مسجلة: {chosen.score} / 70</p>
-            <p className="ct-cert-detail">تاريخ الإنجاز المسجّل: {date}</p>
-            <p className="ct-cert-disclaimer">{DRAFT_NOTICE}<br />لا رقم شهادة · لا رمز QR · لا توقيع رقمي</p>
+          {ready ? <article className="ct-cert-paper" aria-label="إفادة إتمام تحقيق تدريبي من CyberTrace">
+            <div className="ct-cert-paper-heading">
+              <div className="ct-cert-paper-brand">
+                <img className="ct-cert-logo" src={logo} alt="" />
+                <div><strong>CYBERTRACE</strong><span>INCIDENT INVESTIGATION LAB</span></div>
+              </div>
+              <span className="ct-cert-series" dir="ltr">TRAINING RECORD / CT</span>
+            </div>
+            <div className="ct-cert-paper-body">
+              <div className="ct-cert-emblem" aria-hidden="true"><img src={logo} alt="" /></div>
+              <p className="ct-cert-eng" dir="ltr">CERTIFICATE OF TRAINING COMPLETION</p>
+              <h2>إفادة إتمام تدريب</h2>
+              <p className="ct-cert-lead">إفادة تعليمية لإكمال تحقيق في تحليل الحوادث الأمنية</p>
+              <span className="ct-cert-name-label">اسم المتدرّب</span>
+              <strong className="ct-cert-name">{name.trim()}</strong>
+              <span className="ct-cert-section-label">التحقيق المُنجَز</span>
+              <h3>{getCaseDetails(caseData).title}</h3>
+              <div className="ct-cert-facts">
+                <div><span>معرّف التحقيق</span><strong dir="ltr">{chosen.id}</strong></div>
+                <div><span>أفضل نتيجة مسجّلة</span><strong dir="ltr">{chosen.score} / 70</strong></div>
+                <div><span>تاريخ الإنجاز المسجّل</span><strong>{date}</strong></div>
+              </div>
+            </div>
+            <div className="ct-cert-disclaimer" role="note"><strong>إفادة تعليمية غير موثّقة</strong><p>{DRAFT_NOTICE}</p><small>لا رقم شهادة · لا رمز QR · لا توقيع رقمي</small></div>
           </article> : <div className="ct-cert-empty ct-cert-screen">اختر تحقيقًا مكتملًا، ثم أدخل اسمك لمعاينة الإفادة.</div>}
         </section>
       </div>
