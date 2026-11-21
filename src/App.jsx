@@ -25,6 +25,7 @@ import logo from "./assets/logo.svg";
 import { startCloudSync, enableCloudSync, cloudSyncEnabled } from "./utils/cloudProgress";
 import { useBlackBox } from "./blackbox/useBlackBox";
 import BlackBoxAccountButton from "./blackbox/BlackBoxAccountButton";
+import QuickDock from "./components/QuickDock";
 
 function routeAtLocation() {
   return {
@@ -428,6 +429,8 @@ function App() {
           <small>تعليمات المختبر والأدوات تُنفّذ في بيئتك المحلية.</small>
         </section>
       </main>
+      <QuickDock active="home" onHome={goHome} onLibrary={goLibrary}
+        onSoc={() => navigate({ view: "soc" })} onCertificates={() => navigate({ view: "certificates" })} />
 
       <footer>
         <div className="logo">

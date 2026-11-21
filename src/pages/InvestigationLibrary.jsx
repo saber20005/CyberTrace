@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { paginateItems, LIBRARY_PAGE_SIZE } from "../utils/pagination";
+import QuickDock from "../components/QuickDock";
 import { CATEGORIES, DIFFICULTIES, getCaseDetails } from "../data/caseCatalog";
 import { getCaseResults, getCompletedCaseIds } from "../utils/caseProgress";
 import { getLevelInfo, getXP } from "../utils/xp";
@@ -25,6 +27,7 @@ function InvestigationLibrary({ cases, onStart, onHome, onSoc, onPro, onCertific
   const [difficulty, setDifficulty] = useState("all");
   const [category, setCategory] = useState("all");
   const [status, setStatus] = useState("all");
+  const [page, setPage] = useState(1);
   const heading = useRef(null);
   const [results] = useState(getCaseResults);
   const [completedIds] = useState(getCompletedCaseIds);
@@ -50,8 +53,9 @@ function InvestigationLibrary({ cases, onStart, onHome, onSoc, onPro, onCertific
       && (status === "all" || (status === "completed" ? completed.has(c.id) : !completed.has(c.id)));
   });
 
+  const paged = paginateItems(visibleCases, page);
   const clearFilters = () => {
-    setQuery(""); setDifficulty("all"); setCategory("all"); setStatus("all");
+    setQuery(""); setDifficulty("all"); setCategory("all"); setStatus("all"); setPage(1);
   };
 
   return (
@@ -122,13 +126,13 @@ function InvestigationLibrary({ cases, onStart, onHome, onSoc, onPro, onCertific
         <section aria-labelledby="cases-title">
           <div className="library-section-title"><div><p className="library-eyebrow">ملفات الحوادث</p><h2 id="cases-title">مهمتك التالية تبدأ هنا</h2></div><span className="library-result-count" aria-live="polite">{visibleCases.length} من {cases.length} تحقيقًا</span></div>
           <div className="library-filters" role="search" aria-label="البحث في التحقيقات">
-            <label className="library-search"><span>ابحث عن تحقيق</span><input type="search" placeholder="عنوان، نوع الحادثة، أو رقم القضية…" value={query} onChange={event => setQuery(event.target.value)} /></label>
-            <label><span>المستوى</span><select aria-label="المستوى" value={difficulty} onChange={event => setDifficulty(event.target.value)}><option value="all">كل المستويات</option>{DIFFICULTIES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
-            <label><span>المجال</span><select aria-label="المجال" value={category} onChange={event => setCategory(event.target.value)}><option value="all">كل المجالات</option>{CATEGORIES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
-            <label><span>حالة الإنجاز</span><select aria-label="حالة الإنجاز" value={status} onChange={event => setStatus(event.target.value)}><option value="all">كل التحقيقات</option><option value="new">لم تكتمل بعد</option><option value="completed">مكتملة</option></select></label>
+            <label className="library-search"><span>ابحث عن تحقيق</span><input type="search" placeholder="عنوان، نوع الحادثة، أو رقم القضية…" value={query} onChange={event => { setQuery(event.target.value); setPage(1); }} /></label>
+            <label><span>المستوى</span><select aria-label="المستوى" value={difficulty} onChange={event => { setDifficulty(event.target.value); setPage(1); }}><option value="all">كل المستويات</option>{DIFFICULTIES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
+            <label><span>المجال</span><select aria-label="المجال" value={category} onChange={event => { setCategory(event.target.value); setPage(1); }}><option value="all">كل المجالات</option>{CATEGORIES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
+            <label><span>حالة الإنجاز</span><select aria-label="حالة الإنجاز" value={status} onChange={event => { setStatus(event.target.value); setPage(1); }}><option value="all">كل التحقيقات</option><option value="new">لم تكتمل بعد</option><option value="completed">مكتملة</option></select></label>
           </div>
           {visibleCases.length ? <div className="case-grid">
-            {visibleCases.map(caseData => {
+            {paged.items.map(caseData => {
               const details = getCaseDetails(caseData);
               const result = results[caseData.id];
               const isCompleted = completed.has(caseData.id);
@@ -147,8 +151,17 @@ function InvestigationLibrary({ cases, onStart, onHome, onSoc, onPro, onCertific
               </article>;
             })}
           </div> : <div className="library-empty" role="status"><span aria-hidden="true">⌕</span><h3>لا توجد تحقيقات تطابق بحثك</h3><p>جرّب كلمة أخرى أو وسّع خيارات التصفية.</p><button className="secondary-button" onClick={clearFilters}>مسح البحث والتصفية</button></div>}
+          {visibleCases.length > LIBRARY_PAGE_SIZE && <nav className="library-pagination" aria-label="صفحات مكتبة التحقيقات">
+            <button type="button" disabled={paged.page === 1}
+              onClick={() => setPage(current => Math.max(1, current - 1))}>السابق</button>
+            <span role="status" aria-live="polite">صفحة {paged.page} من {paged.pageCount} · {visibleCases.length} تحقيقًا</span>
+            <button type="button" disabled={paged.page === paged.pageCount}
+              onClick={() => setPage(current => Math.min(paged.pageCount, current + 1))}>التالي</button>
+          </nav>}
         </section>
       </main>
+      <QuickDock active="library" onHome={onHome} onLibrary={() => { setPage(1); document.getElementById("cases-title")?.scrollIntoView({ behavior: "smooth" }); }}
+        onSoc={onSoc} onCertificates={onCertificates} />
       <footer className="library-footer"><span>CyberTrace / Training Operations</span><a className="library-partner-link" href={partner.url} target="_blank" rel="noopener" onClick={() => trackEvent("partner_click", { destination: "blackbox", context: "library" })}>مسارات التدريب العملي في BlackBox-Lab ↗</a><p>تدرّب. حقّق. اتخذ القرار.</p></footer>
     </div>
   );

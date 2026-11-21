@@ -1,0 +1,39 @@
+.ct-quick-dock {
+  position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;
+  transform:translateX(-50%);direction:rtl;font-family:"Cairo",sans-serif;
+  max-width:calc(100vw - 24px);color:#f6e9d9;
+}
+.ct-quick-dock > summary {
+  width:max-content;margin:auto;min-height:44px;display:flex;align-items:center;justify-content:center;
+  gap:9px;padding:9px 18px;cursor:pointer;list-style:none;
+  border:1px solid #bc8b58;border-radius:999px;
+  background:linear-gradient(150deg,#342819,#131214);box-shadow:0 12px 35px #0009;
+  font-size:13px;font-weight:700;
+}
+.ct-quick-dock > summary::-webkit-details-marker {display:none}
+.ct-quick-dock[open] > summary {border-color:#f0c68f}
+.ct-quick-dock-items {
+  margin-bottom:10px;padding:9px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:7px;border:1px solid #7c6048;border-radius:22px;
+  background:linear-gradient(140deg,#211b1b,#121417);box-shadow:0 22px 55px #000c;
+}
+.ct-quick-dock:not([open]) .ct-quick-dock-items {display:none}
+.ct-quick-dock-items button {
+  min-height:62px;min-width:67px;display:grid;place-items:center;gap:2px;
+  border:1px solid #67503c;border-radius:14px;background:#34291e;color:#ffdfad;
+  font:inherit;cursor:pointer;transition:transform .18s ease,background-color .18s ease;
+}
+.ct-quick-dock-items button span {font-size:21px;line-height:1.25}
+.ct-quick-dock-items button small {font-size:10px;font-weight:700;white-space:nowrap}
+.ct-quick-dock-items button[aria-current="page"]{border-color:#e7b775;background:#4d3721}
+.ct-quick-dock :is(summary,button):focus-visible {outline:3px solid #f0c68f;outline-offset:3px}
+@media(hover:hover) and (prefers-reduced-motion:no-preference) {
+ .ct-quick-dock-items button:hover{transform:translateY(-3px) scale(1.045);background:#503923}
+}
+@media(max-width:420px) {
+ .ct-quick-dock-items{gap:5px;padding:6px}
+ .ct-quick-dock-items button{min-width:58px;min-height:60px;padding:4px}
+ .ct-quick-dock-items button small{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce) {.ct-quick-dock *{transition:none!important;animation:none!important}}
+@media print {.ct-quick-dock{display:none!important}}
