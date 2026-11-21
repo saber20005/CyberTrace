@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="760" viewBox="0 0 1120 760" fill="none">
+<defs>
+<linearGradient id="left" x1="0" y1="0" x2="480" y2="500"><stop stop-color="#063b76"/><stop offset="1" stop-color="#07101f" stop-opacity=".2"/></linearGradient>
+<linearGradient id="right" x1="1120" y1="0" x2="780" y2="480"><stop stop-color="#654624" stop-opacity=".65"/><stop offset="1" stop-color="#090f1d" stop-opacity=".04"/></linearGradient>
+<linearGradient id="edge" x1="0" y1="300" x2="1120" y2="590"><stop stop-color="#00b8ff" stop-opacity=".7"/><stop offset=".52" stop-color="#17346b" stop-opacity="0"/><stop offset="1" stop-color="#ddad55" stop-opacity=".68"/></linearGradient>
+<filter id="halo"><feGaussianBlur stdDeviation="16"/></filter>
+<pattern id="micro" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" stroke="#1962a4" stroke-opacity=".09" stroke-width=".7"/></pattern>
+</defs>
+<rect width="1120" height="760" fill="url(#micro)"/>
+<!-- Right-side forensic incident board silhouette -->
+<path d="M885 143 1100 104v290l-225 20Z" fill="url(#right)" stroke="#9a7848" stroke-opacity=".12" stroke-width="2"/>
+<path d="M903 176 1086 149v235l-186 24Z" fill="#171c26" fill-opacity=".86" stroke="#d5a66e" stroke-opacity=".22"/>
+<path d="M921 194 975 186 980 238 924 245Z" fill="#494032" fill-opacity=".4" stroke="#aa936c" stroke-width=".8"/>
+<path d="M998 188 1063 181 1065 229 999 233Z" fill="#544733" fill-opacity=".4" stroke="#aa936c" stroke-width=".8"/>
+<path d="M920 266 987 260 992 326 921 332Z" fill="#43433f" fill-opacity=".37" stroke="#8c8070" stroke-width=".8"/>
+<path d="M1007 263 1072 256 1077 323 1007 327Z" fill="#3d4248" fill-opacity=".4" stroke="#8c8070" stroke-width=".8"/>
+<path d="m948 212 82-5-80 88 94-7-10-66" stroke="#c35434" stroke-opacity=".66" stroke-width="1.8"/>
+<circle cx="948" cy="212" r="4" fill="#cc7441"/><circle cx="1030" cy="207" r="4" fill="#cc7441"/><circle cx="950" cy="295" r="4" fill="#cc7441"/><circle cx="1044" cy="288" r="4" fill="#cc7441"/>
+<path d="M1021 272c5-15 23-17 32-8m-32 16c9-13 24-14 35-8m-34 16c8-9 20-10 31-6m-24 13c9-6 16-6 24-3" stroke="#d7d0bb" stroke-opacity=".4" stroke-width="2" stroke-linecap="round"/>
+<path d="M938 197h20m-20 5h28m-28 5h22M1010 200h35m-35 5h24M934 275h35m-35 6h28m-28 6h19" stroke="#d9c8a4" stroke-opacity=".35" stroke-width="1.2"/>
+<!-- Left cyber analyst silhouette at workstation -->
+<rect x="8" y="152" width="230" height="168" rx="4" fill="#07162a" stroke="#1273a1" stroke-opacity=".44"/>
+<rect x="21" y="166" width="100" height="135" fill="#071a30" stroke="#168ed1" stroke-opacity=".27"/>
+<rect x="130" y="165" width="95" height="137" fill="#071a30" stroke="#168ed1" stroke-opacity=".27"/>
+<path d="M30 180h50m-50 9h62m-62 9h39m-39 14h77m-77 9h45m-45 8h73m-73 11h55m-55 10h73M136 177h56m-56 12h70m-70 10h50m-50 11h74m-74 10h66m-66 10h50m-50 10h65m-65 13h45" stroke="#1b95d5" stroke-width="2" stroke-opacity=".46"/>
+<path d="M20 185h47m-47 52h60M142 185h31m-31 44h68" stroke="#27f4ff" stroke-width="1" stroke-opacity=".38"/>
+<path d="M-36 405c18-110 70-178 144-181 66 3 121 75 141 189l-43 55-169-7Z" fill="url(#left)" stroke="#164771" stroke-opacity=".6" stroke-width="2"/>
+<path d="M45 388c-10-96 10-146 66-159 48 19 72 70 64 165-25 29-101 31-130-6Z" fill="#061021" stroke="#1e4e72" stroke-opacity=".9" stroke-width="2"/>
+<path d="M70 350c2-62 14-85 42-94 28 15 42 45 41 89l-25 26-34-1Z" fill="#031024"/>
+<path d="M82 366c14 15 42 26 61 7l-6 35H87Z" fill="#08243c"/>
+<path d="M-15 475c24-77 83-120 140-119 66 1 110 39 145 122l-38 108-253 9Z" fill="#030c1b" stroke="#143a61" stroke-width="2"/>
+<path d="m98 383 17 98 17-98" stroke="#125487" stroke-width="1.5" stroke-opacity=".7"/>
+<path d="M15 476h242l-19 110H34Z" fill="#08192d" stroke="#1672ac" stroke-opacity=".52" stroke-width="1.8"/>
+<path d="M33 487h208l-17 82H50Z" fill="#05152a"/>
+<path d="M57 501h138m-138 12h110m-110 12h132m-132 12h105" stroke="#1f8fca" stroke-opacity=".36" stroke-width="2"/>
+<!-- sweeping tech accents left and right -->
+<path d="m-30 509 142 76 58-12 74 37 118-4" stroke="url(#edge)" stroke-width="3" opacity=".6"/>
+<path d="m1120 505-130 80-70-8-65 33-110-5" stroke="url(#edge)" stroke-width="3" opacity=".6"/>
+<path d="M0 571c115 10 120 86 265 106m-266-84c100 4 132 85 285 100M1120 575c-125 9-130 85-270 104m270-81c-114 4-142 88-281 99" stroke="#3088bd" stroke-opacity=".27" stroke-width="1.4" fill="none"/>
+<path d="M30 685h130l40 29h150m740-29H960l-40 29H770" stroke="#d4a866" stroke-opacity=".37" stroke-width="1.1"/>
+<!-- angled neon border highlights -->
+<path d="M12 275 38 250M16 320 76 289M1105 277l-31-28m31 72-62-33" stroke="#397fd2" stroke-opacity=".45" stroke-width="1.4"/>
+<path d="M2 693h235m646 0h237" stroke="#1a93ed" stroke-opacity=".14" stroke-width="20" filter="url(#halo)"/>
+</svg>
