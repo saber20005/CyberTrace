@@ -170,7 +170,7 @@ function App() {
   }
 
   if (view === "certificates") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح مركز الشهادات..." />}><Certificates key={user?.uid ?? "guest"} cases={CASES} progressVersion={progressVersion} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} onJointPreview={() => navigate({ view: "joint-certificate" })} /></Suspense>;
-  if (view === "verify-certificate") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح التحقق من الشهادة..." />}><CertificateVerification initialId={route.certificateId} onBack={() => navigate({ view: "certificates" })} /></Suspense>;
+  if (view === "verify-certificate") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح التحقق من الشهادة..." />}><CertificateVerification key={route.certificateId || "empty"} initialId={route.certificateId} onBack={() => navigate({ view: "certificates" })} /></Suspense>;
 
   if (view === "joint-certificate") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح نموذج الشهادة المشتركة..." />}><JointCertificatePreview onCertificates={() => navigate({ view: "certificates" })} onHome={goHome} /></Suspense>;
 
