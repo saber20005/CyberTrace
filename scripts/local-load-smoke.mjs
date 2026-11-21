@@ -1,4 +1,5 @@
 // Deliberately tiny, loopback-only HTTP smoke sampler. NEVER use on production.
+import process from 'node:process';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 

@@ -3,7 +3,7 @@ import { db, auth } from "../firebase.js";
 import { getCaseResults, getCompletedCaseIds } from "./caseProgress.js";
 import { getXP } from "./xp.js";
 import { progressKey } from "./progressScope.js";
-import { mergeCloudProgress, sameCloudProgress, needsCloudWrite } from "./cloudProgressModel.js";
+import { mergeCloudProgress, needsCloudWrite } from "./cloudProgressModel.js";
 export { mergeCloudProgress } from "./cloudProgressModel.js";
 
 const KEY = "cybertrace_cloud_sync_opt_in";
