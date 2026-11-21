@@ -36,6 +36,9 @@ export function describePage(route, cases = []) {
       noindex: true,
     };
   }
+  if (route?.view === "certificates") {
+    return { title: "مركز الشهادات | CyberTrace", description: "إفادات إتمام تدريب غير موثّقة من سجل المتصفح.", url: `${SITE_ORIGIN}/?view=certificates`, noindex: true };
+  }
   if (route?.view === "pro") {
     return {
       title: "CyberTrace × BLACKBOX Pro | قيد التطوير",
