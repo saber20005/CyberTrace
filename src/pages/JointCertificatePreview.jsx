@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import logo from "../assets/logo.svg";
-import blackBoxLogo from "../assets/joint-blackbox-cube.svg";
+import approvedArt from "../assets/joint-certificate-approved.webp";
 import "./JointCertificatePreview.css";
 
-// Approved reference visual. This is a DESIGN MOCKUP, not an issued certificate:
+// Approved reference is displayed directly, not approximated with CSS.
 // no reads/writes of progress, ownership, scoring, identities, issuance or verification.
 export default function JointCertificatePreview({ onCertificates, onHome }) {
   const [sampleName, setSampleName] = useState("");
@@ -35,7 +34,7 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
       document.body.style.overflow = previousOverflow;
     };
   }, [immersive, closeImmersive]);
-  const [display, setDisplay] = useState({ scale: 1, height: 730 });
+  const [display, setDisplay] = useState({ scale: 1, height: 747 });
 
   useLayoutEffect(() => {
     const viewport = viewportRef.current;
@@ -105,58 +104,27 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
         role="region"
         aria-label={zoomed ? "الشهادة المشتركة بالحجم الكامل: حرّكها أفقيًا لقراءة التفاصيل" : "الشهادة المشتركة بالحجم الملائم للشاشة"}
         tabIndex={zoomed ? 0 : undefined}>
-      <section ref={folioRef} className="joint-folio" aria-label="النموذج البصري للشهادة المشتركة غير الصادرة">
-        <div className="joint-folio-frame" aria-hidden="true"></div>
-        <div className="joint-folio-topline" aria-hidden="true"><span></span><span></span></div>
-        <header className="joint-brand-bar">
-          <div className="joint-brand joint-brand-bb">
-            <img src={blackBoxLogo} alt="" />
-            <div><strong>BLACK<span>BOX</span></strong><small>LAB / PENETRATION TESTING</small></div>
-          </div>
-          <div className="joint-crest" aria-label="وسام الشهادة المشتركة">
-            <div className="joint-crest-laurel joint-crest-laurel-left" aria-hidden="true">❧</div>
-            <div className="joint-seal" aria-label="شعار BLACKBOX وشعار CyberTrace معًا">
-              <img src={blackBoxLogo} alt="BLACKBOX" /><b aria-hidden="true">×</b><img src={logo} alt="CyberTrace" />
-            </div>
-            <div className="joint-crest-laurel joint-crest-laurel-right" aria-hidden="true">❧</div>
-            <span className="joint-crest-ribbon" dir="ltr">JOINT CERTIFICATION</span>
-          </div>
-          <div className="joint-brand joint-brand-ct">
-            <img src={logo} alt="" />
-            <div><strong>Cyber<span>Trace</span></strong><small>INVESTIGATION & INCIDENT RESPONSE</small></div>
-          </div>
-        </header>
-
-        <div className="joint-folio-body">
-          <h2>الشهادة المشتركة للتدريب والتحقيق</h2>
-          <p className="joint-en-title" dir="ltr">JOINT TRAINING ACHIEVEMENT CERTIFICATE</p>
-          <div className="joint-stars" aria-hidden="true"><span></span>✦ ★ ✦<span></span></div>
-          <p className="joint-honoree-label">معاينة تصميمية باسم تجريبي — لا تمثل إثبات إنجاز</p>
-          <div className="joint-honoree-placeholder"><span>{displayName}</span></div>
-          <p className="joint-description">تصوّر للشهادة التي ستجمع مستقبلًا استكمال المسارات العملية في مختبر BLACKBOX والتحقيقات الأمنية في CyberTrace، بعد اجتياز تقييمات خادمية موثوقة.</p>
-
-          <div className="joint-pillars" aria-label="المكوّنان المطلوبان للشهادة مستقبلًا">
-            <div className="joint-pillar-bb">
-              <span className="joint-pillar-icon"><img src={blackBoxLogo} alt="" /></span>
-              <div><strong>مسارات BLACKBOX</strong><small>تقييم خادمي مطلوب · لا نتائج مؤهلة معروضة</small></div>
-            </div>
-            <div className="joint-pillar-ct">
-              <span className="joint-pillar-icon"><img src={logo} alt="" /></span>
-              <div><strong>تحقيقات CyberTrace</strong><small>تقييم خادمي مطلوب · لا نتائج مؤهلة معروضة</small></div>
-            </div>
-          </div>
-          <div className="joint-reference-fields" aria-label="حقول الشهادة المستقبلية">
-            <div><span>نوع الشهادة</span><strong>مشتركة — معاينة</strong></div>
-            <div><span>تاريخ الإصدار</span><strong>—</strong></div>
-            <div><span>حالة الشهادة:</span><strong>غير صادرة</strong></div>
-            <div><span>رقم الشهادة:</span><strong>غير متاح</strong></div>
-          </div>
+      <section ref={folioRef} className="joint-folio joint-approved-template"
+        aria-label="معاينة التصميم الأصلي للشهادة المشتركة دون إصدار أو توثيق">
+        <img src={approvedArt} className="joint-approved-image" alt=""
+          draggable="false" />
+        <div className="joint-template-name" aria-label="الاسم التجريبي">
+          <span>{displayName}</span>
         </div>
-        <footer className="joint-folio-footer" role="note">
-          <strong>نموذج تصميم غير صادر • غير صالح للتحقق أو إثبات المهارة</strong>
-          <span>لا توقيع رقمي · لا رقم تحقق · لا رمز QR · لا اعتماد مهني خارجي</span>
-        </footer>
-        <div className="joint-watermark" aria-hidden="true">نموذج غير صادر</div>
+        <div className="joint-template-preview-en" dir="ltr">
+          JOINT TRAINING &amp; INVESTIGATION — VISUAL PREVIEW ONLY.
+          NO CERTIFICATE HAS BEEN ISSUED.
+        </div>
+        <div className="joint-template-score joint-template-score-bb" aria-label="نتيجة BLACKBOX غير متحققة">— / —</div>
+        <div className="joint-template-score joint-template-score-ct" aria-label="نتيجة CyberTrace غير متحققة">— / —</div>
+        <div className="joint-template-qr-placeholder" role="note" aria-label="التحقق غير متاح">
+          <span className="joint-lock-icon" aria-hidden="true">⌁</span>
+          <strong>غير متاح</strong>
+        </div>
+        <span className="joint-template-qr-caption">التحقق غير متاح</span>
+        <span className="joint-template-issued-number">غير صادر</span>
+        <span className="joint-template-issued-date">—</span>
+        <div className="joint-template-status" role="note">نموذج غير صادر</div>
       </section>
         </div>
       </div>
