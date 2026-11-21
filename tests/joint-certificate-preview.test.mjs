@@ -90,3 +90,32 @@ test("selected cinematic composition includes two-brand shield, gold ribbon, sce
   assert(cube.includes("linearGradient"));
   assert(scene.includes("viewBox=\"0 0 1120 760\""));
 });
+
+test("portrait mobile gets an immersive rotated viewer rather than tiny-only scaled image", async () => {
+  const source = await readFile(new URL("../src/pages/JointCertificatePreview.jsx", import.meta.url), "utf8");
+  const css = await readFile(new URL("../src/pages/JointCertificatePreview.css", import.meta.url), "utf8");
+  assert(source.includes("عرض الشهادة بملء الشاشة"));
+  assert(source.includes('role={immersive ? "dialog" : undefined}'));
+  assert(source.includes('aria-modal={immersive || undefined}'));
+  assert(source.includes("closeButtonRef.current?.focus()"));
+  assert(source.includes('event.key === "Escape"'));
+  assert(source.includes('document.body.style.overflow = "hidden"'));
+  assert(source.includes('document.body.style.overflow = previousOverflow'));
+  assert(source.includes('availableHeight / folio.offsetHeight'));
+  assert(css.includes("@media (orientation:portrait) and (max-width:760px)"));
+  assert(css.includes("rotate(90deg)"));
+  assert(css.includes("width:calc(100dvh - 24px)"));
+  assert(css.includes(".joint-presentation-shell.is-immersive"));
+  assert(css.includes(".joint-immersive-toolbar"));
+});
+test("long instructions collapse without hiding the permanent unsigned disclaimer", async () => {
+  const source = await readFile(new URL("../src/pages/JointCertificatePreview.jsx", import.meta.url), "utf8");
+  assert(source.includes('<details className="joint-preview-postnote">'));
+  assert(source.includes("ما شروط إصدار الشهادة الفعلية؟"));
+  assert(source.includes("نموذج تصميم غير صادر"));
+  assert(source.includes("لا رقم تحقق · لا رمز QR"));
+  assert(!source.includes("CT-BB-"));
+  assert(!source.includes("3 / 3"));
+  assert(!source.includes("window.print("));
+  assert(!/localStorage|sessionStorage|setDoc\(|addDoc\(/.test(source));
+});
