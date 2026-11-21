@@ -20,9 +20,10 @@ export default function CertificateVerification({ initialId = "", onBack }) {
     setRecord(result.record ?? null);
   };
   useEffect(() => {
+    const active = ++serial.current;
     if (initialId && CERTIFICATE_ID.test(initialId)) {
       void lookupCertificate(initialId).then(result => {
-        if (serial.current !== 0) return;
+        if (serial.current !== active) return;
         setState(result.state);
         setRecord(result.record ?? null);
       });
