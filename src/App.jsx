@@ -7,6 +7,7 @@ const Investigation = lazy(() => import("./pages/Investigation"));
 const InvestigationLibrary = lazy(() => import("./pages/InvestigationLibrary"));
 const Pro = lazy(() => import("./pages/Pro"));
 const Certificates = lazy(() => import("./pages/Certificates"));
+const CertificateVerification = lazy(() => import("./pages/CertificateVerification"));
 const JointCertificatePreview = lazy(() => import("./pages/JointCertificatePreview"));
 const SocShift = lazy(() => import("./pages/SocShift"));
 const VerifiedSoc = lazy(() => import("./pages/VerifiedSoc"));
@@ -168,6 +169,7 @@ function App() {
   }
 
   if (view === "certificates") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح مركز الشهادات..." />}><Certificates key={user?.uid ?? "guest"} cases={CASES} progressVersion={progressVersion} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} onJointPreview={() => navigate({ view: "joint-certificate" })} /></Suspense>;
+  if (view === "verify-certificate") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح التحقق من الشهادة..." />}><CertificateVerification initialId={route.certificateId} onBack={() => navigate({ view: "certificates" })} /></Suspense>;
 
   if (view === "joint-certificate") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح نموذج الشهادة المشتركة..." />}><JointCertificatePreview onCertificates={() => navigate({ view: "certificates" })} onHome={goHome} /></Suspense>;
 
