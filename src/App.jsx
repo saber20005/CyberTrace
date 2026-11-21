@@ -7,6 +7,7 @@ const Investigation = lazy(() => import("./pages/Investigation"));
 const InvestigationLibrary = lazy(() => import("./pages/InvestigationLibrary"));
 const Pro = lazy(() => import("./pages/Pro"));
 const Certificates = lazy(() => import("./pages/Certificates"));
+const JointCertificatePreview = lazy(() => import("./pages/JointCertificatePreview"));
 const SocShift = lazy(() => import("./pages/SocShift"));
 const VerifiedSoc = lazy(() => import("./pages/VerifiedSoc"));
 import XPBadge from "./components/XPBadge";
@@ -166,7 +167,9 @@ function App() {
     return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل صفحة الحساب..." />}><Auth onBack={goHome} /></Suspense>;
   }
 
-  if (view === "certificates") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح مركز الشهادات..." />}><Certificates key={user?.uid ?? "guest"} cases={CASES} progressVersion={progressVersion} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} /></Suspense>;
+  if (view === "certificates") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح مركز الشهادات..." />}><Certificates key={user?.uid ?? "guest"} cases={CASES} progressVersion={progressVersion} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} onJointPreview={() => navigate({ view: "joint-certificate" })} /></Suspense>;
+
+  if (view === "joint-certificate") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح نموذج الشهادة المشتركة..." />}><JointCertificatePreview onCertificates={() => navigate({ view: "certificates" })} onHome={goHome} /></Suspense>;
 
   if (view === "soc") {
     return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح مناوبة SOC التدريبية..." />}><SocShift key={`${user?.uid ?? "guest"}:${route.shiftId ?? "SOC-SHIFT-01"}`} shiftId={route.shiftId} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} onSelectShift={shiftId => navigate({ view: "soc", shiftId })} /></Suspense>;
