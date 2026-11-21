@@ -185,7 +185,10 @@ function App() {
   }
 
   if (view === "library") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary key={`${user?.uid ?? "guest"}:${progressVersion}`} cloudSyncPanel={cloudSyncPanel} cases={CASES} onCertificates={() => navigate({ view: "certificates" })} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} onSoc={() => navigate({ view: "soc" })} onPro={() => navigate({ view: "pro" })} /></Suspense>;
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary key={`${user?.uid ?? "guest"}:${progressVersion}`} cloudSyncPanel={cloudSyncPanel} cases={CASES} onCertificates={() => navigate({ view: "certificates" })} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} onSoc={() => navigate({ view: "soc" })} onPro={() => navigate({ view: "pro" })}
+        user={user} onAuth={() => navigate({ view: "auth" })} onLogout={handleLogout}
+        onBlackBoxLink={blackBox.openLink} blackBoxEnabled={blackBox.status.enabled}
+        blackBoxConnected={Boolean(blackBox.status.user)} /></Suspense>;
   }
 
   if (view === "investigation" && selectedCase) {

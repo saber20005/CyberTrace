@@ -1,16 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { paginateItems, LIBRARY_PAGE_SIZE } from "../utils/pagination";
 import QuickDock from "../components/QuickDock";
+import HomeNavbar from "../components/HomeNavbar";
 import { CATEGORIES, DIFFICULTIES, getCaseDetails } from "../data/caseCatalog";
 import { getCaseResults, getCompletedCaseIds } from "../utils/caseProgress";
 import { getLevelInfo, getXP } from "../utils/xp";
-import XPBadge from "../components/XPBadge";
-import logo from "../assets/logo.svg";
 import ShareLink from "../components/ShareLink";
 import { getBlackBoxLearningLink, getShareURL } from "../utils/routes";
 import { trackEvent } from "../utils/analytics";
 import { buildLearningPlan } from "../utils/learningPlan";
-import BlackBoxAccountButton from "../blackbox/BlackBoxAccountButton";
 import { WORKSPACE_CASE_IDS } from "../data/investigationWorkspace.js";
 import "./InvestigationLibrary.css";
 
@@ -22,7 +20,7 @@ const suggestionLabels = {
   daily: "اقتراح اليوم",
 };
 
-function InvestigationLibrary({ cases, onStart, onHome, onSoc, onPro, onCertificates, cloudSyncPanel }) {
+function InvestigationLibrary({ cases, onStart, onHome, onSoc, onPro, onCertificates, cloudSyncPanel, user, onAuth, onLogout, onBlackBoxLink, blackBoxEnabled, blackBoxConnected }) {
   const [query, setQuery] = useState("");
   const [difficulty, setDifficulty] = useState("all");
   const [category, setCategory] = useState("all");
@@ -60,12 +58,11 @@ function InvestigationLibrary({ cases, onStart, onHome, onSoc, onPro, onCertific
 
   return (
     <div className="app library-page" dir="rtl">
-      <header className="navbar library-nav">
-        <button className="logo logo-button" onClick={onHome} aria-label="CyberTrace — الرئيسية">
-          <img src={logo} alt="" className="logo-mark" /><span>CyberTrace</span>
-        </button>
-        <div className="nav-right" role="group" aria-label="روابط التدريب والحساب" tabIndex={0}><button type="button" className="suite-nav-promo" onClick={onSoc}>مناوبات SOC</button><button type="button" className="suite-nav-promo" onClick={onCertificates}>شهاداتي</button><button type="button" className="suite-nav-promo" onClick={onPro}>Suite Pro</button><XPBadge /><BlackBoxAccountButton /><button type="button" className="nav-button library-home" onClick={onHome}>الرئيسية <span aria-hidden="true">↗</span></button></div>
-      </header>
+      <HomeNavbar active="library" user={user} onHome={onHome}
+        onLibrary={() => { setPage(1); document.getElementById("cases-title")?.scrollIntoView({ behavior: "smooth" }); }}
+        onSoc={onSoc} onCertificates={onCertificates} onPro={onPro}
+        onAuth={onAuth} onLogout={onLogout} onBlackBoxLink={onBlackBoxLink}
+        blackBoxEnabled={blackBoxEnabled} blackBoxConnected={blackBoxConnected} />
       <main className="library-shell">
         {cloudSyncPanel}
         <section className="library-heading" aria-labelledby="library-title">

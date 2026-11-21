@@ -44,3 +44,15 @@ test('home integration uses one navbar component, keeping existing auth and rout
   assert.match(app,/<QuickDock active="home"/);
   assert.match(app,/signOut\(auth\)/);
 });
+
+test('investigation library uses the SAME compact accessible header as home',()=>{
+  const library=read('../src/pages/InvestigationLibrary.jsx');
+  const app=read('../src/App.jsx');
+  const nav=read('../src/components/HomeNavbar.jsx');
+  assert.match(library,/<HomeNavbar active="library"/);
+  assert.match(library,/onBlackBoxLink=\{onBlackBoxLink\}/);
+  assert.match(library,/onLogout=\{onLogout\}/);
+  assert.match(app,/blackBoxConnected=\{Boolean\(blackBox\.status\.user\)\}/);
+  assert.match(nav,/aria-current=\{active === "library" \? "page" : undefined\}/);
+  assert.doesNotMatch(library,/className="navbar library-nav"/);
+});

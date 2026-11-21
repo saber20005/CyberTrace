@@ -7,7 +7,7 @@ import "./HomeNavbar.css";
 // The visible home header is navigation only. Identity, training results and
 // subscriptions remain controlled by their existing Firebase controllers.
 export default function HomeNavbar({
-  user, onHome, onLibrary, onSoc, onCertificates, onPro,
+  user, onHome, onLibrary, onSoc, onCertificates, onPro, active = "home",
   onAuth, onLogout, onBlackBoxLink, blackBoxEnabled, blackBoxConnected,
 }) {
   const more = useRef(null);
@@ -42,7 +42,7 @@ export default function HomeNavbar({
       <span>CyberTrace</span>
     </button>
     <div className="nav-right ct-nav-actions">
-      <button type="button" className="nav-library ct-primary-route" onClick={() => go(onLibrary)}>التحقيقات</button>
+      <button type="button" className="nav-library ct-primary-route" aria-current={active === "library" ? "page" : undefined} onClick={() => go(onLibrary)}>التحقيقات</button>
       <details className="ct-nav-dropdown ct-more" ref={more}>
         <summary aria-label="فتح قائمة المزيد من الأقسام" aria-haspopup="true">المزيد <span aria-hidden="true">⌄</span></summary>
         <div className="ct-nav-dropdown-panel" role="group" aria-label="أقسام CyberTrace">
