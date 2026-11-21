@@ -6,6 +6,7 @@ const Admin = lazy(() => import("./pages/Admin"));
 const Investigation = lazy(() => import("./pages/Investigation"));
 const InvestigationLibrary = lazy(() => import("./pages/InvestigationLibrary"));
 const Pro = lazy(() => import("./pages/Pro"));
+const Certificates = lazy(() => import("./pages/Certificates"));
 const SocShift = lazy(() => import("./pages/SocShift"));
 const VerifiedSoc = lazy(() => import("./pages/VerifiedSoc"));
 import XPBadge from "./components/XPBadge";
@@ -165,6 +166,8 @@ function App() {
     return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل صفحة الحساب..." />}><Auth onBack={goHome} /></Suspense>;
   }
 
+  if (view === "certificates") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح مركز الشهادات..." />}><Certificates key={user?.uid ?? "guest"} cases={CASES} progressVersion={progressVersion} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} /></Suspense>;
+
   if (view === "soc") {
     return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح مناوبة SOC التدريبية..." />}><SocShift key={`${user?.uid ?? "guest"}:${route.shiftId ?? "SOC-SHIFT-01"}`} shiftId={route.shiftId} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} onSelectShift={shiftId => navigate({ view: "soc", shiftId })} /></Suspense>;
   }
@@ -178,7 +181,7 @@ function App() {
   }
 
   if (view === "library") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary key={`${user?.uid ?? "guest"}:${progressVersion}`} cloudSyncPanel={cloudSyncPanel} cases={CASES} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} onSoc={() => navigate({ view: "soc" })} onPro={() => navigate({ view: "pro" })} /></Suspense>;
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary key={`${user?.uid ?? "guest"}:${progressVersion}`} cloudSyncPanel={cloudSyncPanel} cases={CASES} onCertificates={() => navigate({ view: "certificates" })} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} onSoc={() => navigate({ view: "soc" })} onPro={() => navigate({ view: "pro" })} /></Suspense>;
   }
 
   if (view === "investigation" && selectedCase) {
@@ -208,6 +211,7 @@ function App() {
 
         <div className="nav-right" role="group" aria-label="الانتقال إلى التدريب والحساب" tabIndex={0}>
           <button type="button" className="suite-nav-promo" onClick={() => navigate({ view: "soc" })}>مناوبة SOC</button>
+          <button type="button" className="suite-nav-promo" onClick={() => navigate({ view: "certificates" })}>شهاداتي</button>
           <button type="button" className="suite-nav-promo" onClick={() => navigate({ view: "pro" })}>Suite Pro · قريبًا</button>
           <XPBadge />
           <BlackBoxAccountButton />
