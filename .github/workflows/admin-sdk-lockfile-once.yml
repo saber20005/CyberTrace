@@ -1,0 +1,37 @@
+name: One-time Firebase Admin lockfile generation
+on:
+  push:
+    branches: [feat/admin-operations-readonly-20261122]
+permissions:
+  contents: write
+jobs:
+  generate-lock:
+    if: "!contains(github.event.head_commit.message, 'chore(deps): lock firebase-admin')"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Pin secure official Firebase Admin SDK and resolve lockfile
+        run: npm install firebase-admin@14.5.1 --save-exact --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Verify install against the generated lockfile
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Commit dependency+lockfile to this feature branch only
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          test "$BRANCH" = 'feat/admin-operations-readonly-20261122'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add package.json package-lock.json
+          if git diff --cached --quiet; then
+            echo 'Dependencies already locked'
+            exit 0
+          fi
+          git commit -m 'chore(deps): lock firebase-admin 14.5.1 for server-only admin authorization'
+          git push origin "HEAD:refs/heads/$BRANCH"
