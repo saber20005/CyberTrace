@@ -8,14 +8,18 @@ import "./VerifiedIdentityPanel.css";
 
 export default function VerifiedIdentityPanel({ blackboxUid }) {
   const [cybertraceUid,setCybertraceUid]=useState(() => auth.currentUser?.uid || null);
+  useEffect(()=>onAuthStateChanged(auth,user=>setCybertraceUid(user?.uid||null)),[]);
+  // React remounts per identity pair, discarding stale status and consent
+  // without synchronous state resets inside effects.
+  return <VerifiedIdentityContent key={String(blackboxUid)+"|"+String(cybertraceUid)}
+    blackboxUid={blackboxUid} cybertraceUid={cybertraceUid} />;
+}
+
+function VerifiedIdentityContent({ blackboxUid, cybertraceUid }) {
   const [consent,setConsent]=useState(false);
   const [phase,setPhase]=useState("idle");
   const [linked,setLinked]=useState(null);
   const [message,setMessage]=useState("");
-  useEffect(()=>onAuthStateChanged(auth,user=>setCybertraceUid(user?.uid||null)),[]);
-  useEffect(()=>{
-    setPhase("idle");setLinked(null);setMessage("");setConsent(false);
-  },[blackboxUid,cybertraceUid]);
   const check=async () => {
     if(!blackboxUid||!cybertraceUid||phase==="loading")return;
     setPhase("loading");setMessage("");
