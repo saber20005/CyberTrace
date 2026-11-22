@@ -18,6 +18,10 @@ try{
  for(const viewport of [{width:320,height:740},{width:390,height:844},{width:1440,height:1000}]){
   const context=await browser.newContext({viewport});
   const errors=[],thirdParty=[],requestAuth=[];
+  let signalLate;
+  const lateRequested = new Promise(resolve => { signalLate = resolve; });
+  let releaseLate;
+  const lateResponse = new Promise(resolve => { releaseLate = resolve; });
   await context.route("**/*",async route=>{
    const request=route.request(),url=new URL(request.url());
    if(url.origin!==origin){
@@ -27,6 +31,12 @@ try{
    if(url.pathname==="/api/admin/summary"){
     const auth=request.headers()["authorization"]||"";
     requestAuth.push(auth);
+    if(auth==="Bearer fixture-slowadmin") {
+     signalLate();
+     await lateResponse;
+     try { return await route.fulfill({status:200,contentType:"application/json",body:JSON.stringify(sample)}); }
+     catch { return; } // prior request was cancelled when identity changed
+    }
     if(auth==="Bearer fixture-manager")return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify(sample)});
     if(auth==="Bearer fixture-revoked")return route.fulfill({status:401,contentType:"application/json",body:'{"error":"unauthorized"}'});
     if(auth==="Bearer fixture-offline")return route.fulfill({status:503,contentType:"application/json",body:'{"error":"unavailable"}'});
@@ -73,12 +83,22 @@ try{
    await page.getByRole("alert").getByText("تعذّر التحقق من واجهة الإدارة. لا تُعرض بيانات مخزنة أو افتراضية بدل النتيجة الخادمية.").waitFor();
    assert.equal(await page.locator(".admin-kpis").count(),0,"failed request does not show prior data");
 
+   // A delayed response from a previous admin must never reveal its data
+   // after another account has been selected. Keep the same component mounted.
+   await owner("slowadmin");
+   await lateRequested;
+   await owner("ordinary");
+   await page.getByRole("alert").getByText("الوصول مرفوض من الخادم. هذا الحساب لا يحمل صلاحية الإدارة.").waitFor();
+   releaseLate();
+   await page.waitForTimeout(60);
+   assert.equal(await page.locator(".admin-kpis").count(),0,"late privileged response must not leak into the next account");
    await owner(null);
    await page.getByRole("alert").getByText("سجّل الدخول بحساب إداري مخوّل لعرض هذه الصفحة.").waitFor();
    assert.equal(await page.locator(".admin-tabs").count(),0);
    assert.deepEqual(thirdParty,[],"no requests to other websites");
    assert.deepEqual(errors,[],"no runtime browser errors");
    assert.equal(requestAuth.every(x=>/^Bearer fixture-/.test(x)),true,"only simulated test token used");
+   assert(requestAuth.includes("Bearer fixture-slowadmin"),"slow auth request was exercised");
    console.log("PASS admin "+viewport.width+"px: guest denied, non-admin denied, admin data scoped, filter, revoked/offline deny, logout");
   }finally{await context.close();}
  }

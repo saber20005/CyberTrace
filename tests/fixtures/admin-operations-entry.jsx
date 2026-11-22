@@ -11,7 +11,7 @@ window.__adminTest=Object.freeze({
         return "fixture-"+uid;
       },
     }:null;
-    root.render(createElement(Admin,{key:uid??"guest",user,onHome:()=>{}}));
+    root.render(createElement(Admin,{user,onHome:()=>{}}));
   },
 });
 window.__adminTest.setIdentity(null);
