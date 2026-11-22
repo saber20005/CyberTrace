@@ -1,4 +1,3 @@
-import React from "react";
 import { createRoot } from "react-dom/client";
 import UnifiedJourneys from "../../src/pages/UnifiedJourneys.jsx";
 import { setProgressOwner } from "../../src/utils/progressScope.js";

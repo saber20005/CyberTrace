@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import process from "node:process";
 import { createServer } from "vite";
 
 const driver=await import(process.env.CYBERTRACE_PLAYWRIGHT_MODULE || "playwright");
