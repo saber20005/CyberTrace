@@ -1,4 +1,5 @@
 import { useState } from "react";
+import logo from "../assets/logo.svg";
 import "./Auth.css";
 import BlackBoxAccountButton from "../blackbox/BlackBoxAccountButton";
 import { signInToCyberTraceWithGoogle, googleSignInErrorMessage } from "../utils/googleAuth";
@@ -124,7 +125,19 @@ function Auth({ onBack }) {
         <BlackBoxAccountButton />
       </header>
 
-      <div className="auth-card">
+      <div className="auth-card" data-mode={mode}>
+        <aside className="auth-showcase" aria-label="تعريف بالمنصة">
+          <img src={logo} alt="" className="auth-showcase-logo" />
+          <p className="auth-showcase-eyebrow">CYBERTRACE / INVESTIGATION LAB</p>
+          <h2>{isSignup ? "رحلتك تبدأ بتحقيق." : isReset ? "استعد الوصول بأمان." : "أهلًا بعودتك إلى التحقيقات."}</h2>
+          <p>حلّل الحوادث، وثّق القرارات، واستأنف التدريب من حسابك دون تغيير نتائجك.</p>
+          {!isReset && <button className="auth-showcase-switch" type="button" disabled={loading}
+            onClick={() => switchMode(isSignup ? "login" : "signup")}>
+            {isSignup ? "لديك حساب؟ تسجيل الدخول" : "مستخدم جديد؟ إنشاء حساب"} <span aria-hidden="true">←</span>
+          </button>}
+          <span className="auth-showcase-footnote">تقدّم CyberTrace مستقل عن BLACKBOX حتى تربط الحسابين صراحةً.</span>
+        </aside>
+        <div className="auth-form-panel">
         <div className="terminal-header">
           <div className="terminal-dots">
             <span></span>
@@ -247,6 +260,7 @@ function Auth({ onBack }) {
               </button>}
             </>
           )}
+        </div>
         </div>
       </div>
     </div>

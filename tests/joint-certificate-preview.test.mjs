@@ -42,17 +42,6 @@ test("no fake valid QR, 3/3 results, certificate number or issuance time is show
   assert(!page.includes("window.print("));
 });
 
-test("the extra English preview line is absent while non-issued status remains visible", async () => {
-  const page = await readFile(pageUrl, "utf8");
-  const css = await readFile(cssUrl, "utf8");
-  assert(!page.includes("joint-template-preview-en"));
-  assert(!css.includes(".joint-template-preview-en"));
-  assert(!page.includes("VISUAL PREVIEW ONLY."));
-  assert(page.includes("نموذج غير صادر"));
-  assert(page.includes("غير صادرة."));
-  assert(page.includes("التحقق غير متاح"));
-});
-
 test("mobile viewer can show the landscape source legibly without modifying its layout", async () => {
   const page = await readFile(pageUrl, "utf8");
   const css = await readFile(cssUrl, "utf8");
@@ -105,4 +94,15 @@ test("both owner-supplied original logos replace embedded symbols at four positi
   assert(!page.includes("3 / 3"));
   assert(!page.includes("CT-BB-"));
   assert(!/setDoc\(|addDoc\(|window\.print\(/.test(page));
+});
+
+test("the extra English preview line is absent while non-issued status remains visible", async () => {
+  const page = await readFile(pageUrl, "utf8");
+  const css = await readFile(cssUrl, "utf8");
+  assert(!page.includes("joint-template-preview-en"));
+  assert(!css.includes(".joint-template-preview-en"));
+  assert(!page.includes("VISUAL PREVIEW ONLY."));
+  assert(page.includes("نموذج غير صادر"));
+  assert(page.includes("غير صادرة."));
+  assert(page.includes("التحقق غير متاح"));
 });

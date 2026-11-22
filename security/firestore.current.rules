@@ -1,3 +1,7 @@
+// LEGACY REFERENCE ONLY — DO NOT DEPLOY TO CYBERTRACE OR BLACKBOX.
+// This snapshot predates the current case catalog and verified server-only records.
+// CyberTrace uses Firebase project cybertrace-48ab0; BLACKBOX uses black-box-lab.
+// Inspect the actual deployed rules and run emulator tests before any Firebase rules deployment.
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {

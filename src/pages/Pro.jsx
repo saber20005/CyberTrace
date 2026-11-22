@@ -1,4 +1,5 @@
 import logo from "../assets/logo.svg";
+import ProMembershipPanel from "../components/ProMembershipPanel";
 import "./Pro.css";
 
 const futureFeatures = [
@@ -101,6 +102,8 @@ export default function Pro({ onHome, onLibrary, onSoc, onVerify }) {
           <div><span>03</span><strong>طبّق</strong><small>BLACKBOX</small></div>
         </div>
       </section>
+
+      <ProMembershipPanel />
 
       <section className="suite-pro-safety">
         <div className="suite-pro-safety-icon" aria-hidden="true">◇</div>
