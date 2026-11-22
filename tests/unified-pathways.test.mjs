@@ -25,7 +25,7 @@ test("journey route and UI use only current account's already scoped local inves
  assert.equal(createRouteURL({view:"journeys"},"https://www.cybertracelab.dev/?email=secret@example.com").search,"?view=journeys");
  assert.deepEqual(localJourneyProgress(SUITE_PATHWAYS[0],"cybertrace",id=>id==="INC-0417"),{done:1,total:2,remoteKnown:false,credentialEligible:false});
  const source=readFileSync(new URL("../src/pages/UnifiedJourneys.jsx",import.meta.url),"utf8");
- assert.match(source,/getCaseResults\(\)/);
+ assert.match(source,/getCaseResults\(\)/);assert.match(source,/getCompletedCaseIds\(\)/);assert.match(source,/<details className="ct-suite-card"/);assert.match(source,/إكمال سابق محفوظ دون درجة/);
  assert.match(source,/حالة الإكمال غير معروفة هنا/);
  assert.doesNotMatch(source,/localStorage\.setItem|setDoc\(|certificateEligible:true/);
 });
