@@ -7,6 +7,7 @@ const Investigation = lazy(() => import("./pages/Investigation"));
 const InvestigationLibrary = lazy(() => import("./pages/InvestigationLibrary"));
 const Pro = lazy(() => import("./pages/Pro"));
 const Certificates = lazy(() => import("./pages/Certificates"));
+const UnifiedJourneys = lazy(() => import("./pages/UnifiedJourneys"));
 const CertificateVerification = lazy(() => import("./pages/CertificateVerification"));
 const JointCertificatePreview = lazy(() => import("./pages/JointCertificatePreview"));
 const SocShift = lazy(() => import("./pages/SocShift"));
@@ -170,6 +171,7 @@ function App() {
     return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل صفحة الحساب..." />}><Auth onBack={goHome} /></Suspense>;
   }
 
+  if (view === "journeys") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح المسارات المشتركة..." />}><UnifiedJourneys key={`${user?.uid ?? "guest"}:${progressVersion}`} onHome={goHome} onLibrary={goLibrary} /></Suspense>;
   if (view === "certificates") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح مركز الشهادات..." />}><Certificates key={user?.uid ?? "guest"} cases={CASES} progressVersion={progressVersion} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} onJointPreview={() => navigate({ view: "joint-certificate" })} /></Suspense>;
   if (view === "verify-certificate") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح التحقق من الشهادة..." />}><CertificateVerification key={route.certificateId || "empty"} initialId={route.certificateId} onBack={() => navigate({ view: "certificates" })} /></Suspense>;
 
@@ -208,7 +210,7 @@ function App() {
 
   return (
     <div className="app" dir="rtl">
-      <HomeNavbar user={user} onHome={goHome} onLibrary={goLibrary}
+      <HomeNavbar user={user} onHome={goHome} onLibrary={goLibrary} onJourneys={() => navigate({ view: "journeys" })}
         onSoc={() => navigate({ view: "soc" })}
         onCertificates={() => navigate({ view: "certificates" })}
         onPro={() => navigate({ view: "pro" })}
@@ -337,9 +339,9 @@ function App() {
             </article>
             <article className="ct-learning-tile">
               <span className="ct-tile-index">03 / GROW</span>
-              <h3>CyberTrace × BLACKBOX</h3>
-              <p>تعرف على خطة التجربة الموحدة القادمة دون اشتراكات مدفوعة حاليًا.</p>
-              <button type="button" onClick={() => navigate({ view: "pro" })}>اطّلع على خارطة الطريق <span aria-hidden="true">←</span></button>
+              <h3>المسارات المشتركة</h3>
+              <p>اربط تحقيقات CyberTrace بتدريبات BLACKBOX عبر أربع رحلات متدرجة، دون نقل بيانات الحساب.</p>
+              <button type="button" onClick={() => navigate({ view: "journeys" })}>افتح المسارات المشتركة <span aria-hidden="true">←</span></button>
             </article>
           </div>
         </section>

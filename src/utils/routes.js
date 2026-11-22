@@ -28,7 +28,7 @@ export function readRoute(value, cases = []) {
     const ids = params.getAll("id");
     return { view: "verify-certificate", certificateId: ids.length === 1 && /^[0-9a-f]{32}$/.test(ids[0]) ? ids[0] : "" };
   }
-  if (views.length === 1 && ["library", "auth", "pro", "verified-soc", "certificates", "joint-certificate"].includes(views[0])) return { view: views[0] };
+  if (views.length === 1 && ["library", "auth", "pro", "verified-soc", "certificates", "joint-certificate", "journeys"].includes(views[0])) return { view: views[0] };
   return { view: "home" };
 }
 
