@@ -9,7 +9,7 @@ let browser;
 const catalog=buildCatalogOverview();
 const sample={schemaVersion:1,status:"catalog_only",catalog,metrics:null,availability:{
  userTotals:"not_configured",investigationOutcomes:"not_verified",revenue:"not_configured",
- auditEvents:"not_configured",revocationAwareAdmin:"not_enabled"
+ auditEvents:"not_configured",revocationAwareAdmin:"enabled"
 }};
 try{
  await vite.listen();
@@ -73,7 +73,7 @@ try{
    assert.equal(await page.locator(".admin-list").first().locator(":scope > div").count(),1,"category filter shows the selected category");
    await page.getByRole("button",{name:"الأمان والجاهزية"}).click();
    assert.match(await page.locator(".admin-surface").innerText(),/التحقق من إلغاء الجلسات/);
-   assert.match(await page.locator(".admin-surface").innerText(),/غير مفعّل/);
+   assert.match(await page.locator(".admin-surface").innerText(),/مفعّل/);
    await checkFit();
 
    await owner("revoked");

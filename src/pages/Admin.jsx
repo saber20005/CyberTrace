@@ -12,7 +12,7 @@ const capabilityLabels = [
   ["investigationOutcomes", "نتائج التحقيقات", "نتائج التدريب المحلية غير مؤهلة للتحليل الرسمي"],
   ["revenue", "الإيرادات والاشتراكات", "لم يُربط مصدر محاسبي موثوق"],
   ["auditEvents", "سجل إجراءات الإدارة", "لا توجد خدمة تدقيق خادمية معتمدة"],
-  ["revocationAwareAdmin", "التحقق من إلغاء الجلسات", "لم يُفعّل تحقق إلغاء الرمز وتعطيل الحسابات بعد"],
+  ["revocationAwareAdmin", "التحقق من إلغاء الجلسات", "يتحقق الخادم من الجلسات الملغاة والحسابات المعطّلة وصلاحية الإدارة الحالية"],
 ];
 
 export default function Admin({ user, onHome }) {
@@ -118,7 +118,7 @@ export default function Admin({ user, onHome }) {
               <section className="admin-surface" aria-labelledby="admin-limitations">
                 <h2 id="admin-limitations">حدود البيانات الحالية</h2>
                 <p>لا تتوفر أعداد مستخدمين، إيرادات، درجات موثّقة أو سجل تدقيق خادمي. لن نعرض أرقامًا مفترضة لتبدو اللوحة مكتملة.</p>
-                <p className="admin-warning">صلاحية Firebase موقّعة ومتحقق منها لدى الخادم، لكن فحص إلغاء الرموز والحسابات المعطّلة لم يُفعّل بعد. جميع الإجراءات الإدارية محجوبة.</p>
+                <p className="admin-warning">يجري الخادم فحص الجلسات الملغاة وصلاحية الإدارة الحالية قبل إعادة هذه البيانات. جميع عمليات تعديل حسابات المستخدمين محجوبة.</p>
               </section>
             </div>
           </>}
@@ -145,7 +145,7 @@ export default function Admin({ user, onHome }) {
             <div className="admin-list">
               <div><span>صلاحية قراءة ملخص الإدارة</span><strong className="admin-positive">تحقّق خادمي</strong></div>
               {capabilityLabels.map(([key, name, description]) => <div key={key}>
-                <span>{name}<small>{description}</small></span><strong>{data.availability?.[key] === "not_enabled" ? "غير مفعّل" : "غير متاح"}</strong>
+                <span>{name}<small>{description}</small></span><strong>{data.availability?.[key] === "enabled" ? "مفعّل" : data.availability?.[key] === "not_enabled" ? "غير مفعّل" : "غير متاح"}</strong>
               </div>)}
             </div>
             <p className="admin-warning">هذا المركز للقراءة فقط. لا تنشر صلاحيات إدارة أو بيانات حسابات أو مفاتيح Firebase في واجهة المتصفح.</p>
