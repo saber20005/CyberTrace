@@ -41,6 +41,11 @@ export default function Certificates({ cases, onHome, onLibrary, onPro, onJointP
             <div className="ct-cert-curriculum-body">
               <p><strong>المهارة المطلوبة:</strong> {item.goals.outcome}</p>
               <p><strong>التطبيق العملي:</strong> {item.goals.practice}</p>
+              <h3 className="ct-cert-workshop-heading">ورشة تطبيقية موجّهة</h3>
+              <ol className="ct-cert-workshop-steps">{item.goals.steps.map((step, index) => <li key={index}>{step}</li>)}</ol>
+              <p><strong>مخرجات التدريب:</strong> {item.goals.deliverable}</p>
+              <p><strong>معيار مراجعة التقرير:</strong> {item.goals.acceptance}</p>
+              <p className="ct-cert-training-disclaimer">هذه إرشادات ومخرجات مقترحة للتدريب على بيانات اصطناعية، وليست فحصًا خادميًا أو قبولًا مستقلًا للأدلة.</p>
               <p><strong>الحالات التي تتدرب عليها:</strong></p>
               <ul>{item.cases.map(itemCase=><li key={itemCase.id}><code dir="ltr">{itemCase.id}</code> — {itemCase.title}</li>)}</ul>
               <button type="button" onClick={onLibrary}>فتح مكتبة التحقيقات ←</button>
