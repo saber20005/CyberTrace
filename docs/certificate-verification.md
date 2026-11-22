@@ -19,6 +19,7 @@ CyberTrace Firebase project: `cybertrace-48ab0`. BLACKBOX Firebase project: `bla
 
 Do not add 'verified' labels, serial numbers or QR codes to existing certificates. Do not expose an auto-issuance button based on `buildCaseGroupRecords()`, Firestore owner-writable receipts, or historical `seen` cases. Cross-origin UI and true issuance will be added only after the central endpoint, safe account linking and verified category evaluations have been tested and deployed.
 
+
 ## Public verification UI (separate gated PR)
 
 The read-only route `/?view=verify-certificate&id=<32 lower-case hex>` shows verification for **server-issued** records from the shared BLACKBOX registry, not local completion or historical receipts. It displays valid, revoked, not-found, invalid-format and unavailable states without misrepresenting a disabled backend as valid or fake. Cross-project identity linking is not needed for a public lookup and none is performed. All existing training records remain labelled unverified, with no QR or ID added automatically.

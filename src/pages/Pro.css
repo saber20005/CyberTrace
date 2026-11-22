@@ -139,3 +139,21 @@
 /* Future verification route is informative; not a subscription or an active grade. */
 .suite-pro-coming .suite-pro-verify-link{display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:43px;margin-top:11px;padding:9px 13px;background:#181d24;color:#e8caa3;border:1px solid #806446;border-radius:9px;font:700 12px/1.8 "Cairo",sans-serif;text-align:center}
 .suite-pro-coming .suite-pro-verify-link:hover{border-color:#e1b77e;background:#242932}
+
+/* Suite entitlement is status-only. It does not reveal protected content. */
+.suite-pro-membership {
+  margin-top:28px; padding:clamp(20px,3vw,30px);
+  border:1px solid #7b6043;border-radius:16px;
+  background:linear-gradient(145deg,#29221d,#141820);color:#eee0d0;
+}
+.suite-pro-membership h2 {margin:5px 0 8px;font-size:clamp(19px,2.5vw,24px)}
+.suite-pro-membership p {font-size:13px;line-height:1.9;color:#d1c3b5}
+.suite-pro-membership-state {display:grid;gap:10px;margin-top:14px}
+.suite-pro-membership-state button {
+  justify-self:start;min-height:44px;border:1px solid #b58d61;
+  border-radius:10px;background:#513921;color:#f4e5cf;
+  padding:10px 16px;font:inherit;font-weight:700;
+}
+.suite-pro-membership-state [role="alert"] {color:#ffd7ba}
+.suite-pro-membership-state button:focus-visible {outline:3px solid #f0c68f;outline-offset:3px}
+@media(prefers-reduced-motion:reduce) {.suite-pro-membership-state *{transition:none!important}}

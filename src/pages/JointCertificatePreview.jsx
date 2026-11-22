@@ -125,10 +125,6 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
         <div className="joint-template-name" aria-label="الاسم التجريبي">
           <span>{displayName}</span>
         </div>
-        <div className="joint-template-preview-en" dir="ltr">
-          JOINT TRAINING &amp; INVESTIGATION — VISUAL PREVIEW ONLY.
-          NO CERTIFICATE HAS BEEN ISSUED.
-        </div>
         <div className="joint-template-score joint-template-score-bb" aria-label="نتيجة BLACKBOX غير متحققة">— / —</div>
         <div className="joint-template-score joint-template-score-ct" aria-label="نتيجة CyberTrace غير متحققة">— / —</div>
         <div className="joint-template-qr-placeholder" role="note" aria-label="التحقق غير متاح">
