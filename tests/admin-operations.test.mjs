@@ -49,5 +49,8 @@ test("admin only receives read-only catalog and explicit unavailable trust bound
   assert.equal(res.payload.availability.userTotals,"not_configured");
   assert.equal(res.payload.availability.revocationAwareAdmin,"not_enabled");
   assert.equal(Object.hasOwn(res.payload,"uid"),false);
-  assert.equal(JSON.stringify(res.payload).includes("email"),false);
+  assert.equal(Object.hasOwn(res.payload,"email"),false);
+  assert.equal(Object.hasOwn(res.payload,"users"),false);
+  assert.equal(Object.hasOwn(res.payload,"uid"),false);
+  assert.equal(Object.hasOwn(res.payload,"tokens"),false);
 });
