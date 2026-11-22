@@ -57,7 +57,7 @@ test("owner can save a previously completed investigation without an invented sc
   await assertSucceeds(setDoc(ref(db, "legacy"), record({ results: {}, completed: ["INC-0417"], xp: 0 })));
 });
 
-test("two devices restore and merge one owner\'s progress; same email cannot bypass UID isolation",async()=>{
+test("two devices restore and merge one owner's progress; same email cannot bypass UID isolation",async()=>{
   // Two distinct client contexts with the SAME auth UID emulate a new device.
   const first=env.authenticatedContext("suite-two-device-owner",{email:"suite@example.test"}).firestore();
   const second=env.authenticatedContext("suite-two-device-owner",{email:"suite@example.test"}).firestore();
