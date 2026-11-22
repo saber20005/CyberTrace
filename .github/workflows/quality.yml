@@ -37,4 +37,6 @@ jobs:
       - name: Check shared pathways in real mobile and desktop browsers
         env:
           CYBERTRACE_PLAYWRIGHT_MODULE: /tmp/cybertrace-playwright/node_modules/playwright/index.mjs
-        run: node scripts/test-unified-journeys-browser.mjs
+        run: |
+          node scripts/test-unified-journeys-browser.mjs
+          node scripts/test-experience-studio-browser.mjs
