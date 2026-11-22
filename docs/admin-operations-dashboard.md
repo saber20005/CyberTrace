@@ -20,3 +20,16 @@ This is **a read-only admin operations overview**, not user analytics or a certi
 - Before **production**: complete live Firebase Admin revocation-aware checks and secret provisioning (PR #26); validate Vercel backend on protected preview. The new dashboard must not be merged solely on green CI.
 
 Roll out separately from BLACKBOX and the shared-pathway PRs. Do not attempt repeated Vercel deploys while quota-limited.
+
+## Admin browser regression (local only)
+
+GitHub Actions job `admin-browser` starts a localhost Vite fixture that renders the **real Admin React component** with simulated Firebase accounts and an intercepted localhost `GET /api/admin/summary`. This test never receives real Firebase credentials, calls Firebase projects or writes user data.
+
+At viewport widths 320px, 390px and 1440px the test verifies:
+- Guest and non-admin are denied without exposing any administration cards.
+- An authorized simulated admin sees source-derived content metrics and functioning section tabs/category filter.
+- A subsequent rejected/revoked token, backend failure and logout all clear the preceding account's protected dashboard.
+- No unintended external network requests, browser runtime errors or horizontal overflow.
+- Tokens stay in the same-origin Authorization header and never appear in URL fields.
+
+**Limit**: client-side mocking does not validate live Firebase revoked-token checks. The protected Vercel preview still requires an authorized session to inspect it manually. PR #26 remains inactive until Firebase Admin SDK dependency is locked and server-only credentials are safely provisioned.
