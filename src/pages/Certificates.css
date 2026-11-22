@@ -112,7 +112,10 @@
 .ct-cert-curriculum-item summary strong{color:#f5e2c9}
 .ct-cert-curriculum-item summary span{font-size:12px;color:#d5b384;white-space:nowrap}
 .ct-cert-curriculum-body{padding:0 15px 15px}
-.ct-cert-curriculum-body ul{padding-inline-start:20px;line-height:1.8}
+.ct-cert-curriculum-body :is(ul,ol){padding-inline-start:20px;line-height:1.8}
+.ct-cert-workshop-heading{margin:16px 0 7px;color:#e5bf8f;font-size:16px}
+.ct-cert-workshop-steps{display:grid;gap:5px}
+.ct-cert-curriculum-body .ct-cert-training-disclaimer{font-size:13px;border-inline-start:3px solid #b08859;background:#332a2b;padding:10px;color:#e7d7c6}
 .ct-cert-curriculum-body li{overflow-wrap:anywhere}
 .ct-cert-curriculum-body code{color:#f1c992;font-size:12px}
 .ct-cert-curriculum-body button{border:1px solid #b08859;border-radius:10px;background:#4f3827;color:#f9e5ca;min-height:44px;padding:9px 13px;font:inherit;cursor:pointer}

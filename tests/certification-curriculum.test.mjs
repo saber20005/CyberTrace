@@ -17,6 +17,11 @@ test('all eight existing investigation categories have grounded, distinct skill 
  for(const row of data){
    assert(row.goals.outcome.length>30);
    assert(row.goals.practice.length>30);
+   assert.equal(row.goals.steps.length,3);
+   assert.equal(new Set(row.goals.steps).size,3);
+   for(const step of row.goals.steps)assert(step.length>50);
+   assert(row.goals.deliverable.length>45);
+   assert(row.goals.acceptance.length>45);
    assert.equal(row.count,row.cases.length);
  }
 });
@@ -28,5 +33,9 @@ test('learning preparation does not become a new client certificate authority',(
  assert.match(app,/إصدار شهادة موثّقة يتطلب تقييمًا مستقلًا على الخادم/);
  assert.match(app,/blackboxlab\.dev\/evidence-labs\.html/);
  assert.match(app,/onLibrary/);
+ assert.match(app,/item\.goals\.steps\.map/);
+ assert.match(app,/item\.goals\.deliverable/);
+ assert.match(app,/item\.goals\.acceptance/);
+ assert.match(app,/ليست فحصًا خادميًا أو قبولًا مستقلًا للأدلة/);
  assert.doesNotMatch(read('../src/data/certificationCurriculum.js'),/setDoc\(|localStorage|certificateId:|verifiedByServer: true/);
 });

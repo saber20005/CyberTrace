@@ -22,3 +22,29 @@ downloaded PDF alone.
 
 The interface is read-only, and the printable training record remains
 explicitly *not verified*. The new preparation matrix is hidden in print.
+
+## Practical workshops (formative exercises only)
+
+Each of the eight category cards now includes a three-step simulated evidence
+exercise, a concrete report deliverable and a minimum interpretation checklist.
+The practice uses the **existing synthetic incidents**; it does not create or
+claim completion of extra cases. Learners should include an INC-XXXX case ID,
+traceable evidence references, an alternative explanation, a scoped response
+and a limitation. The case-library button still opens the existing catalog.
+
+The exercises are deliberately **read-only and non-graded**: no new score, XP,
+certificate status, or cross-product progress is created from opening or
+reading them. Case answers and any future private grading rubric are not added
+to public source code. The printable record remains an explicitly unverified
+training record; a verified certificate still requires a separate trusted
+assessment and revocable issuer-owned record.
+
+### Release checks
+
+- All eight topics retain their 28 existing case associations, with no new
+  permissions or changed persisted-progress keys.
+- Verify the category cards expand and the three numbered steps wrap on 360px
+  mobile screens and in RTL; the whole preparation section stays hidden in print.
+- Execute `npm run check:structure`, `npm run lint`, `npm test` and
+  `npm run build`; only ship once those and the existing CI checks are green.
+- Do not enable verified issuance, Firebase grading, or payments in this PR.
