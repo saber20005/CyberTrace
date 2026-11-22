@@ -37,3 +37,33 @@
 }
 @media(prefers-reduced-motion:reduce) {.ct-quick-dock *{transition:none!important;animation:none!important}}
 @media print {.ct-quick-dock{display:none!important}}
+
+/* On phones, avoid the four-column minimum-content squeeze seen in Arabic UI.
+   The disclosure is compact when closed and a readable 2x2 grid when open. */
+@media (max-width: 640px) {
+  .ct-quick-dock {
+    left:max(12px,env(safe-area-inset-left,0px));right:auto;
+    bottom:calc(14px + env(safe-area-inset-bottom,0px));
+    transform:none;max-width:calc(100vw - 24px);
+  }
+  .ct-quick-dock:not([open]) {width:max-content}
+  .ct-quick-dock[open] {width:min(274px,calc(100vw - 24px))}
+  .ct-quick-dock > summary {
+    width:max-content;margin-left:0;margin-right:auto;
+    min-height:44px;padding:9px 14px;
+  }
+  .ct-quick-dock-items {
+    box-sizing:border-box;width:100%;min-width:0;
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;padding:9px;border-radius:16px;
+  }
+  .ct-quick-dock-items button {
+    box-sizing:border-box;min-width:0;width:100%;min-height:66px;
+    padding:7px 6px;gap:3px;
+  }
+  .ct-quick-dock-items button small {
+    display:block;min-width:0;width:100%;
+    font-size:12px;line-height:1.4;
+    white-space:normal;overflow-wrap:anywhere;text-align:center;
+  }
+}
