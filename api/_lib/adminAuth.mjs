@@ -1,20 +1,32 @@
 import process from "node:process";
+
 const PROJECT_ID = "cybertrace-48ab0";
 let cachedAuth;
 
+// This module is NOT wired to production until firebase-admin is dependency-locked,
+// and the server-only credential is configured in the protected preview.
 export async function getAdminAuth() {
   if (cachedAuth) return cachedAuth;
-  // The firebase-admin dependency must be installed and locked before deployment.
+  const raw = process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON;
+  if (typeof raw !== "string" || !raw.trim()) {
+    throw new Error("Server Firebase Admin credentials not configured");
+  }
+  let credentials;
+  try { credentials = JSON.parse(raw); }
+  catch { throw new Error("Invalid Firebase Admin service account configuration"); }
+  if (!credentials || typeof credentials !== "object" || Array.isArray(credentials) ||
+      credentials.project_id !== PROJECT_ID ||
+      typeof credentials.client_email !== "string" || !credentials.client_email.trim() ||
+      typeof credentials.private_key !== "string" || !credentials.private_key.includes("BEGIN PRIVATE KEY")) {
+    throw new Error("Invalid Firebase Admin service account configuration");
+  }
+
+  // Only import privileged SDK modules after validating server configuration.
+  // Missing/invalid SDK, project or credentials must fail closed.
   const [{ getApps, initializeApp, cert }, { getAuth }] = await Promise.all([
     import("firebase-admin/app"),
     import("firebase-admin/auth"),
   ]);
-  const raw = process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON;
-  if (!raw) throw new Error("Server Firebase Admin credentials not configured");
-  const credentials = JSON.parse(raw);
-  if (credentials.project_id !== PROJECT_ID || !credentials.client_email || !credentials.private_key) {
-    throw new Error("Invalid Firebase Admin service account configuration");
-  }
   const app = getApps().find(item => item.name === "cybertrace-admin") ||
     initializeApp({ credential: cert(credentials), projectId: PROJECT_ID }, "cybertrace-admin");
   cachedAuth = getAuth(app);
@@ -22,17 +34,23 @@ export async function getAdminAuth() {
 }
 
 export async function verifyAdminIdentity(token, { authProvider = getAdminAuth } = {}) {
-  if (typeof token !== "string" || token.length > 8192 || token.length === 0) {
+  if (typeof token !== "string" || !token || token.length > 8192 || !/^[A-Za-z0-9._-]+$/.test(token)) {
     throw new Error("Invalid token");
   }
   const auth = await authProvider();
-  // checkRevoked=true verifies revoked sessions and disabled users with Firebase.
+  // Firebase Admin's checkRevoked=true also detects a disabled Firebase account.
+  // Do not downgrade this check to simple local JWT verification.
   const claims = await auth.verifyIdToken(token, true);
-  if (claims.admin !== true) return { uid: claims.uid, admin: false };
-  // Do not trust the claim alone: require current user state too.
-  const user = await auth.getUser(claims.uid);
-  if (user.disabled || user.customClaims?.admin !== true) {
-    return { uid: claims.uid, admin: false };
+  const uid = claims?.uid;
+  if (typeof uid !== "string" || !uid.trim() || uid.length > 128) {
+    throw new Error("Invalid authenticated UID");
   }
-  return { uid: claims.uid, admin: true };
+  if (claims.admin !== true) return { uid, admin: false };
+
+  // Require current account state: an earlier still-valid admin claim is not enough.
+  const user = await auth.getUser(uid);
+  if (!user || user.uid !== uid || user.disabled || user.customClaims?.admin !== true) {
+    return { uid, admin: false };
+  }
+  return { uid, admin: true };
 }

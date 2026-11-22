@@ -14,3 +14,11 @@ This branch introduces a revocation-aware authorization module, but **does not a
 ## Current behavior
 
 The production summary endpoint is unchanged. This module calls `verifyIdToken(token, true)` and checks current Firebase user status and current custom admin claim, but only when wired in after the prerequisites above.
+
+
+## Defensive test coverage (2026-11-22)
+- The helper now rejects missing/invalid/foreign-project server credentials **before** dynamic SDK import.
+- Signed token must contain a valid UID and admin claim, and current user record must match the same UID, be enabled and retain the current admin claim.
+- The credential provider, revoked-token verification, and current-user lookup all fail closed on errors.
+- Test fixtures use dependency injection and never contact the live Firebase project; they **cannot** certify actual revocation until the SDK, Vercel secret, and protected-preview server requests have been deployed and exercised.
+- Official reference: https://firebase.google.com/docs/auth/admin/manage-sessions (pass `checkRevoked: true` to detect revoked sessions and disabled users).
