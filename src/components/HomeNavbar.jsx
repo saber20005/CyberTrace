@@ -8,7 +8,7 @@ import "./HomeNavbar.css";
 // subscriptions remain controlled by their existing Firebase controllers.
 export default function HomeNavbar({
   user, onHome, onLibrary, onSoc, onCertificates, onPro, active = "home",
-  onAuth, onLogout, onBlackBoxLink, blackBoxEnabled, blackBoxConnected,
+  onAuth, onLogout, onSettings, onBlackBoxLink, blackBoxEnabled, blackBoxConnected,
 }) {
   const more = useRef(null);
   const account = useRef(null);
@@ -48,6 +48,7 @@ export default function HomeNavbar({
         <div className="ct-nav-dropdown-panel" role="group" aria-label="أقسام CyberTrace">
           <button type="button" onClick={() => go(onSoc)}>مناوبات SOC</button>
           <button type="button" onClick={() => go(onCertificates)}>شهاداتي</button>
+          <button type="button" onClick={() => go(onSettings)}>إعدادات العرض</button>
           <button type="button" className="ct-pro-link" onClick={() => go(onPro)}>Suite Pro <small>قريبًا</small></button>
           <a href="#about" onClick={closeMenus}>عن المنصة</a>
           <a href="#how" onClick={closeMenus}>كيف تعمل؟</a>

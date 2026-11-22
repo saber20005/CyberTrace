@@ -321,3 +321,12 @@
 @media(prefers-reduced-motion:reduce) {
   .auth-showcase-switch { transition:none!important;transform:none!important; }
 }
+
+/* Refined glass surface: visual-only; do not alter Firebase forms or Google sign-in. */
+.auth-screen .auth-card{background:linear-gradient(130deg,rgba(32,27,27,.94),rgba(19,21,29,.95));border:1px solid #8e684b6c;box-shadow:0 24px 80px #05060899,0 0 0 1px #e5c99d14;backdrop-filter:blur(15px)}
+.auth-screen .auth-showcase{background:radial-gradient(circle at 18% 10%,#d5a56c2e,transparent 42%),linear-gradient(155deg,#28201f,#121722)}
+.auth-screen .auth-form input{background:#14171cdd;transition:border-color .18s,box-shadow .18s}
+.auth-screen .auth-form input:focus-visible{border-color:#ecc08b;box-shadow:0 0 0 3px #eac39230}
+.auth-screen .auth-submit{box-shadow:0 8px 24px #d5a56c18}
+@supports not (backdrop-filter:blur(1px)){.auth-screen .auth-card{background:#1c1a1f}}
+@media(prefers-reduced-motion:reduce){.auth-screen :is(button,input){transition:none!important;transform:none!important}}
