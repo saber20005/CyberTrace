@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { getCaseResults } from "../utils/caseProgress";
 import { buildCaseGroupRecords, validLearnerName, DRAFT_NOTICE } from "../utils/certificateDrafts";
+import { buildCertificateTrainingCurriculum } from "../data/certificationCurriculum";
 import logo from "../assets/logo.svg";
 import "./Certificates.css";
 
@@ -9,6 +10,7 @@ export default function Certificates({ cases, onHome, onLibrary, onPro, onJointP
   const [selectedId, setSelectedId] = useState("");
   const groups = buildCaseGroupRecords(cases, getCaseResults());
   const completedGroups = groups.filter(group => group.complete);
+  const curriculum = buildCertificateTrainingCurriculum(cases);
   const selected = groups.find(group => group.id === selectedId);
   const chosen = selected?.complete ? selected : null;
   const ready = Boolean(chosen && validLearnerName(name));
@@ -28,6 +30,24 @@ export default function Certificates({ cases, onHome, onLibrary, onPro, onJointP
         <h1>مركز الشهادات</h1>
         <p>أكمل جميع تحقيقات المجموعة التدريبية لتحصل على إفادة واحدة قابلة للحفظ PDF. هذه المرحلة ليست نظام شهادات موثقة.</p>
         <p className="ct-cert-warning" role="note">{DRAFT_NOTICE}</p>
+      </section>
+      <section className="ct-cert-curriculum ct-cert-screen" aria-labelledby="ct-cert-curriculum-title">
+        <span className="ct-cert-eyebrow">CERTIFICATION PREPARATION / NOT AN ISSUED CREDENTIAL</span>
+        <h2 id="ct-cert-curriculum-title">خطط التدريب المؤهِّلة لكل مجموعة</h2>
+        <p>هذه ثماني مجموعات من التحقيقات التدريبية الموجودة فعليًا. فتح الحالات وتسجيل نقاطها داخل المتصفح للتعلم فقط؛ إصدار شهادة موثّقة يتطلب تقييمًا مستقلًا على الخادم، وربط هوية صحيحًا، وسجل إصدار قابلًا للتحقق والإلغاء.</p>
+        <div className="ct-cert-curriculum-grid">
+          {curriculum.map(item => <details key={item.id} className="ct-cert-curriculum-item">
+            <summary><strong>{item.title}</strong><span>{item.count} تحقيقات تدريبية</span></summary>
+            <div className="ct-cert-curriculum-body">
+              <p><strong>المهارة المطلوبة:</strong> {item.goals.outcome}</p>
+              <p><strong>التطبيق العملي:</strong> {item.goals.practice}</p>
+              <p><strong>الحالات التي تتدرب عليها:</strong></p>
+              <ul>{item.cases.map(itemCase=><li key={itemCase.id}><code dir="ltr">{itemCase.id}</code> — {itemCase.title}</li>)}</ul>
+              <button type="button" onClick={onLibrary}>فتح مكتبة التحقيقات ←</button>
+            </div>
+          </details>)}
+        </div>
+        <p className="ct-cert-curriculum-note">للجانب العملي المكمل: <a href="https://blackboxlab.dev/evidence-labs.html" target="_blank" rel="noopener noreferrer">ورش BLACKBOX لتحليل الأدلة</a> و<a href="https://github.com/saber20005/BlackBox-Lab/tree/main/training-kit/blackbox-network" target="_blank" rel="noopener noreferrer">مختبر Nmap المعزول</a>. لا يُمنح اعتماد تلقائي بمجرد زيارة هذه الروابط.</p>
       </section>
       <div className="ct-cert-layout">
         <section className="ct-cert-controls ct-cert-screen" aria-label="خيارات الإفادة">

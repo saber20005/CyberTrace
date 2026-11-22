@@ -101,3 +101,22 @@
 .ct-cert-joint-preview-link{display:block;width:100%;margin-top:12px;padding:11px 14px;border:1px solid #d5a56c;border-radius:9px;background:#32261f;color:#f6ddba;font:inherit;font-weight:800;cursor:pointer;text-align:center}
 .ct-cert-joint-preview-link:hover{background:#4a3424}
 .ct-cert-joint-preview-link:focus-visible{outline:3px solid #f2c78e;outline-offset:3px}
+
+/* Preparation is distinct from printable, self-declared training records. */
+.ct-cert-curriculum{border:1px solid #72563b;border-radius:16px;background:#1d1a1c;padding:20px;margin-top:22px}
+.ct-cert-curriculum h2{font-size:clamp(20px,2.8vw,26px);margin:6px 0}
+.ct-cert-curriculum p{color:#dbcbb8;line-height:1.85}
+.ct-cert-curriculum-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ct-cert-curriculum-item{min-width:0;border:1px solid #615039;border-radius:12px;background:#262024}
+.ct-cert-curriculum-item summary{cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:13px;line-height:1.6}
+.ct-cert-curriculum-item summary strong{color:#f5e2c9}
+.ct-cert-curriculum-item summary span{font-size:12px;color:#d5b384;white-space:nowrap}
+.ct-cert-curriculum-body{padding:0 15px 15px}
+.ct-cert-curriculum-body ul{padding-inline-start:20px;line-height:1.8}
+.ct-cert-curriculum-body li{overflow-wrap:anywhere}
+.ct-cert-curriculum-body code{color:#f1c992;font-size:12px}
+.ct-cert-curriculum-body button{border:1px solid #b08859;border-radius:10px;background:#4f3827;color:#f9e5ca;min-height:44px;padding:9px 13px;font:inherit;cursor:pointer}
+.ct-cert-curriculum-body button:focus-visible,.ct-cert-curriculum-item summary:focus-visible,.ct-cert-curriculum a:focus-visible{outline:3px solid #f2c78c;outline-offset:3px}
+.ct-cert-curriculum-note{border-top:1px solid #63503e;padding-top:12px}
+@media(max-width:680px){.ct-cert-curriculum-grid{grid-template-columns:1fr}.ct-cert-curriculum{padding:13px}.ct-cert-curriculum-item summary{flex-wrap:wrap}}
+@media print{.ct-cert-curriculum{display:none!important}}
