@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { getCaseResults, getCompletedCaseIds } from "../utils/caseProgress";
 import { CASE_META, MAX_CASE_SCORE } from "../data/linkedSkills";
 import { useBlackBox } from "./useBlackBox";
+import VerifiedIdentityPanel from "./VerifiedIdentityPanel.jsx";
 import "./BlackBoxLink.css";
 
 function friendlyError(error) {
@@ -69,6 +70,7 @@ export default function BlackBoxLink({ dialogRef }) {
       {visibleOperation && visibleOperation.kind === "general" && <p className={`bb-link-message ${visibleOperation.error ? "has-error" : ""}`} role={visibleOperation.error ? "alert" : "status"}>{visibleOperation.text}</p>}
       <p id="blackboxLinkStatus" className={`bb-link-service ${status.error ? "has-error" : ""}`} role="status" aria-live="polite">{status.memoryOnly ? "بعض النتائج في ذاكرة التبويب فقط. أبقِ هذا التبويب مفتوحًا وأعد المزامنة قبل إغلاقه." : status.error ? friendlyError(status.error) : status.message || (status.phase === "loading" ? "جارٍ تجهيز الربط…" : "يمكنك مواصلة التدريب دون ربط حساب.")}</p>
       {connected ? <section className="bb-link-account">
+        <VerifiedIdentityPanel blackboxUid={uid} />
         <div className="bb-link-identity"><span>تُرسل التحقيقات الجديدة إلى</span><strong dir="ltr">{status.user.email || status.user.displayName || "حساب BlackBox"}</strong></div>
         <p className="bb-link-note">تبدأ المزامنة التلقائية من التحقيقات التي تكملها أثناء الربط. يمكنك نقل النتائج المسجّلة على هذا المتصفح إلى الحساب المعروض باختيارك.</p>
         <div className="bb-link-history" aria-label="مقارنة سجل التحقيقات"><h3>توضيح اختلاف الإنجازات</h3><p>التحقيقات المكتملة على هذا المتصفح: {localCompletedCount}. سجلات الإنجازات المرتبطة بحساب BlackBox: {linkedCount}.</p>{linkedOnlyCount > 0 && <p className="bb-link-note" role="status">يوجد {linkedOnlyCount} إنجازات في BlackBox لا تظهر كمكتملة على هذا المتصفح. قد تكون نتائج قديمة من جهاز أو جلسة ربط سابقة؛ لا يعني ظهورها أنها أُنجزت على حساب CyberTrace الحالي.</p>}<p className="bb-link-note">حساب CyberTrace وحساب BlackBox يعملان على مشروعي Firebase مستقلين. تطابق بريد Google لا يثبت تطابق سجل التحقيقات. لا تُستعاد الإنجازات من BlackBox تلقائيًا، ولن تُنقل أو تُحذف أي بيانات دون اختيارك.</p></div>
