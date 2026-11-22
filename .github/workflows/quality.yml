@@ -19,3 +19,22 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+
+  admin-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Install isolated pinned browser driver
+        run: npm install --prefix /tmp/cybertrace-admin-browser --no-audit --no-fund --no-package-lock playwright@1.62.1
+      - name: Install Chromium
+        run: node /tmp/cybertrace-admin-browser/node_modules/playwright/cli.js install --with-deps chromium
+      - name: Verify admin guest/owner transitions and mobile layout
+        env:
+          CYBERTRACE_PLAYWRIGHT_MODULE: /tmp/cybertrace-admin-browser/node_modules/playwright/index.mjs
+        run: node scripts/test-admin-operations-browser.mjs
