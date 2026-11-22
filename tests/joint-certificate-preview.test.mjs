@@ -95,3 +95,14 @@ test("both owner-supplied original logos replace embedded symbols at four positi
   assert(!page.includes("CT-BB-"));
   assert(!/setDoc\(|addDoc\(|window\.print\(/.test(page));
 });
+
+test("the extra English preview line is absent while non-issued status remains visible", async () => {
+  const page = await readFile(pageUrl, "utf8");
+  const css = await readFile(cssUrl, "utf8");
+  assert(!page.includes("joint-template-preview-en"));
+  assert(!css.includes(".joint-template-preview-en"));
+  assert(!page.includes("VISUAL PREVIEW ONLY."));
+  assert(page.includes("نموذج غير صادر"));
+  assert(page.includes("غير صادرة."));
+  assert(page.includes("التحقق غير متاح"));
+});
