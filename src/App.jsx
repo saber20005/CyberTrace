@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import "./App.css";
 import "./styles/design-system.css";
+import { applyUIPreferences, readUIPreferences } from "./utils/uiPreferences.js";
 const Auth = lazy(() => import("./pages/Auth"));
+const Settings = lazy(() => import("./pages/Settings"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Investigation = lazy(() => import("./pages/Investigation"));
 const InvestigationLibrary = lazy(() => import("./pages/InvestigationLibrary"));
@@ -42,6 +44,7 @@ function trackStart(route, source) {
 
 function App() {
   const blackBox = useBlackBox();
+  useEffect(() => { applyUIPreferences(readUIPreferences()); }, []);
   const [route, setRoute] = useState(routeAtLocation);
   const [investigationRun, setInvestigationRun] = useState(0);
   const [user, setUser] = useState(null);
@@ -162,6 +165,8 @@ function App() {
   // Public server-only certificate lookup never authorizes or issues awards.
   if (!authReady && view !== "verify-certificate") return <LoadingScreen message="جارٍ التحقق من حساب التدريب..." />;
 
+  if (view === "settings") return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل الإعدادات..." />}><Settings onHome={goHome} /></Suspense>;
+
   if (view === "admin") {
     return <Suspense fallback={<LoadingScreen inline message="جارٍ التحقق من صلاحيات الإدارة..." />}><Admin user={user} onHome={goHome} /></Suspense>;
   }
@@ -212,6 +217,7 @@ function App() {
         onSoc={() => navigate({ view: "soc" })}
         onCertificates={() => navigate({ view: "certificates" })}
         onPro={() => navigate({ view: "pro" })}
+        onSettings={() => navigate({ view: "settings" })}
         onAuth={() => navigate({ view: "auth" })}
         onLogout={handleLogout}
         onBlackBoxLink={blackBox.openLink}

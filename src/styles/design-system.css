@@ -48,3 +48,19 @@ body { overflow-x: clip; }
   html { scroll-behavior: auto; }
   :where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) :where(button,a) { transition: none !important; }
 }
+
+/* Device-local presentation; never associated with authenticated user data. */
+html[data-ct-text="large"] :is(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.ct-settings){font-size:1.1em}
+html[data-ct-motion="reduce"] *,html[data-ct-motion="reduce"] *::before,html[data-ct-motion="reduce"] *::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+html[data-ct-theme="light"]{color-scheme:light;--ct-bg:#f4f6fa;--ct-bg-elevated:#fff;--ct-surface:#fff;--ct-surface-deep:#e8edf5;--ct-border:#b6c7d9;--ct-border-strong:#7b9bb8;--ct-fg:#17273c;--ct-muted:#46566b;--ct-muted-blue:#425a78}
+html[data-ct-theme="light"] :is(body,.app,.auth-screen,.ct-settings){background:#f4f6fa!important;color:#17273c!important}
+html[data-ct-theme="light"] :is(.ct-settings-header,.ct-settings-panel,.ct-settings-privacy,.ct-settings-field select){background:#fff!important;color:#17273c!important;border-color:#b4c5d7!important}
+html[data-ct-theme="light"] :is(.ct-settings-lead,.ct-settings-panel p,.ct-settings-field>span,.ct-settings-privacy b){color:#34475f!important}
+html[data-ct-theme="light"] :is(.ct-settings button){background:#e8edf7;color:#193d66;border-color:#8ba4bf}
+html[data-ct-theme="light"] .app :is(.navbar,.feature-card,.terminal-card,.case-card,.stat-card,.how-step){background:#fff!important;color:#17273c!important;border-color:#afc1d6!important}
+html[data-ct-theme="light"] .app :is(h1,h2,h3,p,span){text-shadow:none}
+html[data-ct-theme="light"] .auth-screen .auth-card{background:#fff!important;color:#17273c!important}
+html[data-ct-theme="light"] .auth-screen .auth-form-panel{background:#fff!important;color:#17273c!important}
+html[data-ct-theme="light"] .auth-screen .auth-form input{background:#f1f5fa!important;color:#152338!important;border-color:#8ca5c0!important}
+html[data-ct-theme="light"] .auth-screen .auth-showcase{background:linear-gradient(150deg,#243b5a,#1b2a42)!important;color:#fff!important}
+html[data-ct-theme="light"] .ct-settings-footer [role=status]{color:#206040}

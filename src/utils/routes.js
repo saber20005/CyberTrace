@@ -28,7 +28,7 @@ export function readRoute(value, cases = []) {
     const ids = params.getAll("id");
     return { view: "verify-certificate", certificateId: ids.length === 1 && /^[0-9a-f]{32}$/.test(ids[0]) ? ids[0] : "" };
   }
-  if (views.length === 1 && ["library", "auth", "pro", "verified-soc", "certificates", "joint-certificate"].includes(views[0])) return { view: views[0] };
+  if (views.length === 1 && ["library", "auth", "pro", "settings", "verified-soc", "certificates", "joint-certificate"].includes(views[0])) return { view: views[0] };
   return { view: "home" };
 }
 
@@ -37,7 +37,7 @@ export function createRouteURL(route, currentURL, { preserveHash = false } = {})
   const current = parseURL(currentURL);
   const next = new URL(route.view === "admin" ? "/admin" : "/", current.origin);
   if (route.view === "investigation" && route.caseId) next.searchParams.set("case", route.caseId);
-  else if (["library", "auth", "pro", "soc", "verified-soc", "certificates", "joint-certificate", "verify-certificate"].includes(route.view)) next.searchParams.set("view", route.view);
+  else if (["library", "auth", "pro", "soc", "verified-soc", "certificates", "joint-certificate", "verify-certificate", "settings"].includes(route.view)) next.searchParams.set("view", route.view);
   if (route.view === "verify-certificate" && /^[0-9a-f]{32}$/.test(route.certificateId ?? "")) next.searchParams.set("id", route.certificateId);
   if (route.view === "soc" && isSocShiftId(route.shiftId)) next.searchParams.set("shift", route.shiftId);
   for (const key of CAMPAIGN_KEYS) {
