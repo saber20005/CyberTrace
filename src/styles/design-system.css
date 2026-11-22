@@ -64,3 +64,17 @@ html[data-ct-theme="light"] .auth-screen .auth-form-panel{background:#fff!import
 html[data-ct-theme="light"] .auth-screen .auth-form input{background:#f1f5fa!important;color:#152338!important;border-color:#8ca5c0!important}
 html[data-ct-theme="light"] .auth-screen .auth-showcase{background:linear-gradient(150deg,#243b5a,#1b2a42)!important;color:#fff!important}
 html[data-ct-theme="light"] .ct-settings-footer [role=status]{color:#206040}
+
+/* Studio V2: opt-in appearance tokens. Existing dark/light v1 remain valid. */
+html[data-ct-theme="midnight"]{--ct-bg:#0b1324;--ct-bg-elevated:#152035;--ct-surface:#1b2c45;--ct-surface-deep:#0e1d30;--ct-border:#36506d;--ct-border-strong:#5381b1;--ct-fg:#ecf4ff;--ct-muted:#afc4d9;--ct-muted-blue:#a8c9e6}
+html[data-ct-theme="midnight"] :is(body,.app,.auth-screen,.ct-settings){background:#0b1324!important;color:#ecf4ff!important}
+html[data-ct-accent="cyan"]{--ct-gold:#38c5e8;--ct-gold-bright:#7adff2}
+html[data-ct-accent="violet"]{--ct-gold:#ad96ff;--ct-gold-bright:#c7b8ff}
+html[data-ct-accent="cyan"] :is(.app .primary-button,.app .ct-primary-route){border-color:#38c5e8!important}
+html[data-ct-accent="violet"] :is(.app .primary-button,.app .ct-primary-route){border-color:#ad96ff!important}
+html[data-ct-density="compact"] .app :is(.feature-card,.stat-card,.case-card,.how-step,.terminal-card){padding:12px!important}
+html[data-ct-density="compact"] .ct-suite-card-summary{min-height:82px;padding:12px}
+html[data-ct-density="compact"] .ct-suite-card-body{padding:0 12px 12px}
+html[data-ct-text="xlarge"] :is(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.ct-studio){font-size:1.2em}
+html[data-ct-contrast="high"]{--ct-muted:var(--ct-fg);--ct-muted-blue:var(--ct-fg);--ct-border-strong:var(--ct-gold)}
+html[data-ct-contrast="high"] :is(.app,.ct-suite-page,.ct-studio) :is(a,button,summary):focus-visible{outline:3px solid var(--ct-gold-bright)!important;outline-offset:3px}
