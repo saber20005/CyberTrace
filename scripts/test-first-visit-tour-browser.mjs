@@ -37,7 +37,7 @@ try{
    assert.match(await heading.innerText(),/تقدّمك/);
    assert.match(await page.locator(".ct-tour-clarity").innerText(),/ليست شهادة|ليست شهادات|ليست شهادة خادمية/);
    await page.getByRole("button",{name:/التالي/}).click();
-   assert.equal(await page.locator(".ct-tour-destinations button").count(),4);
+   assert.equal(await page.locator(".ct-tour-destinations button").count(),5);
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,"last tour step fits "+viewport.width+"px");
    await page.getByRole("button",{name:/ابدأ أول تحقيق/}).click();
    assert.equal(await page.locator("[data-test-view]").getAttribute("data-test-view"),"library");
