@@ -226,3 +226,41 @@ html[data-cybertrace-preview="gold"] .soc-page :is(
   .ct-amber-compare small{display:none}
   .ct-amber-compare-actions button{min-height:39px}
 }
+
+/* Finishing pass: preserve the seven-stop palette in the remaining status dots,
+   review ornaments and live-preview thumbnails. Original design is untouched. */
+html[data-cybertrace-preview="gold"] :is(
+ .ct-studio-local span,.ct-studio-live i,.ct-studio-preview-indicator,
+ .ct-studio-preview-event .ct-studio-preview-indicator,
+ .inv-screen .inv-line .green,.auth-screen .auth-line .green
+) {color:#EBB84A!important;background-color:#EBB84A!important;box-shadow:0 0 0 2px #A6791733!important}
+html[data-cybertrace-preview="gold"] :is(.auth-screen .auth-success .green,.inv-screen .inv-line .green){
+ color:#F3D789!important;background:transparent!important;box-shadow:none!important
+}
+html[data-cybertrace-preview="gold"] .ct-studio-preset-art.signature{background:linear-gradient(135deg,#5A4A0D,#A67917)!important}
+html[data-cybertrace-preview="gold"] .ct-studio-preset-art.focus{background:linear-gradient(135deg,#241a07,#7A5E12)!important}
+html[data-cybertrace-preview="gold"] .ct-studio-preset-art.reading{background:linear-gradient(135deg,#CC961F,#FFF3D8)!important}
+html[data-cybertrace-preview="gold"] .ct-studio-theme:nth-child(1) .ct-studio-theme-art{background:linear-gradient(140deg,#5A4A0D,#A67917)!important}
+html[data-cybertrace-preview="gold"] .ct-studio-theme:nth-child(2) .ct-studio-theme-art{background:linear-gradient(140deg,#241b08,#7A5E12)!important}
+html[data-cybertrace-preview="gold"] .ct-studio-theme:nth-child(3) .ct-studio-theme-art{background:linear-gradient(140deg,#F3D789,#FFF3D8)!important}
+html[data-cybertrace-preview="gold"] .ct-studio :is(.ct-studio-preset-art i,.ct-studio-theme-art i,.ct-studio-theme-art span){
+ background:#EBB84A!important
+}
+/* Comparison overlay is collapsible and defaults to minimized on phones.
+   The hidden attribute is explicitly honored even though actions use flex. */
+.ct-amber-compare-actions[hidden],
+.ct-amber-compare-note[hidden],
+.ct-amber-compare-status[hidden]{display:none!important}
+.ct-amber-compare-heading{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ct-amber-compare-toggle{width:35px;min-width:35px;height:35px;min-height:35px;padding:0!important;
+ display:grid;place-items:center;background:#5A4A0D!important;color:#FFF3D8!important;
+ border:1px solid #A67917!important;border-radius:9px;font-size:22px!important;cursor:pointer}
+.ct-amber-compare-status{display:block;color:#F3D789;font-size:10px}
+.ct-amber-compare.is-collapsed{width:min(225px,calc(100vw - 24px));padding:7px 9px;bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+.ct-amber-compare.is-collapsed .ct-amber-compare-heading strong{font-size:11px}
+.ct-amber-compare.is-collapsed .ct-amber-compare-actions{display:none}
+@media(max-width:600px){
+ .ct-amber-compare{max-width:calc(100vw - 24px)}
+ .ct-amber-compare.is-collapsed{width:min(218px,calc(100vw - 24px))}
+ .ct-amber-compare-heading strong{font-size:11px}
+}
