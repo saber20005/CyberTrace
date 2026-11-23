@@ -31,6 +31,20 @@ test("blocked local storage falls back to session, both failures do not throw",(
   assert.equal(finishFirstVisitTour(bad,bad),false);
   assert.equal(hasFinishedFirstVisitTour(bad,bad),false);
 });
+test("Case Zero escalation reacts to collected evidence, not a static choice",async()=>{
+  const {caseZeroAssessment,caseZeroTriageFeedback}=await import("../src/utils/caseZeroTraining.js");
+  const empty={opened:[],filed:false,triage:"",selectedAlert:"",finding:""};
+  assert.equal(caseZeroAssessment(empty).score,0);
+  assert.match(caseZeroTriageFeedback(empty,"SOC-101","escalate"),/غير مكتمل/);
+  const investigated={...empty,opened:["EV-01","EV-02"],finding:"مقارنة فشل الدخول ونجاحه من عنوان واحد.",filed:true};
+  assert.equal(caseZeroAssessment(investigated).correlated,true);
+  assert.match(caseZeroTriageFeedback(investigated,"SOC-101","escalate"),/تصعيد مبرر/);
+  assert.match(caseZeroTriageFeedback(investigated,"SOC-102","escalate"),/غير مدعوم/);
+  const done={...investigated,selectedAlert:"SOC-101",triage:"escalate"};
+  assert.equal(caseZeroAssessment(done).score,3);
+  assert.match(caseZeroAssessment(done).next,/ابدأ حالة تدريب/);
+  assert.equal(caseZeroAssessment({...done,opened:["EV-01"]}).correlated,false);
+});
 test("intro page is explicitly routed, skippable, and not an authentication gate",()=>{
   const app=readFileSync(new URL("../src/App.jsx",import.meta.url),"utf8");
   const nav=readFileSync(new URL("../src/components/HomeNavbar.jsx",import.meta.url),"utf8");
@@ -43,5 +57,13 @@ test("intro page is explicitly routed, skippable, and not an authentication gate
   assert.match(component,/لا تُحفظ نقاط/);
   assert.match(component,/ليست شهادات موثّقة خادميًا/);
   assert.match(component,/onLibrary/);
+  assert.match(component,/CaseZero mode="investigate"/);
+  assert.match(component,/CaseZero mode="soc"/);
+  assert.doesNotMatch(component,/TrainingChoice|ct-tour-choice/);
+  const simulator=readFileSync(new URL("../src/pages/CaseZero.jsx",import.meta.url),"utf8");
+  assert.match(simulator,/EV-01/);
+  assert.match(simulator,/SOC-101/);
+  assert.match(simulator,/data-ct-report-submit/);
+  assert.doesNotMatch(simulator,/fetch\(|XMLHttpRequest|WebSocket|localStorage|sessionStorage|firebase/);
   assert.doesNotMatch(component,/localStorage|onAuthStateChanged|Firebase|fetch\(/);
 });
