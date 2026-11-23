@@ -2,7 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import logo from "../assets/logo.svg";
 import "./WelcomeTour.css";
 
-export const TOUR_STEPS = [
+const TOUR_STEPS = [
   {id:"welcome",eyebrow:"WELCOME / 01",title:"أهلًا بك في غرفة التحقيق",lead:"تعلّم الأمن السيبراني عبر قرارات حقيقية داخل سيناريوهات تدريبية. تعرّف إلى أدوات CyberTrace في جولة قصيرة يمكنك تخطيها في أي وقت.",label:"البداية"},
   {id:"investigate",eyebrow:"INVESTIGATE / 02",title:"افحص الدليل قبل الحكم",lead:"افتح حالة من مكتبة التحقيقات، اقرأ السجلات، اربط المؤشرات واتخذ قرارك. كل سيناريو يشرح سبب الإجابة بدل الاكتفاء بنتيجة صح أو خطأ.",label:"التحقيقات"},
   {id:"soc",eyebrow:"SOC OPERATIONS / 03",title:"فكّر كمحلل مركز عمليات",lead:"مناوبات SOC التدريبية تعلّمك ترتيب التنبيهات وتحديد أولويات الاستجابة. اختبر قرارًا سريعًا هنا دون تشغيل تحقيق أو حفظ نقاط.",label:"مناوبات SOC"},
@@ -78,6 +78,7 @@ export default function WelcomeTour({onSkip,onHome,onLibrary,onSoc,onCertificate
             <button type="button" onClick={onLibrary}><span>▦</span><strong>افتح مكتبة التحقيقات</strong><small>ابدأ تدريبك الأول</small></button>
             <button type="button" onClick={onSoc}><span>◉</span><strong>جرّب مناوبة SOC</strong><small>رتب التنبيهات وتعلم الاستجابة</small></button>
             <button type="button" onClick={onJourneys}><span>⌁</span><strong>المسارات المشتركة</strong><small>CyberTrace + BLACKBOX</small></button>
+            <button type="button" onClick={onCertificates}><span>▤</span><strong>مركز الشهادات</strong><small>إفادات إكمال تدريب غير موثّقة</small></button>
             <button type="button" onClick={onSettings}><span>◈</span><strong>خصص المظهر</strong><small>بما في ذلك الذهبي الملكي</small></button>
           </div>}
         </section>
