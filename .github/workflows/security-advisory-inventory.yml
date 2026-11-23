@@ -1,0 +1,40 @@
+name: CyberTrace dependency advisory inventory
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-advisories:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install lockfile packages without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Inventory runtime and full-tree advisories (informational, no production credentials)
+        shell: bash
+        run: |
+          npm audit --json --omit=dev > /tmp/cybertrace-audit-runtime.json || true
+          npm audit --json > /tmp/cybertrace-audit-full.json || true
+          node --input-type=module <<'JS'
+          import {readFileSync} from 'node:fs';
+          for (const scope of ['runtime','full']) {
+            const path='/tmp/cybertrace-audit-'+scope+'.json';
+            const data=JSON.parse(readFileSync(path,'utf8'));
+            const counts=data.metadata?.vulnerabilities??{};
+            console.log(scope+': '+JSON.stringify(counts));
+            const vulnerabilities=data.vulnerabilities??{};
+            for(const [name,item] of Object.entries(vulnerabilities).sort((a,b)=>a[0].localeCompare(b[0]))) {
+              const via=Array.isArray(item.via)?item.via.filter(v=>typeof v==='object').map(v=>v.title).slice(0,2):[];
+              console.log('  '+name+' ['+item.severity+'] '+JSON.stringify({isDirect:item.isDirect,range:item.range,fixAvailable:item.fixAvailable,advisories:via}));
+            }
+            if(data.error) console.log(scope+' audit did not complete: '+JSON.stringify(data.error).slice(0,240));
+          }
+          JS
