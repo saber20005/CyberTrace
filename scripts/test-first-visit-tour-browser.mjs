@@ -102,7 +102,7 @@ try{
     const pos=await page.locator(".ct-sp-lamp").evaluate(el=>{
      const rect=document.querySelector('[data-ct-spotlight="soc"]').getBoundingClientRect();
      const cone=document.querySelector(".ct-sp-beam");
-     return {lampX:parseFloat(el.style.left),buttonMidX:rect.left+rect.width/2,beamHeight:parseFloat(cone.style.height),angle:parseFloat(el.style.transform.match(/rotate\\(([-\\d.]+)deg\\)/)?.[1]||"NaN")};
+     return {lampX:parseFloat(el.style.left),buttonMidX:rect.left+rect.width/2,beamHeight:parseFloat(cone.style.height),angle:Number(el.style.transform.split("rotate(")[1]?.split("deg)")[0])};
     });
     assert.ok(pos.lampX<pos.buttonMidX-30,"SOC flashlight must appear on LEFT on mobile");
     assert.ok(pos.beamHeight<=110,"SOC light cone must not cover the expanded menu");
