@@ -3,7 +3,7 @@ import { useBlackBox } from "../blackbox/useBlackBox.js";
 import { VERIFIED_SOC_SHIFT_ID, verifiedSocConfigured, startServerVerifiedSoc, submitServerVerifiedSoc } from "../blackbox/verifiedSocBackend.js";
 import "./VerifiedSoc.css";
 
-export default function VerifiedSoc({ onHome, onSoc, onPro }) {
+export default function VerifiedSoc({ embedded = false, onHome, onSoc, onPro }) {
   const { status: bridge, openLink } = useBlackBox();
   const uid = bridge.user?.uid || null;
   const [run, setRun] = useState(null);
@@ -52,13 +52,13 @@ export default function VerifiedSoc({ onHome, onSoc, onPro }) {
   };
 
   return <div className="verified-soc-page" dir="rtl">
-    <header className="verified-soc-nav">
+    {!embedded && <header className="verified-soc-nav">
       <button type="button" onClick={onHome}>CyberTrace</button>
       <nav aria-label="التنقل">
         <button type="button" onClick={onSoc}>المناوبات المجانية</button>
         <button type="button" onClick={onPro}>عن Pro</button>
       </nav>
-    </header>
+    </header>}
     <main className="verified-soc-shell">
       <section className="verified-soc-hero">
         <span className="verified-soc-overline">SERVER-VERIFIED ASSESSMENT / {VERIFIED_SOC_SHIFT_ID}</span>

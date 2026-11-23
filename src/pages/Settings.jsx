@@ -23,7 +23,7 @@ const LEVELS=[["unset","غير محدد"],["beginner","مبتدئ"],["intermedia
 function SelectSetting({name,value,options,onChange}){
  return <label className="ct-studio-select"><span>{name}</span><select value={value} onChange={e=>onChange(e.target.value)}>{options.map(([id,label])=><option key={id} value={id}>{label}</option>)}</select></label>;
 }
-export default function Settings({onHome}){
+export default function Settings({onHome,embedded=false}){
  const [settings,setSettings]=useState(readUIPreferences);
  const [message,setMessage]=useState("");
  function apply(next,text){
@@ -35,7 +35,7 @@ export default function Settings({onHome}){
  const reset=()=>apply(DEFAULT_UI_PREFERENCES,"تمت استعادة الهوية الافتراضية.");
  const selectedPreset=UI_PRESETS.find(p=>["theme","accent","density","motion","contrast","textSize"].every(key=>p[key]===settings[key]))?.id;
  return <main className="ct-studio" dir="rtl">
-  <div className="ct-studio-header"><div className="ct-studio-mark"><span className="ct-studio-mark-icon" aria-hidden="true">◈</span><span>CYBERTRACE <small>/ EXPERIENCE STUDIO</small></span></div><button className="ct-studio-back" type="button" onClick={onHome}>العودة للرئيسية</button></div>
+  {!embedded && <div className="ct-studio-header"><div className="ct-studio-mark"><span className="ct-studio-mark-icon" aria-hidden="true">◈</span><span>CYBERTRACE <small>/ EXPERIENCE STUDIO</small></span></div><button className="ct-studio-back" type="button" onClick={onHome}>العودة للرئيسية</button></div>}
   <div className="ct-studio-shell">
    <div className="ct-studio-heading"><div><p className="ct-studio-eyebrow">CONTROL YOUR ENVIRONMENT · 02 / 2026</p><h1>استوديو تخصيص التجربة</h1><p>اختر هوية العمل، واضبط سرعة القراءة وكثافة التحقيقات. التغييرات تُطبّق مباشرة على هذا الجهاز.</p></div><span className="ct-studio-local"><span aria-hidden="true">●</span> تخصيص محلي وآمن</span></div>
    <div className="ct-studio-body">

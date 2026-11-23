@@ -1,0 +1,66 @@
+.ct-site-shell {
+  min-width: 0;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ct-bg);
+  color: var(--ct-fg);
+  font-size: var(--ct-font-body);
+  line-height: 1.8;
+}
+.ct-page-breadcrumb {
+  width: min(var(--ct-width), calc(100% - 2 * var(--ct-page-gutter)));
+  margin: 0 auto;
+  padding: 1.25rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+  color: var(--ct-muted);
+  font-size: var(--ct-text-sm);
+}
+.ct-page-breadcrumb button { border: 0; padding: .25rem 0; background: transparent; color: var(--ct-muted); font: inherit; }
+.ct-page-breadcrumb button:hover { color: var(--ct-gold-bright); text-decoration: underline; text-underline-offset: .2em; }
+.ct-page-breadcrumb [aria-current] { color: var(--ct-fg); }
+.ct-page-content { flex: 1; min-width: 0; }
+.ct-page-content:focus { outline: none; }
+.ct-page-content > .app { min-height: 0; }
+.ct-skip-link {
+  position: fixed;
+  top: -6rem;
+  inset-inline-start: 1rem;
+  z-index: 1000;
+  border: 2px solid var(--ct-gold);
+  border-radius: var(--ct-radius-sm);
+  padding: .75rem 1rem;
+  background: var(--ct-bg-elevated);
+  color: var(--ct-fg);
+  font-size: var(--ct-text-sm);
+  text-decoration: none;
+}
+.ct-skip-link:focus { top: 1rem; }
+.ct-site-footer {
+  width: min(var(--ct-width), calc(100% - 2 * var(--ct-page-gutter)));
+  margin: auto auto 0;
+  border-top: 1px solid var(--ct-border);
+  padding: 1.5rem 0 5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .75rem 1.5rem;
+  color: var(--ct-muted);
+  font-size: var(--ct-text-sm);
+}
+.ct-site-footer strong { color: var(--ct-fg); direction: ltr; font-family: system-ui, sans-serif; letter-spacing: .03em; }
+.ct-site-footer a { color:var(--ct-gold-bright);text-underline-offset:.2em; }
+.ct-site-footer small { font-size: inherit; margin-inline-start: auto; }
+.ct-site-shell[data-focus-mode] .ct-page-content { min-height: 100svh; }
+@media(max-width:680px) {
+  .ct-site-footer { gap: .5rem 1rem; padding-bottom: 5.5rem; }
+  .ct-site-footer small { flex-basis: 100%; margin: 0; }
+}
+@media print {
+  .ct-site-shell > .ct-home-navbar, .ct-site-shell > .ct-page-breadcrumb, .ct-site-shell > .ct-site-footer, .ct-skip-link { display: none !important; }
+  .ct-site-shell { display: block; background: white; color: black; min-height: 0; }
+  .ct-page-content { display: block; }
+}

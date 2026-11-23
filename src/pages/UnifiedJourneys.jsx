@@ -1,13 +1,13 @@
 import {SUITE_PATHWAYS,suiteStepURL,localJourneyProgress} from "../data/unifiedPathways.js";
 import {getCaseResults,getCompletedCaseIds} from "../utils/caseProgress.js";
 import "./UnifiedJourneys.css";
-export default function UnifiedJourneys({onHome,onLibrary}){
+export default function UnifiedJourneys({ embedded = false,onHome,onLibrary}){
  const results=getCaseResults();
  const completed=new Set(getCompletedCaseIds());
  const statusOf=id=>Object.hasOwn(results,id)?"scored":completed.has(id)?"historical":"not-started";
  const isDone=id=>statusOf(id)!=="not-started";
  return <main className="ct-suite-page" dir="rtl">
-  <header className="ct-suite-top"><button type="button" onClick={onHome}>CyberTrace / الرئيسية</button><button type="button" onClick={onLibrary}>مكتبة التحقيقات</button></header>
+  {!embedded && <header className="ct-suite-top"><button type="button" onClick={onHome}>CyberTrace / الرئيسية</button><button type="button" onClick={onLibrary}>مكتبة التحقيقات</button></header>}
   <section className="ct-suite-intro" aria-labelledby="ct-suite-title">
    <span>CYBERTRACE × BLACKBOX / LEARNING PATHS</span>
    <h1 id="ct-suite-title">المسارات التعليمية المشتركة</h1>

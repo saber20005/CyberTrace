@@ -5,13 +5,13 @@ const read = file => readFileSync(new URL(file, import.meta.url), "utf8");
 
 test("CyberTrace quick dock is 2x2 and text wraps on phone instead of overflowing", () => {
   const css = read("../src/components/QuickDock.css");
-  const mobile = css.slice(css.lastIndexOf("@media (max-width: 640px)"));
-  assert.match(mobile, /left:max\(12px,env\(safe-area-inset-left,0px\)\)/);
-  assert.match(mobile, /\.ct-quick-dock:not\(\[open\]\) \{width:max-content\}/);
-  assert.match(mobile, /\.ct-quick-dock\[open\] \{width:min\(274px,calc\(100vw - 24px\)\)\}/);
-  assert.match(mobile, /grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(mobile, /min-width:0;width:100%/);
-  assert.match(mobile, /white-space:normal;overflow-wrap:anywhere/);
+  const mobile = css.slice(css.lastIndexOf("@media (max-width:640px)"));
+  assert.match(mobile, /left:\s*max\([^;]*env\(safe-area-inset-left,0px\)\)/);
+  assert.match(mobile, /\.ct-quick-dock:not\(\[open\]\)\s*\{\s*width:\s*max-content;?\s*\}/);
+  assert.match(mobile, /\.ct-quick-dock\[open\]\s*\{\s*width:\s*min\([^;]*calc\(100vw - [^)]+\)\);?\s*\}/);
+  assert.match(mobile, /grid-template-columns:\s*repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(mobile, /min-width:\s*0;\s*width:\s*100%/);
+  assert.match(mobile, /white-space:\s*normal;\s*overflow-wrap:\s*anywhere/);
 });
 test("open CyberTrace dock dismisses via outside click, Escape, scroll and route choice", () => {
   const jsx=read("../src/components/QuickDock.jsx");

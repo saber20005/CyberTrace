@@ -20,7 +20,7 @@ const suggestionLabels = {
   daily: "اقتراح اليوم",
 };
 
-function InvestigationLibrary({ cases, onStart, onHome, onSoc, onPro, onCertificates, cloudSyncPanel, user, onAuth, onLogout, onBlackBoxLink, blackBoxEnabled, blackBoxConnected }) {
+function InvestigationLibrary({ embedded = false, onJourneys, onSettings, cases, onStart, onHome, onSoc, onPro, onCertificates, cloudSyncPanel, user, onAuth, onLogout, onBlackBoxLink, blackBoxEnabled, blackBoxConnected }) {
   const [query, setQuery] = useState("");
   const [difficulty, setDifficulty] = useState("all");
   const [category, setCategory] = useState("all");
@@ -58,11 +58,11 @@ function InvestigationLibrary({ cases, onStart, onHome, onSoc, onPro, onCertific
 
   return (
     <div className="app library-page" dir="rtl">
-      <HomeNavbar active="library" user={user} onHome={onHome}
+      {!embedded && <HomeNavbar active="library" user={user} onHome={onHome}
         onLibrary={() => { setPage(1); document.getElementById("cases-title")?.scrollIntoView({ behavior: "smooth" }); }}
-        onSoc={onSoc} onCertificates={onCertificates} onPro={onPro}
+        onJourneys={onJourneys} onSettings={onSettings} onSoc={onSoc} onCertificates={onCertificates} onPro={onPro}
         onAuth={onAuth} onLogout={onLogout} onBlackBoxLink={onBlackBoxLink}
-        blackBoxEnabled={blackBoxEnabled} blackBoxConnected={blackBoxConnected} />
+        blackBoxEnabled={blackBoxEnabled} blackBoxConnected={blackBoxConnected} />}
       <main className="library-shell">
         {cloudSyncPanel}
         <section className="library-heading" aria-labelledby="library-title">
@@ -158,8 +158,8 @@ function InvestigationLibrary({ cases, onStart, onHome, onSoc, onPro, onCertific
         </section>
       </main>
       <QuickDock active="library" onHome={onHome} onLibrary={() => { setPage(1); document.getElementById("cases-title")?.scrollIntoView({ behavior: "smooth" }); }}
-        onSoc={onSoc} onCertificates={onCertificates} />
-      <footer className="library-footer"><span>CyberTrace / Training Operations</span><a className="library-partner-link" href={partner.url} target="_blank" rel="noopener" onClick={() => trackEvent("partner_click", { destination: "blackbox", context: "library" })}>مسارات التدريب العملي في BlackBox-Lab ↗</a><p>تدرّب. حقّق. اتخذ القرار.</p></footer>
+        onJourneys={onJourneys} onSettings={onSettings} onSoc={onSoc} onCertificates={onCertificates} />
+      {!embedded && <footer className="library-footer"><span>CyberTrace / Training Operations</span><a className="library-partner-link" href={partner.url} target="_blank" rel="noopener" onClick={() => trackEvent("partner_click", { destination: "blackbox", context: "library" })}>مسارات التدريب العملي في BlackBox-Lab ↗</a><p>تدرّب. حقّق. اتخذ القرار.</p></footer>}
     </div>
   );
 }

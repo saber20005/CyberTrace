@@ -108,7 +108,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
   };
 
   return (
-    <div className="inv-screen" dir="rtl">
+    <main className="inv-screen" dir="rtl">
       <header className="inv-topbar">
         <button className="inv-back" onClick={onBack}>
           <span aria-hidden="true">→</span> {backLabel}
@@ -344,7 +344,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 

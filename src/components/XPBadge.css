@@ -4,8 +4,8 @@
   gap: 5px;
   min-width: 150px;
   padding: 7px 14px;
-  border: 1px solid #463a34;
-  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid var(--ct-border);
+  background: var(--ct-bg-elevated);
 }
 
 .xp-badge-text {
@@ -16,32 +16,32 @@
 }
 
 .xp-badge-level {
-  color: #998b80;
-  font-size: 10px;
+  color: var(--ct-muted);
+  font-size: var(--ct-text-sm);
   font-family: monospace;
 }
 
 .xp-badge-title {
-  color: #d5a56c;
-  font-size: 12px;
+  color: var(--ct-gold);
+  font-size: var(--ct-text-sm);
 }
 
 .xp-badge-bar {
   height: 4px;
-  background: #383130;
+  background: var(--ct-border);
   overflow: hidden;
 }
 
 .xp-badge-fill {
   height: 100%;
-  background: #d5a56c;
-  box-shadow: 0 0 6px rgba(213, 165, 108, 0.6);
+  background: var(--ct-gold);
+
   transition: width 0.4s ease;
 }
 
 .xp-badge-count {
-  color: #8d7b70;
-  font-size: 10px;
+  color: var(--ct-muted);
+  font-size: var(--ct-text-sm);
   font-family: monospace;
 }
 
