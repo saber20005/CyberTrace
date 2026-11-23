@@ -74,6 +74,15 @@ try{
    await page.goto(origin+"/tests/fixtures/spotlight-preview.html?view=library&spotlight-preview=1",{waitUntil:"domcontentloaded"});
    await page.locator("[data-ct-spotlight-preview]").waitFor({state:"visible"});
    assert.match(await page.locator("#ct-sp-title").innerText(),/مكتبة التحقيقات/);
+   await page.locator(".ct-sp-lamp").waitFor({state:"visible"});
+   await page.locator(".ct-sp-beam").waitFor({state:"visible"});
+   const torch=await page.locator(".ct-sp-lamp").evaluate(el=>({
+    head:Boolean(el.querySelector(".ct-sp-lamp-head")),width:el.getBoundingClientRect().width,
+    cone:getComputedStyle(document.querySelector(".ct-sp-beam")).clipPath
+   }));
+   assert.equal(torch.head,true,"moving light has a physical lamp head");
+   assert.ok(torch.width>18,"lamp actually renders on phone and desktop");
+   assert.match(torch.cone,/polygon/,"visible conical beam");
    await page.locator(".ct-home-navbar .ct-primary-route").click();
    await page.getByText("ابحث في ملفات الحوادث").waitFor();
    await page.locator('.library-filters input[type="search"]').click();
