@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import logo from "../assets/logo.svg";
-import {CaseZero,CaseZeroBoard} from "./CaseZero.jsx";
+import {CaseZero,CaseZeroBoard,CaseZeroDebrief} from "./CaseZero.jsx";
 import "./WelcomeTour.css";
 
 const TOUR_STEPS = [
@@ -50,6 +50,7 @@ export default function WelcomeTour({onSkip,onHome,onLibrary,onSoc,onCertificate
             <div><span aria-hidden="true">⌁</span><strong>المزامنة بين الأجهزة</strong><p>تحتاج تسجيل الدخول وتفعيل مزامنة CyberTrace؛ الجولة نفسها لا تفعّلها.</p></div>
             <div><span aria-hidden="true">▣</span><strong>إفادات التدريب</strong><p>تعرض إكمال التدريب فقط، وليست شهادة خادمية معتمدة حتى يكتمل نظام التحقق.</p></div>
           </div>}
+          {step===4&&<CaseZeroDebrief data={caseState}/>}
           {step===4&&<div className="ct-tour-destinations">
             <button type="button" onClick={onLibrary}><span>▦</span><strong>افتح مكتبة التحقيقات</strong><small>ابدأ تدريبك الأول</small></button>
             <button type="button" onClick={onSoc}><span>◉</span><strong>جرّب مناوبة SOC</strong><small>رتب التنبيهات وتعلم الاستجابة</small></button>
