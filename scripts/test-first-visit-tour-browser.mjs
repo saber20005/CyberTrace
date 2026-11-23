@@ -89,6 +89,25 @@ try{
    await page.getByText("افتح قائمة العمليات").waitFor();
    await page.locator(".ct-more > summary").click();
    await page.getByText("انتقل إلى مركز SOC").waitFor();
+   // The SOC dropdown is wide on phones: the user's requested lamp sits LEFT
+   // of the highlighted action, with a narrower beam and correct aim.
+   if(viewport.width<=720){
+    await page.waitForFunction(()=>{
+     const lamp=document.querySelector(".ct-sp-lamp");
+     const target=document.querySelector('[data-ct-spotlight="soc"]');
+     if(!lamp||!target)return false;
+     const x=parseFloat(lamp.style.left),box=target.getBoundingClientRect();
+     return Number.isFinite(x)&&x<box.left+box.width/2-30;
+    });
+    const pos=await page.locator(".ct-sp-lamp").evaluate(el=>{
+     const rect=document.querySelector('[data-ct-spotlight="soc"]').getBoundingClientRect();
+     const cone=document.querySelector(".ct-sp-beam");
+     return {lampX:parseFloat(el.style.left),buttonMidX:rect.left+rect.width/2,beamHeight:parseFloat(cone.style.height),angle:parseFloat(el.style.transform.match(/rotate\\(([-\\d.]+)deg\\)/)?.[1]||"NaN")};
+    });
+    assert.ok(pos.lampX<pos.buttonMidX-30,"SOC flashlight must appear on LEFT on mobile");
+    assert.ok(pos.beamHeight<=110,"SOC light cone must not cover the expanded menu");
+    assert.ok(pos.angle<0,"left-side flashlight aims up and RIGHT toward SOC");
+   }
    await page.locator('[data-ct-spotlight="soc"]').click();
    await page.getByText("اكتشفت طريقك في مركز التحقيق").waitFor();
    assert.equal(await page.locator("[data-fixture-view]").getAttribute("data-fixture-view"),"soc");
