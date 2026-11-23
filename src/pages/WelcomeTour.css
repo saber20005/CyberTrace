@@ -92,3 +92,8 @@
 @media(max-width:600px){.ct-tour-header{padding:10px 13px}.ct-tour-brand strong{font-size:12px}.ct-tour-brand small{font-size:8px}.ct-tour-brand img{height:36px;width:36px}.ct-tour-shell{padding:17px 13px}.ct-tour-progress{gap:5px;margin-bottom:20px}.ct-tour-progress button small{font-size:8px}.ct-tour-copy h1{font-size:clamp(27px,7.5vw,36px);margin:9px 0 12px}.ct-tour-lead{font-size:13px;line-height:1.9;margin-bottom:18px}.ct-tour-intro-items{gap:7px}.ct-tour-intro-items>div{padding:10px 9px}.ct-tour-intro-items strong{font-size:11px}.ct-tour-intro-items small{font-size:9px}.ct-tour-screen-content{padding:17px}.ct-tour-screen-content h2{font-size:20px;margin:8px 0}.ct-tour-wave{height:60px}.ct-tour-footer{margin-top:20px}.ct-tour-navigation{width:100%;justify-content:space-between}.ct-tour-end{width:100%;justify-content:space-between}}
 @media(max-width:370px){.ct-tour-progress button small{font-size:7px}.ct-tour-intro-items{grid-template-columns:1fr}.ct-tour-intro-items>div{display:grid;grid-template-columns:30px 1fr;gap:2px}.ct-tour-intro-items small{grid-column:2}.ct-tour-destinations{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.ct-tour *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Safe visual comparison: previews never silently replace production styling. */
+.ct-tour-compare{color:var(--tour-accent);font-size:11px;text-decoration:underline;text-underline-offset:3px}
+.ct-tour-compare:focus-visible{outline:3px solid var(--tour-bright);outline-offset:3px}
+@media(max-width:500px){.ct-tour-compare{order:3;width:100%;text-align:center}}
