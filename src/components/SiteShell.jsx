@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import HomeNavbar from "./HomeNavbar";
+import SpotlightPreview from "./SpotlightPreview";
 import { trackEvent } from "../utils/analytics";
 import { getBlackBoxLearningLink } from "../utils/routes";
 import "./SiteShell.css";
@@ -32,5 +33,6 @@ export default function SiteShell({ view, children, ...navigation }) {
     </nav>}
     <div id="ct-page-content" className="ct-page-content" tabIndex={-1} ref={content}>{children}</div>
     {!focusMode && <footer className="ct-site-footer"><strong>CyberTrace</strong><span>تعلّم. حلّل. اتخذ القرار.</span><a href={getBlackBoxLearningLink().url} target="_blank" rel="noopener noreferrer" onClick={() => trackEvent("partner_click", { destination: "blackbox", context: view })}>التدريب العملي في BLACKBOX ↗</a><small>مساحة تدريب على تحليل الحوادث الأمنية</small></footer>}
+    <SpotlightPreview view={view} />
   </div>;
 }

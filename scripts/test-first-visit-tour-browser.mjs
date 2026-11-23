@@ -70,6 +70,56 @@ try{
    await page.goto(origin+"/tests/fixtures/first-visit-tour.html?view=auth",{waitUntil:"domcontentloaded"});
    await page.locator("[data-test-view=auth]").waitFor();
    assert.equal(await page.locator(".ct-tour").count(),0,"login deep link never intercepted");
+   // New spotlight demo guides actual navigation controls and never submits SOC decisions.
+   await page.goto(origin+"/tests/fixtures/spotlight-preview.html?view=library&spotlight-preview=1",{waitUntil:"domcontentloaded"});
+   await page.locator("[data-ct-spotlight-preview]").waitFor({state:"visible"});
+   assert.match(await page.locator("#ct-sp-title").innerText(),/مكتبة التحقيقات/);
+   await page.locator(".ct-sp-lamp").waitFor({state:"visible"});
+   await page.locator(".ct-sp-beam").waitFor({state:"visible"});
+   const torch=await page.locator(".ct-sp-lamp").evaluate(el=>({
+    head:Boolean(el.querySelector(".ct-sp-lamp-head")),width:el.getBoundingClientRect().width,
+    cone:getComputedStyle(document.querySelector(".ct-sp-beam")).clipPath
+   }));
+   assert.equal(torch.head,true,"moving light has a physical lamp head");
+   assert.ok(torch.width>18,"lamp actually renders on phone and desktop");
+   assert.match(torch.cone,/polygon/,"visible conical beam");
+   await page.locator(".ct-home-navbar .ct-primary-route").click();
+   await page.getByText("ابحث في ملفات الحوادث").waitFor();
+   await page.locator('.library-filters input[type="search"]').click();
+   await page.getByText("افتح قائمة العمليات").waitFor();
+   await page.locator(".ct-more > summary").click();
+   await page.getByText("انتقل إلى مركز SOC").waitFor();
+   // The SOC dropdown is wide on phones: the user's requested lamp sits LEFT
+   // of the highlighted action, with a narrower beam and correct aim.
+   if(viewport.width<=720){
+    await page.waitForFunction(()=>{
+     const lamp=document.querySelector(".ct-sp-lamp");
+     const target=document.querySelector('[data-ct-spotlight="soc"]');
+     if(!lamp||!target)return false;
+     const x=parseFloat(lamp.style.left),box=target.getBoundingClientRect();
+     return Number.isFinite(x)&&x<box.left+box.width/2-30;
+    });
+    const pos=await page.locator(".ct-sp-lamp").evaluate(el=>{
+     const rect=document.querySelector('[data-ct-spotlight="soc"]').getBoundingClientRect();
+     const cone=document.querySelector(".ct-sp-beam");
+     return {lampX:parseFloat(el.style.left),buttonMidX:rect.left+rect.width/2,beamHeight:parseFloat(cone.style.height),angle:Number(el.style.transform.split("rotate(")[1]?.split("deg)")[0])};
+    });
+    assert.ok(pos.lampX<pos.buttonMidX-30,"SOC flashlight must appear on LEFT on mobile");
+    assert.ok(pos.beamHeight<=110,"SOC light cone must not cover the expanded menu");
+    assert.ok(pos.angle<0,"left-side flashlight aims up and RIGHT toward SOC");
+   }
+   await page.locator('[data-ct-spotlight="soc"]').click();
+   await page.getByText("اكتشفت طريقك في مركز التحقيق").waitFor();
+   assert.equal(await page.locator("[data-fixture-view]").getAttribute("data-fixture-view"),"soc");
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,"spotlight fits "+viewport.width+"px");
+   await page.getByRole("button",{name:"إغلاق الجولة"}).click();
+   assert.equal(await page.locator("[data-ct-spotlight-preview]").count(),0);
+   await page.getByRole("button",{name:/إعادة الجولة الضوئية/}).click();
+   await page.locator("[data-ct-spotlight-preview]").waitFor();
+   await page.getByRole("button",{name:"تخطي الجولة"}).click();
+   assert.equal(await page.locator("[data-ct-spotlight-preview]").count(),0);
+   await page.goto(origin+"/tests/fixtures/spotlight-preview.html?view=library",{waitUntil:"domcontentloaded"});
+   assert.equal(await page.locator("[data-ct-spotlight-preview]").count(),0,"non-preview links have no overlay");
    assert.deepEqual(errors,[],"no unexpected errors");
    assert.deepEqual(leaks,[],"onboarding never requests external data/APIs");
    console.log("PASS CyberTrace welcome tour "+viewport.width+"px: first visit, decisions, replay, skip, focus, direct routes");
