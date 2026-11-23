@@ -1,0 +1,224 @@
+/* CyberTrace Royal Gold, opt-in through Settings. No floating preview toolbar.
+   Source: user-approved Vercel preview #78; only presentation rules copied.
+   Seven-color palette: #5A4A0D #7A5E12 #A67917 #CC961F #EBB84A #F3D789 #FFF3D8.
+   No account, Firebase, grading, or progress behavior is changed. */
+
+/* CyberTrace branch-only gold visual comparison.
+   Exact user-supplied palette: #5A4A0D #7A5E12 #A67917 #CC961F #EBB84A #F3D789 #FFF3D8.
+   All effects are CSS scoped to the temporary preview attribute. */
+html[data-ct-theme="gold"] {
+ color-scheme:dark;--ct-bg:#100e08;--ct-bg-elevated:#20190b;--ct-surface:#2b210e;
+ --ct-surface-deep:#171306;--ct-border:#5A4A0D;--ct-border-strong:#A67917;
+ --ct-gold:#EBB84A;--ct-gold-bright:#F3D789;--ct-fg:#FFF3D8;
+ --ct-muted:#daca9d;--ct-muted-blue:#e3cc9f;
+ --gold-p1:#5A4A0D;--gold-p2:#7A5E12;--gold-p3:#A67917;
+ --gold-p4:#CC961F;--gold-p5:#EBB84A;--gold-p6:#F3D789;--gold-p7:#FFF3D8;
+}
+html[data-ct-theme="gold"] :is(body,#root,.app,.auth-screen,.library-page,.inv-screen,.soc-page,.ct-suite-page,.ct-certificate-page,.ct-cert-page,.ct-studio) {
+ background-color:#100e08!important;color:#FFF3D8!important;
+}
+html[data-ct-theme="gold"] .app {
+ background:radial-gradient(ellipse at 82% 0%,#A6791745,transparent 43%),radial-gradient(ellipse at 12% 55%,#5A4A0D46,transparent 38%),#100e08!important;
+}
+html[data-ct-theme="gold"] :is(.navbar,.app .ct-home-navbar,.ct-cert-nav,.ct-studio-header,.auth-topbar) {
+ background:linear-gradient(135deg,#211a0a,#130f09)!important;
+ border-color:#7A5E12!important;box-shadow:0 10px 35px #0006!important;
+}
+html[data-ct-theme="gold"] :is(.logo-mark,.ct-studio-mark-icon) {
+ border-color:#EBB84A!important;color:#F3D789!important;filter:drop-shadow(0 0 11px #CC961F66);
+}
+html[data-ct-theme="gold"] :is(.hero h1 span,.library-heading h1 span,.library-eyebrow,.section-heading span,.feature-number,.ct-suite-intro>span,.ct-studio-eyebrow,.ct-studio-step) {color:#F3D789!important}
+html[data-ct-theme="gold"] :is(.hero-description,.hero-stats span,.case-description,.library-intro,.ct-suite-intro p,.ct-studio-heading p,.step p) {color:#e0cea6!important}
+html[data-ct-theme="gold"] :is(.primary-button,.ct-primary-route,.auth-submit,.case-start,.library-random,.ct-cert-action,.ct-studio-preview-actions span:first-child) {
+ background:linear-gradient(115deg,#CC961F,#EBB84A 51%,#F3D789)!important;
+ border:1px solid #F3D789!important;color:#241909!important;font-weight:800!important;
+ box-shadow:0 9px 30px #A6791750!important;
+}
+html[data-ct-theme="gold"] :is(.primary-button,.ct-primary-route,.auth-submit,.case-start,.library-random):hover{filter:brightness(1.1)}
+html[data-ct-theme="gold"] :is(.nav-button,.nav-library,.secondary-button,.ct-nav-dropdown>summary,.ct-studio-back,.ct-suite-top button,.ct-cert-nav button) {
+ background:linear-gradient(135deg,#35270c,#171309)!important;border-color:#7A5E12!important;color:#F3D789!important;
+}
+html[data-ct-theme="gold"] :is(.nav-button,.nav-library,.secondary-button,.ct-nav-dropdown>summary):hover{border-color:#EBB84A!important;color:#FFF3D8!important}
+html[data-ct-theme="gold"] :is(.ct-nav-dropdown-panel,.ct-account-panel) {background:#20190d!important;border-color:#7A5E12!important;color:#FFF3D8!important}
+html[data-ct-theme="gold"] .ct-nav-dropdown-panel :is(button,a,.ct-user-label){color:#FFF3D8!important}
+html[data-ct-theme="gold"] .ct-nav-dropdown-panel :is(button,a):hover{background:#5A4A0D!important}
+html[data-ct-theme="gold"] :is(.terminal-card,.feature-card,.step,.launch-partner,.library-stats article,.case-card,.library-progress,.learning-plan,.learning-suggestion,.learning-skill,.ct-suite-card,.ct-cert-controls,.ct-cert-display,.ct-studio-panel,.ct-studio-preview-sticky) {
+ background:linear-gradient(145deg,#30230d,#191509)!important;
+ border-color:#7A5E12!important;color:#FFF3D8!important;
+ box-shadow:0 12px 32px #0004,0 0 0 1px #CC961F18!important;
+}
+html[data-ct-theme="gold"] :is(.feature-card,.case-card,.ct-suite-card):hover{border-color:#EBB84A!important;box-shadow:0 14px 39px #A679172e!important}
+html[data-ct-theme="gold"] :is(.terminal-header,.terminal-body,.ct-studio-preview-top,.ct-studio-preview-event,.ct-studio-preview-metrics>div){background:#291e0a!important;border-color:#7A5E12!important}
+html[data-ct-theme="gold"] :is(.terminal-line,.terminal-muted,.case-code,.case-facts,.ct-suite-card p,.ct-suite-card li small,.ct-studio-description){color:#dbcaa4!important}
+html[data-ct-theme="gold"] :is(.green,.terminal-input,.ct-suite-card progress,.ct-studio-preview-caption,.ct-studio-preview-metrics strong){color:#EBB84A!important;accent-color:#EBB84A!important}
+html[data-ct-theme="gold"] :is(.badge,.case-category,.ct-suite-status,.ct-suite-trust,.ct-studio-privacy){background:#5A4A0D70!important;border-color:#A67917!important;color:#F3D789!important}
+html[data-ct-theme="gold"] :is(.library-filters input,.library-filters select,.auth-form input,.ct-studio-select select,.ct-studio-segments,.ct-studio-swatch,.ct-studio-theme,.ct-studio-preset,.ct-studio-preview,.ct-studio-preview-metrics>div,.ct-studio-preview-event){background:#191407!important;border-color:#7A5E12!important;color:#FFF3D8!important}
+html[data-ct-theme="gold"] :is(.auth-card,.auth-form-panel,.auth-showcase){background:linear-gradient(135deg,#31200a,#13110a)!important;border-color:#A67917!important;color:#FFF3D8!important}
+html[data-ct-theme="gold"] :is(.auth-card h1,.auth-showcase h2,.auth-form label,.library-heading h1,.case-card h3){color:#FFF3D8!important}
+html[data-ct-theme="gold"] .ct-studio {
+ --studio-accent:#EBB84A!important;--studio-fg:#FFF3D8!important;--studio-muted:#decaa3!important;
+ --studio-panel:#261d0c!important;--studio-panel-2:#382810!important;--studio-border:#7A5E12!important;--studio-bg:#161206!important;
+}
+html[data-ct-theme="gold"] :is(.ct-suite-card a,.ct-suite-footer a,.ct-cert-joint-preview-link){color:#F3D789!important}
+html[data-ct-theme="gold"] :is(.ct-suite-card progress,.library-progress progress,.learning-skill progress){accent-color:#EBB84A!important}
+html[data-ct-theme="gold"] :is(a,button,input,select,textarea,summary):focus-visible{outline:3px solid #F3D789!important;outline-offset:3px}
+html[data-ct-theme="gold"] .ct-studio :is(.ct-studio-preset,.ct-studio-theme)[aria-pressed="true"] {border-color:#F3D789!important}
+/* ══════════════════════════════════════════════════════════════════════════
+   Amber-only audit: investigation review + SOC shift
+   These legacy screens had hard-coded dark green (#0d1c19, #11271f)
+   and blue-teal (#050d11, #142331) values which site tokens cannot reach.
+   All overrides are ONLY active in the Royal Gold theme. Their backgrounds
+   are darkened mixes of the seven requested palette stops, never teal.
+   ══════════════════════════════════════════════════════════════════════════ */
+html[data-ct-theme="gold"] .inv-screen {
+  background:
+    radial-gradient(circle at 75% 15%,color-mix(in srgb,#A67917 18%,transparent),transparent 34%),
+    color-mix(in srgb,#5A4A0D 22%,black)!important;
+}
+html[data-ct-theme="gold"] .inv-screen :is(
+  .inv-card,.inv-progress,.inv-log,.inv-score-box,.inv-total-xp,
+  .inv-outcome,.inv-personal-record,.inv-levelup,.inv-accuracy
+) {
+  background:color-mix(in srgb,#5A4A0D 32%,black)!important;
+  border-color:#7A5E12!important;
+  color:#FFF3D8!important;
+}
+html[data-ct-theme="gold"] .inv-screen :is(
+  .inv-progress-step.active,.inv-option.selected,.inv-option.correct,.inv-option.incorrect
+) {
+  background:color-mix(in srgb,#A67917 27%,black)!important;
+  border-color:#CC961F!important;
+  color:#FFF3D8!important;
+}
+html[data-ct-theme="gold"] .inv-screen :is(.inv-progress-step,.inv-option,.inv-back,.inv-feedback) {
+  background:color-mix(in srgb,#5A4A0D 22%,black)!important;
+  border-color:#7A5E12!important;color:#F3D789!important;
+}
+html[data-ct-theme="gold"] .inv-screen :is(.inv-progress-step.active,.inv-score-box strong,.inv-personal-record strong,.inv-review-choices dt strong) {
+  color:#EBB84A!important;
+}
+html[data-ct-theme="gold"] .inv-screen :is(.incident-box,.inv-review-next,.inv-log,.inv-report-status) {
+  border-color:#A67917!important;
+}
+html[data-ct-theme="gold"] .inv-screen .incident-box {
+  background:color-mix(in srgb,#7A5E12 24%,black)!important;
+}
+html[data-ct-theme="gold"] .inv-screen :is(.incident-label,.inv-question .yellow,.inv-review-next h3) {
+  color:#EBB84A!important;
+}
+/* This is the exact green panel shown in the user's screenshot. */
+html[data-ct-theme="gold"] .inv-screen .inv-review {
+  background:linear-gradient(135deg,
+    color-mix(in srgb,#5A4A0D 42%,black) 0%,
+    color-mix(in srgb,#7A5E12 20%,black) 100%)!important;
+  border:1px solid #A67917!important;
+  box-shadow:0 15px 40px color-mix(in srgb,#5A4A0D 18%,transparent)!important;
+  color:#FFF3D8!important;
+}
+html[data-ct-theme="gold"] .inv-screen .inv-review-choices > div {
+  background:color-mix(in srgb,#5A4A0D 27%,black)!important;
+  border:1px solid #7A5E12!important;
+  color:#FFF3D8!important;
+}
+html[data-ct-theme="gold"] .inv-screen .inv-review :is(h2,h3,dt,dd,p,li,strong) {
+  color:#FFF3D8!important;
+}
+html[data-ct-theme="gold"] .inv-screen .inv-review :is(
+  .inv-review-choices dt strong,.inv-review-next h3,.inv-review-feedback
+) {
+  color:#F3D789!important;
+}
+html[data-ct-theme="gold"] .inv-screen .inv-report-button {
+  background:linear-gradient(110deg,#7A5E12,#5A4A0D)!important;
+  border:1px solid #CC961F!important;
+  color:#FFF3D8!important;
+}
+html[data-ct-theme="gold"] .inv-screen :is(.inv-report-status,.inv-review-note,.inv-review-next ul,.inv-description,.inv-log-line) {
+  color:#F3D789!important;
+}
+html[data-ct-theme="gold"] .inv-screen .inv-total-bar div {
+  background:linear-gradient(90deg,#A67917,#EBB84A)!important;
+}
+
+/* SOC workflow: remove fixed blue/green from selector, report and feedback cards. */
+html[data-ct-theme="gold"] .soc-page {
+  background:
+    radial-gradient(ellipse at 15% 5%,color-mix(in srgb,#A67917 17%,transparent),transparent 43%),
+    color-mix(in srgb,#5A4A0D 23%,black)!important;
+  color:#FFF3D8!important;
+}
+html[data-ct-theme="gold"] .soc-page :is(
+  .soc-topbar,.soc-inbox,.soc-workbench,.soc-correlation,.soc-report,.soc-switcher,
+  .soc-intro,.soc-summary,.soc-evidence,.soc-evidence-viewport,.soc-shift-card,
+  .soc-alert,.soc-final-score,.soc-review-list article,.soc-score-breakdown span,
+  .soc-learning-feedback,.soc-final-link,.soc-saved
+) {
+  background:color-mix(in srgb,#5A4A0D 33%,black)!important;
+  border-color:#7A5E12!important;
+  color:#FFF3D8!important;
+}
+html[data-ct-theme="gold"] .soc-page :is(
+  .soc-alert.is-selected,.soc-alert.is-handled,.soc-shift-card.active,
+  .soc-priorities label.checked,.soc-actions label.checked
+) {
+  background:color-mix(in srgb,#7A5E12 48%,black)!important;
+  border-color:#CC961F!important;
+  color:#FFF3D8!important;
+}
+html[data-ct-theme="gold"] .soc-page :is(
+  .soc-priorities label,.soc-actions label,.soc-workbench textarea,
+  .soc-notices span,.soc-category
+) {
+  background:color-mix(in srgb,#5A4A0D 22%,black)!important;
+  border-color:#A67917!important;color:#FFF3D8!important;
+}
+html[data-ct-theme="gold"] .soc-page :is(
+  .soc-primary,.soc-report-actions button.soc-primary
+) {
+  background:linear-gradient(115deg,#CC961F,#EBB84A,#F3D789)!important;
+  border-color:#F3D789!important;
+  color:color-mix(in srgb,#5A4A0D 26%,black)!important;
+}
+html[data-ct-theme="gold"] .soc-page :is(.soc-secondary,.soc-topbar nav button) {
+  background:color-mix(in srgb,#5A4A0D 40%,black)!important;
+  border-color:#A67917!important;color:#F3D789!important;
+}
+html[data-ct-theme="gold"] .soc-page :is(
+  h1,h2,h3,h4,strong,.soc-learning-feedback h3,.soc-shift-card strong,
+  .soc-final-score strong,.soc-score-breakdown strong
+) {color:#FFF3D8!important}
+html[data-ct-theme="gold"] .soc-page :is(
+  p,small,.soc-learning-feedback p,.soc-review-list p,.soc-final-link p,
+  .soc-shift-card>small,.soc-shift-card em,.soc-section-head span,
+  .soc-description,.soc-evidence-viewport p,.soc-report-actions a
+) {color:#F3D789!important}
+html[data-ct-theme="gold"] .soc-page :is(
+  .soc-score-breakdown strong,.soc-eyebrow,.soc-brand span,.soc-review-title span
+) {color:#EBB84A!important}
+html[data-ct-theme="gold"] .soc-page :is(
+  .soc-priorities input,.soc-actions input,progress
+) {accent-color:#CC961F!important}
+
+/* Finishing pass: preserve the seven-stop palette in the remaining status dots,
+   review ornaments and live-preview thumbnails. Original design is untouched. */
+html[data-ct-theme="gold"] :is(
+ .ct-studio-local span,.ct-studio-live i,.ct-studio-preview-indicator,
+ .ct-studio-preview-event .ct-studio-preview-indicator,
+ .inv-screen .inv-line .green,.auth-screen .auth-line .green
+) {color:#EBB84A!important;background-color:#EBB84A!important;box-shadow:0 0 0 2px #A6791733!important}
+html[data-ct-theme="gold"] :is(.auth-screen .auth-success .green,.inv-screen .inv-line .green){
+ color:#F3D789!important;background:transparent!important;box-shadow:none!important
+}
+html[data-ct-theme="gold"] .ct-studio-preset-art.signature{background:linear-gradient(135deg,#5A4A0D,#A67917)!important}
+html[data-ct-theme="gold"] .ct-studio-preset-art.focus{background:linear-gradient(135deg,#241a07,#7A5E12)!important}
+html[data-ct-theme="gold"] .ct-studio-preset-art.reading{background:linear-gradient(135deg,#CC961F,#FFF3D8)!important}
+html[data-ct-theme="gold"] .ct-studio-theme:nth-child(1) .ct-studio-theme-art{background:linear-gradient(140deg,#5A4A0D,#A67917)!important}
+html[data-ct-theme="gold"] .ct-studio-theme:nth-child(2) .ct-studio-theme-art{background:linear-gradient(140deg,#241b08,#7A5E12)!important}
+html[data-ct-theme="gold"] .ct-studio-theme:nth-child(3) .ct-studio-theme-art{background:linear-gradient(140deg,#F3D789,#FFF3D8)!important}
+html[data-ct-theme="gold"] .ct-studio :is(.ct-studio-preset-art i,.ct-studio-theme-art i,.ct-studio-theme-art span){
+ background:#EBB84A!important
+}
+
+/* Prevent legacy cyan/violet accent storage from overriding the gold palette. */
+html[data-ct-theme="gold"][data-ct-accent]{--ct-gold:#EBB84A;--ct-gold-bright:#F3D789}
+html[data-ct-theme="gold"][data-ct-accent] .ct-studio{--studio-accent:#EBB84A!important}

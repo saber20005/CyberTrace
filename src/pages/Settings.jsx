@@ -6,6 +6,7 @@ const THEMES=[
   {id:"dark",name:"Signature",hint:"ذهبي داكن",color:"#c58d56",bg:"#19171c"},
   {id:"midnight",name:"Midnight",hint:"أزرق عميق",color:"#62c7f0",bg:"#101d34"},
   {id:"light",name:"Daylight",hint:"قراءة فاتحة",color:"#5075a3",bg:"#edf2f8"},
+  {id:"gold",name:"Royal Gold",hint:"الذهبي الملكي",color:"#EBB84A",bg:"linear-gradient(135deg,#5A4A0D,#7A5E12,#CC961F)"},
 ];
 const ACCENTS=[
   {id:"brand",name:"الذهبي",color:"#d5a56c"},
@@ -44,7 +45,8 @@ export default function Settings({onHome}){
      </section>
      <section className="ct-studio-panel" aria-labelledby="ct-studio-identity"><div className="ct-studio-panel-top"><div><span className="ct-studio-step">02 / VISUAL IDENTITY</span><h2 id="ct-studio-identity">هوية الواجهة</h2></div></div>
       <div className="ct-studio-theme-grid" role="group" aria-label="شكل الواجهة">{THEMES.map(t=><button key={t.id} type="button" className={"ct-studio-theme "+(settings.theme===t.id?"selected":"")} aria-pressed={settings.theme===t.id} onClick={()=>choose("theme",t.id)}><span className="ct-studio-theme-art" style={{background:t.bg,"--theme-dot":t.color}} aria-hidden="true"><span/><i/><i/></span><strong>{t.name}</strong><small>{t.hint}</small></button>)}</div>
-      <span className="ct-studio-label" id="ct-studio-accent-label">لون الإبراز</span><div role="group" aria-labelledby="ct-studio-accent-label" className="ct-studio-swatches">{ACCENTS.map(a=><button key={a.id} type="button" aria-pressed={settings.accent===a.id} className={"ct-studio-swatch "+(settings.accent===a.id?"selected":"")} onClick={()=>choose("accent",a.id)}><span style={{background:a.color}} aria-hidden="true"/>{a.name}</button>)}</div>
+      {settings.theme==="gold"&&<p className="ct-studio-gold-note">الذهبي الملكي يستخدم درجاته الذهبية السبعة دون خلطها بالسيان أو البنفسجي. اختر مظهرًا آخر لتغيير لون الإبراز.</p>}
+      <span className="ct-studio-label" id="ct-studio-accent-label">لون الإبراز</span><div role="group" aria-labelledby="ct-studio-accent-label" className="ct-studio-swatches">{ACCENTS.map(a=><button key={a.id} type="button" aria-pressed={settings.accent===a.id} className={"ct-studio-swatch "+(settings.accent===a.id?"selected":"")} disabled={settings.theme==="gold"&&a.id!=="brand"} onClick={()=>choose("accent",a.id)}><span style={{background:a.color}} aria-hidden="true"/>{a.name}</button>)}</div>
      </section>
      <section className="ct-studio-panel" aria-labelledby="ct-studio-ergonomics"><div className="ct-studio-panel-top"><div><span className="ct-studio-step">03 / WORKFLOW</span><h2 id="ct-studio-ergonomics">راحة القراءة والعمل</h2></div></div><div className="ct-studio-options">{OPTIONS.map(row=><div key={row.key} className="ct-studio-option"><span>{row.title}</span><div className="ct-studio-segments" role="group" aria-label={row.title}>{row.choices.map(([value,label])=><button key={value} type="button" aria-pressed={settings[row.key]===value} onClick={()=>choose(row.key,value)}>{label}</button>)}</div></div>)}</div>
      </section>
