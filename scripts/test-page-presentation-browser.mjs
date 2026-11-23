@@ -39,11 +39,22 @@ try{
     assert.equal(await page.locator('main').count(),1,view+' keeps one main landmark');
     assert.equal(await page.locator('.ct-site-footer').count(),1,view+' keeps one shared footer');
     assert.equal(await page.locator('.library-footer').count(),0,view+' has no duplicated library footer');
-    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,view+' fits '+width+'px '+theme);
+    const layout = await page.evaluate(() => ({overflow:document.documentElement.scrollWidth>innerWidth, width:innerWidth, scrollWidth:document.documentElement.scrollWidth, elements:[...document.querySelectorAll('#ct-page-content *')].filter(el=>{const r=el.getBoundingClientRect();return r.width&& (r.left < -1 || r.right > innerWidth+1);}).slice(0,8).map(el=>({tag:el.tagName,cls:el.className,left:el.getBoundingClientRect().left,right:el.getBoundingClientRect().right}))}));
+    assert.equal(layout.overflow,false,view+' fits '+width+'px '+theme+' '+JSON.stringify(layout));
     if([390,1440].includes(width)&&theme==="dark"&&["home","library","journeys","settings","auth"].includes(view))await page.screenshot({path:artifacts+'/'+view+'-'+width+'.png',fullPage:true});
     if(width===390&&theme==="light"&&["library","settings"].includes(view))await page.screenshot({path:artifacts+'/'+view+'-light-'+width+'.png',fullPage:true});
    }
   }
+  await navigate('joint-certificate');
+  // Fallback Arabic font metrics must not push long action text outside a
+  // narrow page. The approved artwork retains its independent fixed geometry.
+  await page.locator('.joint-preview-actions button').evaluateAll(buttons => buttons.forEach(button => {button.style.fontFamily='DejaVu Sans, sans-serif';}));
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, 'certificate actions wrap with fallback fonts');
+  assert.equal(await page.locator('.joint-folio').evaluate(node => node.offsetWidth), 1120, 'approved certificate geometry remains fixed');
+  await page.emulateMedia({media:'print'});
+  assert.equal(await page.locator('.ct-home-navbar').isVisible(), false, 'shared navigation stays out of certificate printing');
+  assert.equal(await page.locator('.ct-site-footer').isVisible(), false, 'shared footer stays out of certificate printing');
+  await page.emulateMedia({media:'screen'});
   await navigate('home');
   await page.locator('.ct-more>summary').click();
   await page.getByRole('button',{name:'الدليل التفاعلي للمستخدم الجديد',exact:true}).click();

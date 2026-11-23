@@ -15,7 +15,7 @@
 .joint-preview-controls{width: 100%;max-width: 1120px;margin: 10px auto 14px;display: flex;align-items: center;justify-content: space-between;gap: 15px;}
 .joint-preview-controls p{font-size: 0.875rem;color: var(--ct-fg);margin: 0;line-height: 1.7;}
 .joint-preview-actions{display: flex;gap: 9px;align-items: center;flex-wrap: wrap;}
-.joint-preview-actions button{font: inherit;border-radius: 9px;padding: 10px 14px;cursor: pointer;font-size: 0.875rem;font-weight: 800;white-space: nowrap;border: 1px solid var(--ct-border);background: var(--ct-gold);color: var(--ct-on-accent);}
+.joint-preview-actions button{font: inherit;border-radius: 9px;padding: 10px 14px;cursor: pointer;font-size: 0.875rem;font-weight: 800;white-space: normal;max-width:100%;overflow-wrap:anywhere;border: 1px solid var(--ct-border);background: var(--ct-gold);color: var(--ct-on-accent);}
 .joint-preview-actions button.joint-fullscreen-action{background: var(--ct-surface);color: var(--ct-fg);border-color: var(--ct-border);}
 .joint-presentation-shell{width:100%;max-width:1120px;margin:0 auto}
 .joint-presentation-stage{position:relative;width:100%;min-height:0}
