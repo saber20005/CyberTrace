@@ -9,7 +9,7 @@ import "../../src/styles/design-system.css";
 import "../../src/styles/royal-gold-theme.css";
 
 applyUIPreferences(readUIPreferences());
-function Fixture(){
+export function Fixture(){
  const [view,setView]=useState(()=>{
   const route=readRoute(window.location.href);
   return route.view==="welcome"||shouldOpenFirstVisitTour(route)?"tour":route.view;
