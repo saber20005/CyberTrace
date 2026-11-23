@@ -18,7 +18,7 @@ jobs:
           node-version: '24'
       - name: Install lockfile packages without lifecycle scripts
         run: npm ci --ignore-scripts --no-audit --no-fund
-      - name: Inventory runtime and full-tree advisories (informational, no production credentials)
+      - name: Audit dependency vulnerabilities and block HIGH/CRITICAL regressions
         shell: bash
         run: |
           npm audit --json --omit=dev > /tmp/cybertrace-audit-runtime.json || true
@@ -35,6 +35,13 @@ jobs:
               const via=Array.isArray(item.via)?item.via.filter(v=>typeof v==='object').map(v=>v.title).slice(0,2):[];
               console.log('  '+name+' ['+item.severity+'] '+JSON.stringify({isDirect:item.isDirect,range:item.range,fixAvailable:item.fixAvailable,advisories:via}));
             }
-            if(data.error) console.log(scope+' audit did not complete: '+JSON.stringify(data.error).slice(0,240));
+            if(data.error){
+              console.error(scope+' audit failed: '+JSON.stringify(data.error).slice(0,240));
+              process.exitCode=1;
+            }
+            if((counts.high??0)+(counts.critical??0)>0){
+              console.error(scope+' contains high/critical dependency advisories; resolve before merge.');
+              process.exitCode=1;
+            }
           }
           JS
