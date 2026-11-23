@@ -1,4 +1,5 @@
 import {useState} from "react";
+import {caseZeroAssessment,caseZeroTriageFeedback} from "../utils/caseZeroTraining.js";
 import "./CaseZero.css";
 
 // All records are fictional RFC 5737 examples. This component has no network,
@@ -57,8 +58,8 @@ export function CaseZero({mode,data,onChange}) {
   {alert?<div className="ct-case-zero-ticket">
    <span>OPEN TICKET / {alert.id}</span><p>{alert.detail}</p>
    <div className="ct-case-zero-ticket-actions">
-    <button type="button" data-ct-triage="escalate" onClick={()=>update({triage:"escalate",feedback:alert.id==="SOC-101"?"تصعيد مبرر مبدئيًا؛ تحقق من سياق الدخول وهوية المستخدم قبل اتهام أي طرف.":"هذا التنبيه لا يتضمن مؤشرات كافية لتصعيد عاجل. تحقق من سياقه أولًا."})}>تصعيد للمراجعة</button>
-    <button type="button" data-ct-triage="review" onClick={()=>update({triage:"review",feedback:alert.id==="SOC-101"?"قد يتطلب هذا الترابط استجابة أسرع؛ راجع خطر التأخير.":"وضعه في المراجعة مع التحقق من المصدر مناسب لهذا السيناريو."})}>مراجعة اعتيادية</button>
+    <button type="button" data-ct-triage="escalate" onClick={()=>update({triage:"escalate",feedback:caseZeroTriageFeedback(data,alert.id,"escalate")})}>تصعيد للمراجعة</button>
+    <button type="button" data-ct-triage="review" onClick={()=>update({triage:"review",feedback:caseZeroTriageFeedback(data,alert.id,"review")})}>مراجعة اعتيادية</button>
    </div>
   </div>:<p className="ct-case-zero-empty">اختر تذكرة لفتح تفاصيلها.</p>}
   <p className="ct-case-zero-feedback" role="status" aria-live="polite">{data.feedback||"إجراء التدريب هنا لا ينشئ تذكرة حقيقية ولا يغيّر إحصاءات SOC."}</p>
@@ -72,6 +73,29 @@ export function CaseZeroBoard({data,step}){
   <p>محاولات دخول غير معتادة · سجلات مختبر اصطناعية</p>
   <div className="ct-case-zero-stats"><div><small>السجلات المفتوحة</small><strong>{evidence} / 3</strong></div><div><small>تقرير التحليل</small><strong>{data.filed?"مكتمل":"قيد الإعداد"}</strong></div></div>
   <div className="ct-case-zero-rail"><span className={evidence>=2?"done":""}>01 · فحص الأحداث</span><span className={data.filed?"done":""}>02 · كتابة الاستنتاج</span><span className={data.triage?"done":""}>03 · إجراء SOC</span></div>
+ <div className="ct-case-zero-live" role="status" aria-live="polite">
+  <span>تذكرة محددة: <strong dir="ltr">{data.selectedAlert||"NONE"}</strong></span>
+  <span>إجراء: <strong>{data.triage==="escalate"?"تصعيد":data.triage==="review"?"مراجعة":"لم يُتخذ"}</strong></span>
+  <span>خطوات التدريب: <strong>{caseZeroAssessment(data).score} / 3</strong></span>
+ </div>
   <div className="ct-case-zero-board-bottom">SCENE {String(step).padStart(2,"0")} · 100% SYNTHETIC · NO CLOUD WRITES</div>
  </div>;
+}
+
+export function CaseZeroDebrief({data}){
+ const review=caseZeroAssessment(data);
+ const milestones=[
+  {label:"فحص سجلين على الأقل",done:(data.opened||[]).length>=2},
+  {label:"توثيق تفسير الحادثة",done:data.filed===true},
+  {label:"فتح تذكرة SOC واختيار إجراء",done:Boolean(data.triage)}
+ ];
+ return <section className="ct-case-zero-debrief" aria-label="تقرير نهاية المحاكاة">
+   <div className="ct-case-zero-debrief-head"><div><span>CASE ZERO / AFTER ACTION REVIEW</span><h3>ملخص مهمتك التدريبية</h3></div><strong>{review.score} / 3</strong></div>
+   <p>{review.summary}</p>
+   <div className="ct-case-zero-debrief-steps">{milestones.map((item,i)=><div key={item.label} className={item.done?"done":""}><span>{String(i+1).padStart(2,"0")}</span><strong>{item.label}</strong><b>{item.done?"✓":"○"}</b></div>)}</div>
+   <div className="ct-case-zero-debrief-note"><strong>ما الخطوة التي تحتاجها؟</strong><p>{review.next}</p></div>
+   <dl><div><dt>ترابط الأحداث</dt><dd>{review.correlated?"EV-01 + EV-02 قيد المراجعة":"بحاجة إلى مراجعة"}</dd></div><div><dt>قرار SOC</dt><dd>{data.selectedAlert?data.selectedAlert+" · "+(data.triage==="escalate"?"تصعيد":data.triage==="review"?"مراجعة":"لم يُحسم"):"لا يوجد"}</dd></div></dl>
+   {data.filed&&<blockquote>{data.finding}</blockquote>}
+   <small>هذه محاكاة تعليمية وليست تقييمًا موثقًا أو شهادة. كل المعلومات مؤقتة ولن تُحفظ في حسابك.</small>
+ </section>;
 }
