@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import logo from "../assets/logo.svg";
-import {CaseZero,CaseZeroBoard,newCaseZero} from "./CaseZero.jsx";
+import {CaseZero,CaseZeroBoard} from "./CaseZero.jsx";
 import "./WelcomeTour.css";
 
 const TOUR_STEPS = [
@@ -10,6 +10,8 @@ const TOUR_STEPS = [
   {id:"progress",eyebrow:"YOUR LEARNING / 04",title:"افهم تقدّمك وما تعنيه الشهادات",lead:"يمكنك متابعة نتائج تدريب CyberTrace. مزامنة الحساب بين الأجهزة تُفعَّل باختيارك. أما الإفادات التدريبية الحالية فليست شهادات موثّقة خادميًا.",label:"التقدم والشهادات"},
   {id:"next",eyebrow:"YOUR NEXT STEP / 05",title:"اختر طريقك وابدأ",lead:"المسارات المشتركة تساعدك على الانتقال بين تحقيقات CyberTrace وتدريبات BLACKBOX، دون نقل نقاطك أو بياناتك بين الموقعين. ويمكنك تخصيص ألوان الواجهة وحجم النص من الإعدادات.",label:"ابدأ الآن"},
 ];
+
+const newCaseZero = () => ({opened:[],finding:"",filed:false,selectedAlert:"",triage:"",feedback:""});
 
 export default function WelcomeTour({onSkip,onHome,onLibrary,onSoc,onCertificates,onJourneys,onSettings,onAuth}) {
   const [step,setStep]=useState(0);
