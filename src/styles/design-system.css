@@ -1,80 +1,121 @@
-/* CyberTrace's shared interface tokens. No authentication, storage or scoring logic. */
+/* Shared presentation tokens. Authentication, storage and scoring live elsewhere. */
 :root {
-  --ct-bg: #100f11;
-  --ct-bg-elevated: #18171b;
-  --ct-surface: #211d1b;
-  --ct-surface-deep: #11171d;
-  --ct-border: #493b32;
-  --ct-border-strong: #856546;
+  color-scheme: dark;
+  --ct-bg: #111318;
+  --ct-bg-elevated: #191c23;
+  --ct-surface: #20242c;
+  --ct-surface-deep: #151920;
+  --ct-border: #363d48;
+  --ct-border-strong: #687382;
   --ct-gold: #d5a56c;
   --ct-gold-bright: #f0c68f;
-  --ct-fg: #f3e9de;
-  --ct-muted: #c6b8ab;
-  --ct-muted-blue: #b6c6d4;
+  --ct-on-accent: #191613;
+  --ct-fg: #f2f0ed;
+  --ct-muted: #b9c0cb;
+  --ct-muted-blue: #b5c8d8;
+  --ct-success: #91d2b6;
+  --ct-danger: #f4a29a;
   --ct-radius: 14px;
-  --ct-radius-sm: 10px;
+  --ct-radius-sm: 9px;
   --ct-width: 1240px;
-  --ct-page-gutter: clamp(15px,4vw,46px);
-  --ct-shadow: 0 12px 36px #00000027;
+  --ct-page-gutter: clamp(1rem, 4vw, 3rem);
+  --ct-shadow: 0 10px 32px #00000014;
+  --ct-font-body: 1rem;
+  --ct-text-sm: .875rem;
+  --ct-text-xs: .875rem;
+  --ct-title-xl: clamp(2rem, 4vw, 3rem);
+  --ct-title-lg: clamp(1.5rem, 3vw, 2.25rem);
+  --ct-space-1: .5rem;
+  --ct-space-2: .75rem;
+  --ct-space-3: 1rem;
+  --ct-space-4: 1.5rem;
+  --ct-space-5: 2rem;
+  --ct-space-6: 3rem;
+  --ct-card-padding: clamp(1.125rem, 2.5vw, 1.75rem);
+  --ct-section-gap: 2rem;
+  --ct-control-height: 2.75rem;
 }
-html { scroll-padding-top: 94px; }
-body { overflow-x: clip; }
+html { scroll-padding-top: 6rem; }
+body { background: var(--ct-bg); color: var(--ct-fg); }
 #root { min-width: 0; }
-:where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) {
+:where(.ct-site-shell,.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page,.ct-suite-page,.ct-studio) {
   font-family: "Cairo", system-ui, sans-serif;
   accent-color: var(--ct-gold);
   color: var(--ct-fg);
 }
-:where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) :where(button,a,input,select,textarea,summary):focus-visible {
+:where(.ct-site-shell,.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page,.ct-suite-page,.ct-studio) :where(button,a,input,select,textarea,summary):focus-visible {
   outline: 2px solid var(--ct-gold-bright);
-  outline-offset: 3px;
+  outline-offset: 4px;
 }
-:where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) button:disabled {
+:where(.ct-site-shell,.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page,.ct-suite-page,.ct-studio) button:disabled {
   cursor: not-allowed;
   opacity: .55;
 }
-:where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) :where(p,li,h1,h2,h3,button,a) {
+:where(.ct-site-shell,.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page,.ct-suite-page,.ct-studio) :where(p,li,h1,h2,h3,button,a) {
   overflow-wrap: break-word;
 }
-:where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) :where(input,select,textarea) {
+:where(.ct-site-shell,.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page,.ct-suite-page,.ct-studio) :where(input,select,textarea) {
   max-width: 100%;
   font-family: inherit;
 }
-:where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) :where(pre,code) { overflow-wrap: anywhere; }
-@media(max-width:600px) {
-  html { scroll-padding-top: 130px; }
+:where(.ct-site-shell,.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page,.ct-suite-page,.ct-studio) :where(pre,code) { overflow-wrap: anywhere; }
+
+/* A single root scale makes fixed rem typography respond across all pages. */
+html[data-ct-text="large"] { font-size: 112.5%; }
+html[data-ct-text="xlarge"] { font-size: 125%; }
+html[data-ct-density="compact"] {
+  --ct-card-padding: 1rem;
+  --ct-section-gap: 1.5rem;
+  --ct-space-6: 2.25rem;
+}
+html[data-ct-theme="light"] {
+  color-scheme: light;
+  --ct-bg: #f5f6f8;
+  --ct-bg-elevated: #ffffff;
+  --ct-surface: #ffffff;
+  --ct-surface-deep: #edf0f4;
+  --ct-border: #cbd2dc;
+  --ct-border-strong: #7d8999;
+  --ct-gold: #925b23;
+  --ct-gold-bright: #805021;
+  --ct-on-accent: #ffffff;
+  --ct-fg: #1c293b;
+  --ct-muted: #526175;
+  --ct-muted-blue: #455f7c;
+  --ct-success: #256746;
+  --ct-danger: #b43b35;
+  --ct-shadow: 0 10px 32px #1b2a3e08;
+}
+html[data-ct-theme="midnight"] {
+  --ct-bg: #0c1524;
+  --ct-bg-elevated: #152035;
+  --ct-surface: #1b2b42;
+  --ct-surface-deep: #101e30;
+  --ct-border: #344e6c;
+  --ct-border-strong: #668ab5;
+  --ct-fg: #ecf4ff;
+  --ct-muted: #b3c6da;
+  --ct-muted-blue: #abcbe4;
+}
+html[data-ct-accent="cyan"] { --ct-gold: #38c5e8; --ct-gold-bright: #7adff2; }
+html[data-ct-accent="violet"] { --ct-gold: #ad96ff; --ct-gold-bright: #c7b8ff; }
+html[data-ct-theme="light"][data-ct-accent="cyan"] { --ct-gold: #006b82; --ct-gold-bright: #00566b; }
+html[data-ct-theme="light"][data-ct-accent="violet"] { --ct-gold: #6b46b5; --ct-gold-bright: #593598; }
+html[data-ct-contrast="high"] {
+  --ct-muted: var(--ct-fg);
+  --ct-muted-blue: var(--ct-fg);
+  --ct-border-strong: var(--ct-gold);
+}
+html[data-ct-contrast="high"] :is(.ct-site-shell,.app,.ct-suite-page,.ct-studio) :is(a,button,summary):focus-visible { outline-width: 3px; }
+html[data-ct-motion="reduce"] *,
+html[data-ct-motion="reduce"] *::before,
+html[data-ct-motion="reduce"] *::after {
+  animation-duration: .01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .01ms !important;
+  scroll-behavior: auto !important;
 }
 @media(prefers-reduced-motion:reduce) {
   html { scroll-behavior: auto; }
-  :where(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page) :where(button,a) { transition: none !important; }
+  :where(.ct-site-shell,.app,.library-page,.auth-screen,.inv-screen,.soc-page,.admin-page,.suite-pro-page,.ct-suite-page,.ct-studio) :where(button,a) { transition: none !important; }
 }
-
-/* Device-local presentation; never associated with authenticated user data. */
-html[data-ct-text="large"] :is(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.ct-settings){font-size:1.1em}
-html[data-ct-motion="reduce"] *,html[data-ct-motion="reduce"] *::before,html[data-ct-motion="reduce"] *::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
-html[data-ct-theme="light"]{color-scheme:light;--ct-bg:#f4f6fa;--ct-bg-elevated:#fff;--ct-surface:#fff;--ct-surface-deep:#e8edf5;--ct-border:#b6c7d9;--ct-border-strong:#7b9bb8;--ct-fg:#17273c;--ct-muted:#46566b;--ct-muted-blue:#425a78}
-html[data-ct-theme="light"] :is(body,.app,.auth-screen,.ct-settings){background:#f4f6fa!important;color:#17273c!important}
-html[data-ct-theme="light"] :is(.ct-settings-header,.ct-settings-panel,.ct-settings-privacy,.ct-settings-field select){background:#fff!important;color:#17273c!important;border-color:#b4c5d7!important}
-html[data-ct-theme="light"] :is(.ct-settings-lead,.ct-settings-panel p,.ct-settings-field>span,.ct-settings-privacy b){color:#34475f!important}
-html[data-ct-theme="light"] :is(.ct-settings button){background:#e8edf7;color:#193d66;border-color:#8ba4bf}
-html[data-ct-theme="light"] .app :is(.navbar,.feature-card,.terminal-card,.case-card,.stat-card,.how-step){background:#fff!important;color:#17273c!important;border-color:#afc1d6!important}
-html[data-ct-theme="light"] .app :is(h1,h2,h3,p,span){text-shadow:none}
-html[data-ct-theme="light"] .auth-screen .auth-card{background:#fff!important;color:#17273c!important}
-html[data-ct-theme="light"] .auth-screen .auth-form-panel{background:#fff!important;color:#17273c!important}
-html[data-ct-theme="light"] .auth-screen .auth-form input{background:#f1f5fa!important;color:#152338!important;border-color:#8ca5c0!important}
-html[data-ct-theme="light"] .auth-screen .auth-showcase{background:linear-gradient(150deg,#243b5a,#1b2a42)!important;color:#fff!important}
-html[data-ct-theme="light"] .ct-settings-footer [role=status]{color:#206040}
-
-/* Studio V2: opt-in appearance tokens. Existing dark/light v1 remain valid. */
-html[data-ct-theme="midnight"]{--ct-bg:#0b1324;--ct-bg-elevated:#152035;--ct-surface:#1b2c45;--ct-surface-deep:#0e1d30;--ct-border:#36506d;--ct-border-strong:#5381b1;--ct-fg:#ecf4ff;--ct-muted:#afc4d9;--ct-muted-blue:#a8c9e6}
-html[data-ct-theme="midnight"] :is(body,.app,.auth-screen,.ct-settings){background:#0b1324!important;color:#ecf4ff!important}
-html[data-ct-accent="cyan"]{--ct-gold:#38c5e8;--ct-gold-bright:#7adff2}
-html[data-ct-accent="violet"]{--ct-gold:#ad96ff;--ct-gold-bright:#c7b8ff}
-html[data-ct-accent="cyan"] :is(.app .primary-button,.app .ct-primary-route){border-color:#38c5e8!important}
-html[data-ct-accent="violet"] :is(.app .primary-button,.app .ct-primary-route){border-color:#ad96ff!important}
-html[data-ct-density="compact"] .app :is(.feature-card,.stat-card,.case-card,.how-step,.terminal-card){padding:12px!important}
-html[data-ct-density="compact"] .ct-suite-card-summary{min-height:82px;padding:12px}
-html[data-ct-density="compact"] .ct-suite-card-body{padding:0 12px 12px}
-html[data-ct-text="xlarge"] :is(.app,.library-page,.auth-screen,.inv-screen,.soc-page,.ct-studio){font-size:1.2em}
-html[data-ct-contrast="high"]{--ct-muted:var(--ct-fg);--ct-muted-blue:var(--ct-fg);--ct-border-strong:var(--ct-gold)}
-html[data-ct-contrast="high"] :is(.app,.ct-suite-page,.ct-studio) :is(a,button,summary):focus-visible{outline:3px solid var(--ct-gold-bright)!important;outline-offset:3px}

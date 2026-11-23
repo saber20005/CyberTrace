@@ -4,7 +4,7 @@ import logo from "../assets/logo.svg";
 import "./CertificateVerification.css";
 
 // Public, unauthenticated and read-only. No owner progress access or writes.
-export default function CertificateVerification({ initialId = "", onBack }) {
+export default function CertificateVerification({ embedded = false, initialId = "", onBack }) {
   const [id, setId] = useState(initialId);
   const [state, setState] = useState("idle");
   const [record, setRecord] = useState(null);
@@ -43,7 +43,7 @@ export default function CertificateVerification({ initialId = "", onBack }) {
 
   return <div className="ct-verify-page" dir="rtl">
     <main className="ct-verify-shell">
-      <header className="ct-verify-brand"><img src={logo} alt="" /><span>CYBERTRACE / CERTIFICATE VERIFICATION</span></header>
+      {!embedded && <header className="ct-verify-brand"><img src={logo} alt="" /><span>CYBERTRACE / CERTIFICATE VERIFICATION</span></header>}
       <button type="button" className="ct-verify-back" onClick={onBack}>العودة إلى مركز الشهادات ←</button>
       <section className="ct-verify-card">
         <h1>التحقق من شهادة صادرة</h1>

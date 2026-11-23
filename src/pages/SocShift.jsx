@@ -6,7 +6,7 @@ import "./SocShift.css";
 
 const INITIAL_DRAFT = () => ({ priorityId: "", actionId: "", note: "" });
 
-export default function SocShift({ shiftId, onHome, onLibrary, onPro, onSelectShift }) {
+export default function SocShift({ embedded = false, shiftId, onHome, onLibrary, onPro, onSelectShift }) {
   const shift = getSocShift(shiftId);
   const [session, setSession] = useState(() => loadSocSession(undefined, shift.id));
   const [activeId, setActiveId] = useState(shift.alerts[0].id);
@@ -80,13 +80,13 @@ export default function SocShift({ shiftId, onHome, onLibrary, onPro, onSelectSh
   };
 
   return <div className="soc-page" dir="rtl">
-    <header className="soc-topbar">
+    {!embedded && <header className="soc-topbar">
       <button type="button" className="soc-brand" onClick={onHome} aria-label="العودة إلى CyberTrace">Cyber<span>Trace</span></button>
       <nav aria-label="تنقل المناوبة">
         <button type="button" onClick={onLibrary}>مكتبة التحقيقات</button>
         <button type="button" onClick={onPro}>عن Suite Pro</button>
       </nav>
-    </header>
+    </header>}
     <main className="soc-main">
       <section className="soc-switcher" aria-label="اختيار مستوى مناوبة SOC">
         <div className="soc-section-head"><h2>مكتبة مناوبات SOC</h2><span>3 مستويات · التدريب مجاني أثناء التطوير</span></div>

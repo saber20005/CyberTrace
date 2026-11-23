@@ -25,11 +25,11 @@ test('Home navbar groups route actions and does not lose the identity or logout 
 
 test('mobile navbar does not scroll sideways and restores account access through More', () => {
   const css=read('../src/components/HomeNavbar.css');
-  assert.match(css,/max-width:680px/);
-  assert.match(css,/\.ct-home-navbar \.ct-account-menu \{display:none\}/);
-  assert.match(css,/\.ct-mobile-account \{display:grid/);
-  assert.match(css,/overflow:visible/);
-  assert.match(css,/prefers-reduced-motion:reduce/);
+  assert.match(css,/max-width:\s*680px/);
+  assert.match(css,/\.ct-home-navbar \.ct-account-menu\s*\{\s*display:\s*none;?\s*\}/);
+  assert.match(css,/\.ct-mobile-account\s*\{\s*display:\s*grid/);
+  assert.match(css,/overflow:\s*visible/);
+  assert.match(css,/prefers-reduced-motion:\s*reduce/);
   const nav=read('../src/components/HomeNavbar.jsx');
   assert.match(nav,/document\.addEventListener\("pointerdown"/);
   assert.match(nav,/event\.key === "Escape"/);
@@ -37,7 +37,7 @@ test('mobile navbar does not scroll sideways and restores account access through
 
 test('home integration uses one navbar component, keeping existing auth and routes intact', () => {
   const app=read('../src/App.jsx');
-  assert.match(app,/<HomeNavbar user=\{user\}/);
+  assert.match(app,/<SiteShell view=\{view\} user=\{user\}/);
   assert.match(app,/onLogout=\{handleLogout\}/);
   assert.match(app,/onBlackBoxLink=\{blackBox\.openLink\}/);
   assert.match(app,/onAuth=\{\(\) => navigate\(\{ view: "auth" \}\)\}/);

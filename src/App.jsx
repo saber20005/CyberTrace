@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import "./App.css";
 import "./styles/design-system.css";
+import "./styles/page-layout.css";
 import "./styles/royal-gold-theme.css";
 import { applyUIPreferences, readUIPreferences } from "./utils/uiPreferences.js";
 import { shouldOpenFirstVisitTour, finishFirstVisitTour } from "./utils/firstVisitTour.js";
@@ -17,7 +18,7 @@ const CertificateVerification = lazy(() => import("./pages/CertificateVerificati
 const JointCertificatePreview = lazy(() => import("./pages/JointCertificatePreview"));
 const SocShift = lazy(() => import("./pages/SocShift"));
 const VerifiedSoc = lazy(() => import("./pages/VerifiedSoc"));
-import HomeNavbar from "./components/HomeNavbar";
+import SiteShell from "./components/SiteShell";
 import LoadingScreen from "./components/LoadingScreen";
 import { CASES } from "./data/cases";
 import { pickRandomCase } from "./utils/caseProgress";
@@ -28,7 +29,6 @@ import { trackEvent, trackPageView } from "./utils/analytics";
 import { auth } from "./firebase";
 import { setProgressOwner, legacyProgressAvailable, importLegacyProgress } from "./utils/progressScope";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import logo from "./assets/logo.svg";
 import { startCloudSync, enableCloudSync, cloudSyncEnabled } from "./utils/cloudProgress";
 import { useBlackBox } from "./blackbox/useBlackBox";
 
@@ -172,6 +172,19 @@ function App() {
     trackStart(next, source);
   };
 
+  const frame = children => <SiteShell view={view} user={user}
+    onHome={goHome} onLibrary={goLibrary}
+    onJourneys={() => navigate({ view: "journeys" })}
+    onSoc={() => navigate({ view: "soc" })}
+    onCertificates={() => navigate({ view: "certificates" })}
+    onPro={() => navigate({ view: "pro" })}
+    onSettings={() => navigate({ view: "settings" })}
+    onTour={() => navigate({ view: "welcome" })}
+    onAuth={() => navigate({ view: "auth" })}
+    onLogout={handleLogout} onBlackBoxLink={blackBox.openLink}
+    blackBoxEnabled={blackBox.status.enabled}
+    blackBoxConnected={Boolean(blackBox.status.user)}>{children}</SiteShell>;
+
   // Public server-only certificate lookup never authorizes or issues awards.
   if (!authReady && view !== "verify-certificate") return <LoadingScreen message="جارٍ التحقق من حساب التدريب..." />;
 
@@ -190,43 +203,43 @@ function App() {
     /></Suspense>;
   }
 
-  if (view === "settings") return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل الإعدادات..." />}><Settings onHome={goHome} /></Suspense>;
+  if (view === "settings") return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ تحميل الإعدادات..." />}><Settings embedded onHome={goHome} /></Suspense>);
 
   if (view === "admin") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ التحقق من صلاحيات الإدارة..." />}><Admin user={user} onHome={goHome} /></Suspense>;
+    return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ التحقق من صلاحيات الإدارة..." />}><Admin embedded user={user} onHome={goHome} /></Suspense>);
   }
 
   if (view === "auth") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل صفحة الحساب..." />}><Auth onBack={goHome} /></Suspense>;
+    return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ تحميل صفحة الحساب..." />}><Auth embedded onBack={goHome} /></Suspense>);
   }
 
-  if (view === "journeys") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح المسارات المشتركة..." />}><UnifiedJourneys key={`${user?.uid ?? "guest"}:${progressVersion}`} onHome={goHome} onLibrary={goLibrary} /></Suspense>;
-  if (view === "certificates") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح مركز الشهادات..." />}><Certificates key={user?.uid ?? "guest"} cases={CASES} progressVersion={progressVersion} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} onJointPreview={() => navigate({ view: "joint-certificate" })} /></Suspense>;
-  if (view === "verify-certificate") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح التحقق من الشهادة..." />}><CertificateVerification key={route.certificateId || "empty"} initialId={route.certificateId} onBack={() => navigate({ view: "certificates" })} /></Suspense>;
+  if (view === "journeys") return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ فتح المسارات المشتركة..." />}><UnifiedJourneys embedded key={`${user?.uid ?? "guest"}:${progressVersion}`} onHome={goHome} onLibrary={goLibrary} /></Suspense>);
+  if (view === "certificates") return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ فتح مركز الشهادات..." />}><Certificates embedded key={user?.uid ?? "guest"} cases={CASES} progressVersion={progressVersion} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} onJointPreview={() => navigate({ view: "joint-certificate" })} /></Suspense>);
+  if (view === "verify-certificate") return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ فتح التحقق من الشهادة..." />}><CertificateVerification embedded key={route.certificateId || "empty"} initialId={route.certificateId} onBack={() => navigate({ view: "certificates" })} /></Suspense>);
 
-  if (view === "joint-certificate") return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح نموذج الشهادة المشتركة..." />}><JointCertificatePreview onCertificates={() => navigate({ view: "certificates" })} onHome={goHome} /></Suspense>;
+  if (view === "joint-certificate") return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ فتح نموذج الشهادة المشتركة..." />}><JointCertificatePreview embedded onCertificates={() => navigate({ view: "certificates" })} onHome={goHome} /></Suspense>);
 
   if (view === "soc") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح مناوبة SOC التدريبية..." />}><SocShift key={`${user?.uid ?? "guest"}:${route.shiftId ?? "SOC-SHIFT-01"}`} shiftId={route.shiftId} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} onSelectShift={shiftId => navigate({ view: "soc", shiftId })} /></Suspense>;
+    return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ فتح مناوبة SOC التدريبية..." />}><SocShift embedded key={`${user?.uid ?? "guest"}:${route.shiftId ?? "SOC-SHIFT-01"}`} shiftId={route.shiftId} onHome={goHome} onLibrary={goLibrary} onPro={() => navigate({ view: "pro" })} onSelectShift={shiftId => navigate({ view: "soc", shiftId })} /></Suspense>);
   }
   if (view === "verified-soc") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ فتح واجهة التقييم الخادمي..." />}>
-      <VerifiedSoc key={blackBox.status.user?.uid ?? "guest"} onHome={goHome} onSoc={() => navigate({ view: "soc" })} onPro={() => navigate({ view: "pro" })} />
-    </Suspense>;
+    return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ فتح واجهة التقييم الخادمي..." />}>
+      <VerifiedSoc embedded key={blackBox.status.user?.uid ?? "guest"} onHome={goHome} onSoc={() => navigate({ view: "soc" })} onPro={() => navigate({ view: "pro" })} />
+    </Suspense>);
   }
   if (view === "pro") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل خطة CyberTrace × BLACKBOX Pro..." />}><Pro onHome={goHome} onLibrary={goLibrary} onSoc={() => navigate({ view: "soc" })} onVerify={() => navigate({ view: "verified-soc" })} /></Suspense>;
+    return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ تحميل خطة CyberTrace × BLACKBOX Pro..." />}><Pro embedded onHome={goHome} onLibrary={goLibrary} onSoc={() => navigate({ view: "soc" })} onVerify={() => navigate({ view: "verified-soc" })} /></Suspense>);
   }
 
   if (view === "library") {
-    return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary key={`${user?.uid ?? "guest"}:${progressVersion}`} cloudSyncPanel={cloudSyncPanel} cases={CASES} onCertificates={() => navigate({ view: "certificates" })} onStart={(caseData) => startInvestigation(caseData, "library")} onHome={goHome} onSoc={() => navigate({ view: "soc" })} onPro={() => navigate({ view: "pro" })}
+    return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary embedded key={`${user?.uid ?? "guest"}:${progressVersion}`} cloudSyncPanel={cloudSyncPanel} cases={CASES} onCertificates={() => navigate({ view: "certificates" })} onStart={(caseData) => startInvestigation(caseData, "library")} onJourneys={() => navigate({ view: "journeys" })} onSettings={() => navigate({ view: "settings" })} onHome={goHome} onSoc={() => navigate({ view: "soc" })} onPro={() => navigate({ view: "pro" })}
         user={user} onAuth={() => navigate({ view: "auth" })} onLogout={handleLogout}
         onBlackBoxLink={blackBox.openLink} blackBoxEnabled={blackBox.status.enabled}
-        blackBoxConnected={Boolean(blackBox.status.user)} /></Suspense>;
+        blackBoxConnected={Boolean(blackBox.status.user)} /></Suspense>);
   }
 
   if (view === "investigation" && selectedCase) {
-    return (
+    return frame(
       <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل التحقيق..." />}><Investigation
         key={`${investigationRun}:${user?.uid ?? "guest"}`}
         caseData={selectedCase}
@@ -237,19 +250,8 @@ function App() {
     );
   }
 
-  return (
+  return frame(
     <div className="app" dir="rtl">
-      <HomeNavbar user={user} onHome={goHome} onLibrary={goLibrary} onJourneys={() => navigate({ view: "journeys" })}
-        onSoc={() => navigate({ view: "soc" })}
-        onCertificates={() => navigate({ view: "certificates" })}
-        onPro={() => navigate({ view: "pro" })}
-        onSettings={() => navigate({ view: "settings" })}
-        onTour={() => navigate({ view: "welcome" })}
-        onAuth={() => navigate({ view: "auth" })}
-        onLogout={handleLogout}
-        onBlackBoxLink={blackBox.openLink}
-        blackBoxEnabled={blackBox.status.enabled}
-        blackBoxConnected={Boolean(blackBox.status.user)} />
 
       <main>
         {cloudSyncPanel}
@@ -448,14 +450,7 @@ function App() {
       <QuickDock active="home" onHome={goHome} onLibrary={goLibrary}
         onSoc={() => navigate({ view: "soc" })} onCertificates={() => navigate({ view: "certificates" })} />
 
-      <footer>
-        <div className="logo">
-          <img src={logo} alt="CyberTrace" className="logo-mark" />
-          <span>CyberTrace</span>
-        </div>
 
-        <p>Train. Investigate. Defend.</p>
-      </footer>
     </div>
   );
 }

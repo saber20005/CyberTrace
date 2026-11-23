@@ -16,9 +16,9 @@ const currentFeatures = [
   "المزامنة القائمة وربط مهارات BLACKBOX الحالي",
 ];
 
-export default function Pro({ onHome, onLibrary, onSoc, onVerify }) {
+export default function Pro({ embedded = false, onHome, onLibrary, onSoc, onVerify }) {
   return <div className="suite-pro-page" dir="rtl">
-    <header className="suite-pro-nav">
+    {!embedded && <header className="suite-pro-nav">
       <button type="button" className="suite-pro-logo" onClick={onHome} aria-label="العودة إلى الرئيسية">
         <img src={logo} alt="" />
         <span>CyberTrace</span>
@@ -28,7 +28,7 @@ export default function Pro({ onHome, onLibrary, onSoc, onVerify }) {
         <button type="button" onClick={onSoc}>مناوبات SOC</button>
         <a href="https://blackboxlab.dev/pro.html" target="_blank" rel="noopener noreferrer">BLACKBOX ↗</a>
       </nav>
-    </header>
+    </header>}
 
     <main className="suite-pro-main">
       <section className="suite-pro-hero" aria-labelledby="suite-pro-title">
@@ -115,6 +115,6 @@ export default function Pro({ onHome, onLibrary, onSoc, onVerify }) {
       </section>
     </main>
 
-    <footer className="suite-pro-footer"><span>CyberTrace × BLACKBOX</span><span>تدريب عملي. قرارات أفضل. دون وعود مدفوعة مبكرة.</span></footer>
+    {!embedded && <footer className="suite-pro-footer"><span>CyberTrace × BLACKBOX</span><span>تدريب عملي. قرارات أفضل. دون وعود مدفوعة مبكرة.</span></footer>}
   </div>;
 }

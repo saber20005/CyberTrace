@@ -6,7 +6,7 @@ import "./JointCertificatePreview.css";
 
 // Approved reference is displayed directly, not approximated with CSS.
 // no reads/writes of progress, ownership, scoring, identities, issuance or verification.
-export default function JointCertificatePreview({ onCertificates, onHome }) {
+export default function JointCertificatePreview({ embedded = false, onCertificates, onHome }) {
   const [sampleName, setSampleName] = useState("");
   const displayName = sampleName.trim() || "اسم المتدرّب";
   const viewportRef = useRef(null);
@@ -60,10 +60,10 @@ export default function JointCertificatePreview({ onCertificates, onHome }) {
   }, [zoomed, sampleName, immersive]);
 
   return <div className="joint-preview-page" dir="rtl">
-    <header className="joint-page-nav">
+    {!embedded && <header className="joint-page-nav">
       <button type="button" onClick={onCertificates}>العودة إلى مركز الشهادات</button>
       <button type="button" onClick={onHome}>الرئيسية</button>
-    </header>
+    </header>}
     <main className="joint-preview-main">
       <section className="joint-preview-intro" aria-labelledby="joint-title">
         <span className="joint-kicker" dir="ltr">BLACKBOX LAB × CYBERTRACE / JOINT PATHWAY</span>

@@ -21,7 +21,7 @@ const ERROR_MESSAGES = {
   "auth/too-many-requests": "محاولات كثيرة جدًا، حاول لاحقًا",
 };
 
-function Auth({ onBack }) {
+function Auth({ embedded = false, onBack }) {
   const [mode, setMode] = useState("login"); // 'login' | 'signup'
   const [form, setForm] = useState({
     name: "",
@@ -117,13 +117,13 @@ function Auth({ onBack }) {
   };
 
   return (
-    <div className="auth-screen" dir="rtl">
-      <header className="auth-topbar">
+    <main className="auth-screen" dir="rtl">
+      {!embedded && <header className="auth-topbar">
         <button className="auth-back" onClick={onBack}>
           <span>→</span> العودة للرئيسية
         </button>
         <BlackBoxAccountButton />
-      </header>
+      </header>}
 
       <div className="auth-card" data-mode={mode}>
         <aside className="auth-showcase" aria-label="تعريف بالمنصة">
@@ -148,6 +148,7 @@ function Auth({ onBack }) {
         </div>
 
         <div className="auth-body">
+          <h1 className="auth-title">{isReset ? "استعادة كلمة المرور" : isSignup ? "إنشاء حساب CyberTrace" : "تسجيل الدخول"}</h1>
           {success ? (
             <div className="auth-success">
               <span className="green">✓</span>
@@ -263,7 +264,7 @@ function Auth({ onBack }) {
         </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 

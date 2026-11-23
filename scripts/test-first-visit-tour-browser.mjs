@@ -7,7 +7,7 @@ let browser;
 try{
  await vite.listen();
  const origin="http://127.0.0.1:"+vite.httpServer.address().port;
- browser=await chromium.launch({headless:true,args:["--no-sandbox"]});
+ browser=await chromium.launch({executablePath:process.env.CYBERTRACE_CHROMIUM_PATH||undefined,headless:true,args:["--no-sandbox"]});
  for(const viewport of [{width:320,height:740},{width:390,height:844},{width:1440,height:1000}]){
   const context=await browser.newContext({viewport});
   const page=await context.newPage(),errors=[],leaks=[];

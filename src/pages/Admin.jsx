@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./Admin.css";
 
-export default function Admin({ user, onHome }) {
+export default function Admin({ embedded = false, user, onHome }) {
   const [verification, setVerification] = useState({ uid: null, status: "checking" });
   const status = !user ? "signed-out" : verification.uid === user.uid ? verification.status : "checking";
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function Admin({ user, onHome }) {
   }, [user]);
 
   return <main className="admin-page" dir="rtl">
-    <header className="admin-header"><strong>CyberTrace <span>CONTROL</span></strong><button onClick={onHome}>العودة للرئيسية</button></header>
+    {!embedded && <header className="admin-header"><strong>CyberTrace <span>CONTROL</span></strong><button onClick={onHome}>العودة للرئيسية</button></header>}
     <section className="admin-panel">
       <span className="admin-eyebrow">SECURE ADMINISTRATION</span>
       <h1>لوحة إدارة CyberTrace</h1>

@@ -5,7 +5,7 @@ import { buildCertificateTrainingCurriculum } from "../data/certificationCurricu
 import logo from "../assets/logo.svg";
 import "./Certificates.css";
 
-export default function Certificates({ cases, onHome, onLibrary, onPro, onJointPreview }) {
+export default function Certificates({ embedded = false, cases, onHome, onLibrary, onPro, onJointPreview }) {
   const [name, setName] = useState("");
   const [selectedId, setSelectedId] = useState("");
   const groups = buildCaseGroupRecords(cases, getCaseResults());
@@ -17,13 +17,13 @@ export default function Certificates({ cases, onHome, onLibrary, onPro, onJointP
   const date = chosen ? new Intl.DateTimeFormat("ar", { dateStyle: "long" }).format(new Date(chosen.at)) : "";
 
   return <div className="ct-certificate-page" dir="rtl">
-    <header className="ct-cert-nav ct-cert-screen">
+    {!embedded && <header className="ct-cert-nav ct-cert-screen">
       <button type="button" onClick={onHome}><img src={logo} alt="" /> CyberTrace</button>
       <nav aria-label="التنقل من الشهادات">
         <button type="button" onClick={onLibrary}>مكتبة التحقيقات</button>
         <button type="button" onClick={onPro}>الخطة الموحدة</button>
       </nav>
-    </header>
+    </header>}
     <main className="ct-cert-main">
       <section className="ct-cert-intro ct-cert-screen">
         <span className="ct-cert-eyebrow">CYBERTRACE / CERTIFICATE CENTER</span>
