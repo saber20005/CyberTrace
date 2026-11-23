@@ -43,5 +43,13 @@ test("intro page is explicitly routed, skippable, and not an authentication gate
   assert.match(component,/لا تُحفظ نقاط/);
   assert.match(component,/ليست شهادات موثّقة خادميًا/);
   assert.match(component,/onLibrary/);
+  assert.match(component,/CaseZero mode="investigate"/);
+  assert.match(component,/CaseZero mode="soc"/);
+  assert.doesNotMatch(component,/TrainingChoice|ct-tour-choice/);
+  const simulator=readFileSync(new URL("../src/pages/CaseZero.jsx",import.meta.url),"utf8");
+  assert.match(simulator,/EV-01/);
+  assert.match(simulator,/SOC-101/);
+  assert.match(simulator,/data-ct-report-submit/);
+  assert.doesNotMatch(simulator,/fetch\(|XMLHttpRequest|WebSocket|localStorage|sessionStorage|firebase/);
   assert.doesNotMatch(component,/localStorage|onAuthStateChanged|Firebase|fetch\(/);
 });
