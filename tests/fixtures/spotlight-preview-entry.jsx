@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {createRoot} from "react-dom/client";
 import SpotlightPreview from "../../src/components/SpotlightPreview.jsx";
-function Demo(){
+export default function Demo(){
  const [view,setView]=useState("library");
  return <>
   <nav className="ct-home-navbar">
