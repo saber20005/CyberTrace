@@ -49,12 +49,18 @@ export default function SpotlightPreview({view}){
    // The original reference visibly rotates a rectangular lamp and casts a cone.
    // Aim the light at the actual interactive element; never intercept its click.
    const tx=b.left+b.width/2,ty=b.top+b.height/2;
-   const lampX=b.left>=innerWidth-b.right?Math.max(54,b.left-106):Math.min(innerWidth-54,b.right+106);
+   // On narrow phones, the open SOC dropdown fills nearly the whole width.
+   // Move the flashlight below its LEFT edge (rather than beside the right edge).
+   // Its head and cone then rotate toward the target, without crossing the text.
+   const socOnPhone=innerWidth<=720&&index===STEPS.length-1;
+   const lampX=socOnPhone
+    ? Math.max(52,Math.min(innerWidth-58,b.left+36))
+    : b.left>=innerWidth-b.right?Math.max(54,b.left-106):Math.min(innerWidth-54,b.right+106);
    const lampY=Math.max(58,Math.min(innerHeight-58,ty+(ty>innerHeight/2?-112:112)));
    const angle=Math.atan2(ty-lampY,tx-lampX),angleDeg=angle*180/Math.PI;
    const beamX=lampX+Math.cos(angle)*29,beamY=lampY+Math.sin(angle)*29;
    const beamLength=Math.max(26,Math.hypot(tx-beamX,ty-beamY));
-   const beamHeight=Math.min(205,Math.max(84,b.width*.85+72));
+   const beamHeight=socOnPhone?Math.min(110,Math.max(72,b.height*1.6)):Math.min(205,Math.max(84,b.width*.85+72));
    const next={x,y,left:Math.max(3,b.left-pad),top:Math.max(3,b.top-pad),
     width:Math.min(innerWidth-6,b.width+2*pad),height:Math.min(innerHeight-6,b.height+2*pad),
     lampX,lampY,beamX,beamY,beamLength,beamHeight,angleDeg};
