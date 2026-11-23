@@ -1,0 +1,20 @@
+/* Preview-only in-context CyberTrace spotlight, distinct from Case Zero. */
+.ct-sp-replay{position:fixed;z-index:260;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:230px;padding:10px 15px;border:1px solid #358fb1;border-radius:999px;background:#092436;color:#c6f2ff;font:700 12px/1.5 "Cairo",system-ui,sans-serif;box-shadow:0 8px 30px #0006;cursor:pointer}
+.ct-sp-overlay{position:fixed;inset:0;z-index:2147482000;pointer-events:none;font-family:"Cairo",system-ui,sans-serif}
+.ct-sp-hole{position:fixed;z-index:1;pointer-events:none;border:2px solid #53c9ed;border-radius:13px;box-shadow:0 0 0 9999px rgba(3,13,25,.77),0 0 30px 6px rgba(44,174,224,.37),inset 0 0 16px rgba(55,191,236,.2);transition:top .45s cubic-bezier(.2,.85,.2,1),left .45s cubic-bezier(.2,.85,.2,1),width .45s,height .45s}
+.ct-sp-panel{position:fixed;z-index:2;box-sizing:border-box;width:min(340px,calc(100vw - 24px));max-height:min(74dvh,400px);overflow-y:auto;overscroll-behavior:contain;padding:20px 22px;border:1px solid #328eaa;border-radius:18px;background:linear-gradient(145deg,#153141 0%,#081824 88%);color:#eafaff;box-shadow:0 24px 78px #000a,0 0 34px #2aa5dc24;pointer-events:auto;direction:rtl;text-align:right}
+.ct-sp-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#79e0fd;font:700 10px/1.6 system-ui,sans-serif;letter-spacing:.045em}
+.ct-sp-meta span:last-child{white-space:nowrap;font-variant-numeric:tabular-nums}
+.ct-sp-progress{margin:12px 0 16px;height:3px;overflow:hidden;background:#2b4d5c;border-radius:5px}
+.ct-sp-progress i{display:block;height:100%;background:linear-gradient(90deg,#1886d2,#68e4ff);border-radius:5px;transition:width .3s}
+.ct-sp-panel h2{font-size:clamp(18px,2vw,22px);font-weight:750;line-height:1.5;color:#f5fcff;margin:0 0 10px}
+.ct-sp-panel p{font-size:13px;line-height:1.85;color:#cce2ec;margin:0 0 11px}
+.ct-sp-panel .ct-sp-instruction{color:#81d6eb;font-size:12px}
+.ct-sp-panel small{display:block;font-size:10px;color:#a0c2d2;margin-top:13px;line-height:1.7}
+.ct-sp-actions{display:flex;gap:10px;margin-top:16px}
+.ct-sp-actions button{flex:1;min-height:42px;padding:9px 13px;border:1px solid #437c93;border-radius:10px;background:#15394c;color:#f4fbff;font:700 12px/1.5 "Cairo",system-ui,sans-serif;cursor:pointer}
+.ct-sp-actions button:last-child:not(:first-child){border-color:#5ee0fe;background:#127a9f}
+.ct-sp-actions button:focus-visible,.ct-sp-replay:focus-visible{outline:3px solid #b4f1ff;outline-offset:2px}
+@media(max-width:720px){.ct-sp-panel{max-height:52dvh;padding:14px 16px}.ct-sp-panel p{font-size:12px}.ct-sp-replay{bottom:calc(16px + env(safe-area-inset-bottom,0px));left:12px;max-width:165px;font-size:11px;padding:8px 10px}}
+@media(prefers-reduced-motion:reduce){.ct-sp-overlay *{animation:none!important;transition:none!important}}
+@media print{.ct-sp-overlay,.ct-sp-replay{display:none!important}}
