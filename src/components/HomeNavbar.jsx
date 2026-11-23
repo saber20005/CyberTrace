@@ -51,7 +51,7 @@ export default function HomeNavbar({
         <summary aria-label="فتح قائمة المزيد من الأقسام" aria-haspopup="true">المزيد <span aria-hidden="true">⌄</span></summary>
         <div className="ct-nav-dropdown-panel" role="group" aria-label="أقسام CyberTrace">
           <button type="button" aria-current={active === "journeys" ? "page" : undefined} onClick={() => go(onJourneys)}>المسارات المشتركة</button>
-          <button type="button" aria-current={active === "soc" ? "page" : undefined} onClick={() => go(onSoc)}>مناوبات SOC</button>
+          <button type="button" data-ct-spotlight="soc" aria-current={active === "soc" ? "page" : undefined} onClick={() => go(onSoc)}>مناوبات SOC</button>
           <button type="button" aria-current={active === "certificates" ? "page" : undefined} onClick={() => go(onCertificates)}>شهاداتي</button>
           <button type="button" aria-current={active === "settings" ? "page" : undefined} onClick={() => go(onSettings)}>إعدادات العرض</button>
           <button type="button" onClick={() => go(onTour)}>الدليل التفاعلي للمستخدم الجديد</button>
