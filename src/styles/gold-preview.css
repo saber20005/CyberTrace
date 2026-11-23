@@ -1,0 +1,76 @@
+
+/* CyberTrace branch-only gold visual comparison.
+   Exact user-supplied palette: #5A4A0D #7A5E12 #A67917 #CC961F #EBB84A #F3D789 #FFF3D8.
+   All effects are CSS scoped to the temporary preview attribute. */
+html[data-cybertrace-preview="gold"] {
+ color-scheme:dark;--ct-bg:#100e08;--ct-bg-elevated:#20190b;--ct-surface:#2b210e;
+ --ct-surface-deep:#171306;--ct-border:#5A4A0D;--ct-border-strong:#A67917;
+ --ct-gold:#EBB84A;--ct-gold-bright:#F3D789;--ct-fg:#FFF3D8;
+ --ct-muted:#daca9d;--ct-muted-blue:#e3cc9f;
+ --gold-p1:#5A4A0D;--gold-p2:#7A5E12;--gold-p3:#A67917;
+ --gold-p4:#CC961F;--gold-p5:#EBB84A;--gold-p6:#F3D789;--gold-p7:#FFF3D8;
+}
+html[data-cybertrace-preview="gold"] :is(body,#root,.app,.auth-screen,.library-page,.inv-screen,.soc-page,.ct-suite-page,.ct-certificate-page,.ct-cert-page,.ct-studio) {
+ background-color:#100e08!important;color:#FFF3D8!important;
+}
+html[data-cybertrace-preview="gold"] .app {
+ background:radial-gradient(ellipse at 82% 0%,#A6791745,transparent 43%),radial-gradient(ellipse at 12% 55%,#5A4A0D46,transparent 38%),#100e08!important;
+}
+html[data-cybertrace-preview="gold"] :is(.navbar,.app .ct-home-navbar,.ct-cert-nav,.ct-studio-header,.auth-topbar) {
+ background:linear-gradient(135deg,#211a0a,#130f09)!important;
+ border-color:#7A5E12!important;box-shadow:0 10px 35px #0006!important;
+}
+html[data-cybertrace-preview="gold"] :is(.logo-mark,.ct-studio-mark-icon) {
+ border-color:#EBB84A!important;color:#F3D789!important;filter:drop-shadow(0 0 11px #CC961F66);
+}
+html[data-cybertrace-preview="gold"] :is(.hero h1 span,.library-heading h1 span,.library-eyebrow,.section-heading span,.feature-number,.ct-suite-intro>span,.ct-studio-eyebrow,.ct-studio-step) {color:#F3D789!important}
+html[data-cybertrace-preview="gold"] :is(.hero-description,.hero-stats span,.case-description,.library-intro,.ct-suite-intro p,.ct-studio-heading p,.step p) {color:#e0cea6!important}
+html[data-cybertrace-preview="gold"] :is(.primary-button,.ct-primary-route,.auth-submit,.case-start,.library-random,.ct-cert-action,.ct-studio-preview-actions span:first-child) {
+ background:linear-gradient(115deg,#CC961F,#EBB84A 51%,#F3D789)!important;
+ border:1px solid #F3D789!important;color:#241909!important;font-weight:800!important;
+ box-shadow:0 9px 30px #A6791750!important;
+}
+html[data-cybertrace-preview="gold"] :is(.primary-button,.ct-primary-route,.auth-submit,.case-start,.library-random):hover{filter:brightness(1.1)}
+html[data-cybertrace-preview="gold"] :is(.nav-button,.nav-library,.secondary-button,.ct-nav-dropdown>summary,.ct-studio-back,.ct-suite-top button,.ct-cert-nav button) {
+ background:linear-gradient(135deg,#35270c,#171309)!important;border-color:#7A5E12!important;color:#F3D789!important;
+}
+html[data-cybertrace-preview="gold"] :is(.nav-button,.nav-library,.secondary-button,.ct-nav-dropdown>summary):hover{border-color:#EBB84A!important;color:#FFF3D8!important}
+html[data-cybertrace-preview="gold"] :is(.ct-nav-dropdown-panel,.ct-account-panel) {background:#20190d!important;border-color:#7A5E12!important;color:#FFF3D8!important}
+html[data-cybertrace-preview="gold"] .ct-nav-dropdown-panel :is(button,a,.ct-user-label){color:#FFF3D8!important}
+html[data-cybertrace-preview="gold"] .ct-nav-dropdown-panel :is(button,a):hover{background:#5A4A0D!important}
+html[data-cybertrace-preview="gold"] :is(.terminal-card,.feature-card,.step,.launch-partner,.library-stats article,.case-card,.library-progress,.learning-plan,.learning-suggestion,.learning-skill,.ct-suite-card,.ct-cert-controls,.ct-cert-display,.ct-studio-panel,.ct-studio-preview-sticky) {
+ background:linear-gradient(145deg,#30230d,#191509)!important;
+ border-color:#7A5E12!important;color:#FFF3D8!important;
+ box-shadow:0 12px 32px #0004,0 0 0 1px #CC961F18!important;
+}
+html[data-cybertrace-preview="gold"] :is(.feature-card,.case-card,.ct-suite-card):hover{border-color:#EBB84A!important;box-shadow:0 14px 39px #A679172e!important}
+html[data-cybertrace-preview="gold"] :is(.terminal-header,.terminal-body,.ct-studio-preview-top,.ct-studio-preview-event,.ct-studio-preview-metrics>div){background:#291e0a!important;border-color:#7A5E12!important}
+html[data-cybertrace-preview="gold"] :is(.terminal-line,.terminal-muted,.case-code,.case-facts,.ct-suite-card p,.ct-suite-card li small,.ct-studio-description){color:#dbcaa4!important}
+html[data-cybertrace-preview="gold"] :is(.green,.terminal-input,.ct-suite-card progress,.ct-studio-preview-caption,.ct-studio-preview-metrics strong){color:#EBB84A!important;accent-color:#EBB84A!important}
+html[data-cybertrace-preview="gold"] :is(.badge,.case-category,.ct-suite-status,.ct-suite-trust,.ct-studio-privacy){background:#5A4A0D70!important;border-color:#A67917!important;color:#F3D789!important}
+html[data-cybertrace-preview="gold"] :is(.library-filters input,.library-filters select,.auth-form input,.ct-studio-select select,.ct-studio-segments,.ct-studio-swatch,.ct-studio-theme,.ct-studio-preset,.ct-studio-preview,.ct-studio-preview-metrics>div,.ct-studio-preview-event){background:#191407!important;border-color:#7A5E12!important;color:#FFF3D8!important}
+html[data-cybertrace-preview="gold"] :is(.auth-card,.auth-form-panel,.auth-showcase){background:linear-gradient(135deg,#31200a,#13110a)!important;border-color:#A67917!important;color:#FFF3D8!important}
+html[data-cybertrace-preview="gold"] :is(.auth-card h1,.auth-showcase h2,.auth-form label,.library-heading h1,.case-card h3){color:#FFF3D8!important}
+html[data-cybertrace-preview="gold"] .ct-studio {
+ --studio-accent:#EBB84A!important;--studio-fg:#FFF3D8!important;--studio-muted:#decaa3!important;
+ --studio-panel:#261d0c!important;--studio-panel-2:#382810!important;--studio-border:#7A5E12!important;--studio-bg:#161206!important;
+}
+html[data-cybertrace-preview="gold"] :is(.ct-suite-card a,.ct-suite-footer a,.ct-cert-joint-preview-link){color:#F3D789!important}
+html[data-cybertrace-preview="gold"] :is(.ct-suite-card progress,.library-progress progress,.learning-skill progress){accent-color:#EBB84A!important}
+html[data-cybertrace-preview="gold"] :is(a,button,input,select,textarea,summary):focus-visible{outline:3px solid #F3D789!important;outline-offset:3px}
+html[data-cybertrace-preview="gold"] .ct-studio :is(.ct-studio-preset,.ct-studio-theme)[aria-pressed="true"] {border-color:#F3D789!important}
+/* Isolated branch-only comparison bar. No overlay across the main navigation. */
+.ct-amber-compare{position:fixed;left:14px;bottom:calc(86px + env(safe-area-inset-bottom,0px));z-index:2147483000;
+ width:min(320px,calc(100vw - 28px));border:1px solid #A67917;border-radius:16px;
+ background:linear-gradient(130deg,#30250ef5,#171307f5);color:#FFF3D8;
+ box-shadow:0 12px 44px #000b;padding:12px;box-sizing:border-box;direction:rtl;
+ font:12px/1.65 "Cairo",system-ui,sans-serif;backdrop-filter:blur(17px)}
+.ct-amber-compare strong{display:block;color:#F3D789;font-size:13px}
+.ct-amber-compare small{display:block;color:#dac79d;font-size:10px}
+.ct-amber-compare-actions{display:flex;gap:8px;margin-top:9px}
+.ct-amber-compare-actions button{flex:1;border:1px solid #A67917;border-radius:9px;min-height:42px;
+ background:#21190c;color:#FFF3D8;font:700 12px "Cairo",system-ui,sans-serif;cursor:pointer}
+.ct-amber-compare-actions button[aria-pressed="true"]{background:linear-gradient(120deg,#CC961F,#F3D789);color:#221704;border-color:#F3D789}
+.ct-amber-compare-actions button:focus-visible{outline:3px solid #F3D789;outline-offset:2px}
+@media(max-width:520px){.ct-amber-compare{bottom:calc(74px + env(safe-area-inset-bottom,0px));padding:10px}.ct-amber-compare-actions button{min-height:44px}}
+@media(prefers-reduced-motion:reduce){.ct-amber-compare-actions button{transition:none!important}}
