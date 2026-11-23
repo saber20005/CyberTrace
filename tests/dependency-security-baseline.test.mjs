@@ -13,9 +13,11 @@ const parts = version => {
 };
 const atLeast = (installedVersion, minimum) => {
   const actual = parts(installedVersion), safe = parts(minimum);
-  return actual.findIndex((x, i) => x !== safe[i]) < 0 ||
-    actual[actual.findIndex((x, i) => x !== safe[i])] >
-    safe[actual.findIndex((x, i) => x !== safe[i])];
+  for (let i=0;i<3;i++) {
+    if (actual[i] > safe[i]) return true;
+    if (actual[i] < safe[i]) return false;
+  }
+  return true;
 };
 
 test("security: patched re2js is enforced and recorded in npm lockfile", () => {
@@ -35,4 +37,9 @@ test("security: patched gRPC dependency cannot silently regress", () => {
 test("security: Firebase stays within intended major and no forced downgrade was applied", () => {
   assert.match(installed("firebase"), /^12\./);
   assert.equal(lock.packages[""].dependencies?.firebase, manifest.dependencies.firebase);
+});
+
+test("security: patched Zod is enforced for development/build dependencies", () => {
+  assert.equal(manifest.overrides?.zod, "4.6.6");
+  assert.ok(atLeast(installed("zod"), "4.6.6"), "Zod oversized collection memory-exhaustion fix must remain installed");
 });
