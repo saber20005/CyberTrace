@@ -57,3 +57,11 @@ test("partner journeys use existing BlackBox track routes and explicit referral 
   }
   assert.equal(new URL(getBlackBoxLearningLink("INC-1102").url).searchParams.has("track"), false);
 });
+
+test("welcome onboarding route is explicit and does not swallow deep links",()=>{
+  const welcome=readRoute("https://cybertracelab.dev/?view=welcome");
+  assert.equal(welcome.view,"welcome");
+  assert.equal(createRouteURL({view:"welcome"},"https://cybertracelab.dev/").searchParams.get("view"),"welcome");
+  assert.equal(readRoute("https://cybertracelab.dev/?view=auth").view,"auth");
+  assert.equal(readRoute("https://cybertracelab.dev/?view=verify-certificate").view,"verify-certificate");
+});
