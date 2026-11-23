@@ -13,7 +13,6 @@ const ALERTS = [
  {id:"SOC-102",title:"تحديث مجدول على الجهاز التدريبي",tag:"صيانة",detail:"مؤشر منخفض الأولوية إذا طابق نافذة الصيانة الموثقة."},
  {id:"SOC-103",title:"رسالة مراقبة دورية",tag:"معلومات",detail:"لا يوجد مؤشر سلوكي إضافي في هذه العينة."}
 ];
-export const newCaseZero = () => ({opened:[],finding:"",filed:false,selectedAlert:"",triage:"",feedback:""});
 export function CaseZero({mode,data,onChange}) {
  const [filter,setFilter]=useState("all");
  const update = patch => onChange(prev => ({...prev,...patch}));
