@@ -5,6 +5,16 @@ Source-review of main-branch `security/firestore.cybertrace-progress.rules`, `sr
 
 **Critical distinction:** `security/firestore.cybertrace-progress.rules` is explicitly labeled a *reference* ruleset. Running it in the emulator does **not** prove that its current version has been deployed to Firebase project `cybertrace-48ab0`.
 
+## Remediation implemented on the draft security branch (2026-11-23)
+
+- **Patched dependency chains without a Firebase major downgrade.** Root `package.json` pins npm overrides `@grpc/grpc-js@1.13.7`, `re2js@2.8.7`, and `zod@4.6.6`; Vite and ESLint are updated within their existing major versions. Regenerated and committed `package-lock.json` in isolated CI without executing package lifecycle scripts.
+- **Audit before**: `npm audit --omit=dev` reported 5 HIGH entries; the full tree reported 12 entries (9 HIGH, 3 MODERATE).
+- **Audit after**: the dependency-inventory workflow on the patched lockfile reported **0 vulnerabilities in the production dependency tree** and **0 in the full dependency tree** at time of scan. This measures the advisory database and does not guarantee that the application has no security flaws.
+- **Regression protection**: added `tests/dependency-security-baseline.test.mjs` to prevent reintroducing patched vulnerable versions. Hardened `.github/workflows/security-advisory-inventory.yml` to fail on HIGH/CRITICAL advisories and audit errors.
+- Removed the temporary lockfile-generating GitHub Actions job after its one-time commit; no persistent write-enabled CI workflow remains.
+- **Unchanged**: browser-saved XP and scores remain self-reported, not server-proven; changing them to authoritative assessment requires an independent backend and deliberate migration. The live Firebase rules/Auth/App Check deployment has not been inspected.
+- **Release**: fix is in draft PR #84 only until review and explicit merge approval; verify the final CI run and protected Vercel preview before release.
+
 ## Findings
 
 | ID | Severity | Observation / proof | Implication |
