@@ -108,15 +108,15 @@ test("security finding: owner can self-report a maximum score and XP, which are 
   await assertFails(setDoc(ref(other,"self-report-audit"),alleged));
 });
 
-test("security boundary: a normal user cannot create server-only grading or certificate records",async()=>{
+test("security boundary: CyberTrace undeclared documents are default-denied",async()=>{
+  // This verifies only the CyberTrace *reference* rules, not BLACKBOX production.
   const owner=env.authenticatedContext("self-report-audit").firestore();
   const attempt={uid:"self-report-audit",bestScore:70,source:"server-grading",status:"active"};
   for(const path of [
-    "certificateRegistry/fake-certificate",
-    "certificatePolicies/fake-policy",
-    "suiteMemberships/self-report-audit",
-    "blackboxUsers/self-report-audit/verifiedCybertrace/INC-0417",
-    "blackboxUsers/self-report-audit/certificateAwards/INC-0417",
+    "adminSettings/global",
+    "cybertraceUsers/self-report-audit/certificateAwards/fake-award",
+    "cybertraceUsers/self-report-audit/admin/claims",
+    "billing/self-report-audit",
   ]){
     await assertFails(setDoc(doc(owner,path),attempt));
   }
