@@ -46,7 +46,18 @@ export default function SpotlightPreview({view}){
    x=Math.max(12,Math.min(innerWidth-w-12,x));
    let y=innerWidth<720?(b.top>innerHeight/2?12:innerHeight-h-12):b.top+b.height/2-h/2;
    y=Math.max(12,Math.min(innerHeight-h-12,y));
-   const next={x,y,left:Math.max(3,b.left-pad),top:Math.max(3,b.top-pad),width:Math.min(innerWidth-6,b.width+2*pad),height:Math.min(innerHeight-6,b.height+2*pad)};
+   // The original reference visibly rotates a rectangular lamp and casts a cone.
+   // Aim the light at the actual interactive element; never intercept its click.
+   const tx=b.left+b.width/2,ty=b.top+b.height/2;
+   const lampX=b.left>=innerWidth-b.right?Math.max(54,b.left-106):Math.min(innerWidth-54,b.right+106);
+   const lampY=Math.max(58,Math.min(innerHeight-58,ty+(ty>innerHeight/2?-112:112)));
+   const angle=Math.atan2(ty-lampY,tx-lampX),angleDeg=angle*180/Math.PI;
+   const beamX=lampX+Math.cos(angle)*29,beamY=lampY+Math.sin(angle)*29;
+   const beamLength=Math.max(26,Math.hypot(tx-beamX,ty-beamY));
+   const beamHeight=Math.min(205,Math.max(84,b.width*.85+72));
+   const next={x,y,left:Math.max(3,b.left-pad),top:Math.max(3,b.top-pad),
+    width:Math.min(innerWidth-6,b.width+2*pad),height:Math.min(innerHeight-6,b.height+2*pad),
+    lampX,lampY,beamX,beamY,beamLength,beamHeight,angleDeg};
    setGeometry(prev=>prev&&Object.keys(next).every(k=>Math.abs(prev[k]-next[k])<1)?prev:next);
    setMissing(false);
   };
@@ -83,7 +94,13 @@ export default function SpotlightPreview({view}){
  return createPortal(<>
   <button type="button" className="ct-sp-replay" onClick={restart}>◉ إعادة الجولة الضوئية</button>
   {active&&<div className="ct-sp-overlay" dir="rtl" data-ct-spotlight-preview>
-   {!finished&&!missing&&geometry&&<div className="ct-sp-hole" aria-hidden="true" style={{left:geometry.left,top:geometry.top,width:geometry.width,height:geometry.height}}/>}
+   {!finished&&!missing&&geometry&&<>
+    <div className="ct-sp-hole" aria-hidden="true" style={{left:geometry.left,top:geometry.top,width:geometry.width,height:geometry.height}}/>
+    <div className="ct-sp-beam" aria-hidden="true" style={{left:geometry.beamX,top:geometry.beamY,width:geometry.beamLength,height:geometry.beamHeight,transform:"translateY(-50%) rotate("+geometry.angleDeg+"deg)"}}/>
+    <div className="ct-sp-lamp" aria-hidden="true" style={{left:geometry.lampX,top:geometry.lampY,transform:"translate(-50%,-50%) rotate("+geometry.angleDeg+"deg)"}}>
+     <span className="ct-sp-lamp-grip"/><span className="ct-sp-lamp-head"/>
+    </div>
+   </>}
    <section ref={panel} className="ct-sp-panel" role="dialog" aria-modal="false" aria-labelledby="ct-sp-title" style={finished?{left:"50%",top:"50%",transform:"translate(-50%,-50%)"}:geometry?{left:geometry.x,top:geometry.y}:{left:12,top:12}}>
     <div className="ct-sp-meta"><span>◉ CYBERTRACE / INVESTIGATION GUIDE</span><span>{finished?"COMPLETE":String(index+1).padStart(2,"0")+" / 04"}</span></div>
     <div className="ct-sp-progress"><i style={{width:(finished?100:(index+1)/STEPS.length*100)+"%"}}/></div>
