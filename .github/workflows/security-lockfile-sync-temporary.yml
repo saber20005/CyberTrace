@@ -1,0 +1,42 @@
+# One-time lockfile refresh, removed immediately after the bot commit.
+name: Security lockfile patch - one-time
+on:
+  push:
+    branches: [security/isolated-trust-boundary-audit-20261123]
+    paths:
+      - package.json
+      - .github/workflows/security-lockfile-sync-temporary.yml
+permissions:
+  contents: write
+jobs:
+  patch-lock:
+    if: github.repository == 'saber20005/CyberTrace'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: security/isolated-trust-boundary-audit-20261123
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Assert fixed dependency baseline
+        run: |
+          node --input-type=module <<'JS'
+          import {readFileSync} from 'node:fs';
+          const p=JSON.parse(readFileSync('package-lock.json','utf8')).packages;
+          for(const [name,version] of Object.entries({'@grpc/grpc-js':'1.13.7',re2js:'2.8.7',zod:'4.6.6'})){
+            if(p['node_modules/'+name]?.version!==version){
+              throw Error(name+' version mismatch: '+p['node_modules/'+name]?.version);
+            }
+          }
+          JS
+      - name: Commit only generated lockfile
+        run: |
+          git add -- package-lock.json
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'chore(security): lock patched Zod and runtime dependencies'
+          git push origin HEAD:refs/heads/security/isolated-trust-boundary-audit-20261123
