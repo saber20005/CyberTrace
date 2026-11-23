@@ -39,6 +39,12 @@ export function describePage(route, cases = []) {
   if (route?.view === "verify-certificate") {
     return { title: "التحقق من شهادة صادرة | CyberTrace", description: "تحقق عام من سجل شهادات الخادم، وليس من الإفادات التعليمية الذاتية.", url: `${SITE_ORIGIN}/?view=verify-certificate`, noindex: true };
   }
+  if (route?.view === "welcome") return {
+    title: "تعرّف إلى CyberTrace | جولة تفاعلية",
+    description: "جولة تعريفية اختيارية لتعلم التحقيقات ومناوبات SOC ومزايا CyberTrace.",
+    url: `${SITE_ORIGIN}/?view=welcome`,
+    noindex: true,
+  };
   if (route?.view === "journeys") return { title:"المسارات التعليمية المشتركة | CyberTrace × BLACKBOX", description:"أربع رحلات بين التحقيقات والتدريب داخل المختبر دون نقل الحسابات أو إصدار شهادات.", url:`${SITE_ORIGIN}/?view=journeys`, noindex:false };
   if (route?.view === "certificates") {
     return { title: "مركز الشهادات | CyberTrace", description: "إفادات إتمام تدريب غير موثّقة من سجل المتصفح.", url: `${SITE_ORIGIN}/?view=certificates`, noindex: true };

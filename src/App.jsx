@@ -3,8 +3,10 @@ import "./App.css";
 import "./styles/design-system.css";
 import "./styles/royal-gold-theme.css";
 import { applyUIPreferences, readUIPreferences } from "./utils/uiPreferences.js";
+import { shouldOpenFirstVisitTour, finishFirstVisitTour } from "./utils/firstVisitTour.js";
 const Auth = lazy(() => import("./pages/Auth"));
 const Settings = lazy(() => import("./pages/Settings"));
+const WelcomeTour = lazy(() => import("./pages/WelcomeTour"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Investigation = lazy(() => import("./pages/Investigation"));
 const InvestigationLibrary = lazy(() => import("./pages/InvestigationLibrary"));
@@ -48,6 +50,7 @@ function App() {
   const blackBox = useBlackBox();
   useEffect(() => { applyUIPreferences(readUIPreferences()); }, []);
   const [route, setRoute] = useState(routeAtLocation);
+  const [showFirstVisitTour, setShowFirstVisitTour] = useState(() => shouldOpenFirstVisitTour(routeAtLocation()));
   const [investigationRun, setInvestigationRun] = useState(0);
   const [user, setUser] = useState(null);
   const [authReady, setAuthReady] = useState(false);
@@ -124,6 +127,11 @@ function App() {
   };
   const goHome = () => navigate({ view: "home" });
   const goLibrary = () => navigate({ view: "library" });
+  const finishTourAndGo = nextView => {
+    finishFirstVisitTour();
+    setShowFirstVisitTour(false);
+    navigate({ view: nextView });
+  };
 
   const enableSync = () => {
     if (!user) return;
@@ -166,6 +174,21 @@ function App() {
 
   // Public server-only certificate lookup never authorizes or issues awards.
   if (!authReady && view !== "verify-certificate") return <LoadingScreen message="جارٍ التحقق من حساب التدريب..." />;
+
+  // A first-visit introduction only intercepts the plain home entry. Direct links,
+  // account recovery, investigations and certificate verification remain untouched.
+  if (view === "welcome" || (view === "home" && showFirstVisitTour)) {
+    return <Suspense fallback={<LoadingScreen inline message="جارٍ تجهيز جولتك الأولى..." />}><WelcomeTour
+      onSkip={() => finishTourAndGo("home")}
+      onHome={() => finishTourAndGo("home")}
+      onLibrary={() => finishTourAndGo("library")}
+      onSoc={() => finishTourAndGo("soc")}
+      onJourneys={() => finishTourAndGo("journeys")}
+      onCertificates={() => finishTourAndGo("certificates")}
+      onSettings={() => finishTourAndGo("settings")}
+      onAuth={() => finishTourAndGo("auth")}
+    /></Suspense>;
+  }
 
   if (view === "settings") return <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل الإعدادات..." />}><Settings onHome={goHome} /></Suspense>;
 
@@ -221,6 +244,7 @@ function App() {
         onCertificates={() => navigate({ view: "certificates" })}
         onPro={() => navigate({ view: "pro" })}
         onSettings={() => navigate({ view: "settings" })}
+        onTour={() => navigate({ view: "welcome" })}
         onAuth={() => navigate({ view: "auth" })}
         onLogout={handleLogout}
         onBlackBoxLink={blackBox.openLink}
