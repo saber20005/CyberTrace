@@ -67,3 +67,18 @@ test("intro page is explicitly routed, skippable, and not an authentication gate
   assert.doesNotMatch(simulator,/fetch\(|XMLHttpRequest|WebSocket|localStorage|sessionStorage|firebase/);
   assert.doesNotMatch(component,/localStorage|onAuthStateChanged|Firebase|fetch\(/);
 });
+
+test("CyberTrace preview spotlight is opt-in and does not write investigations or scores",()=>{
+ const guide=readFileSync(new URL("../src/components/SpotlightPreview.jsx",import.meta.url),"utf8");
+ const shell=readFileSync(new URL("../src/components/SiteShell.jsx",import.meta.url),"utf8");
+ const navbar=readFileSync(new URL("../src/components/HomeNavbar.jsx",import.meta.url),"utf8");
+ const css=readFileSync(new URL("../src/components/SpotlightPreview.css",import.meta.url),"utf8");
+ assert.match(guide,/spotlight-preview/);
+ assert.match(guide,/createPortal/);
+ assert.match(guide,/ct-primary-route/);
+ assert.match(guide,/data-ct-spotlight/);
+ assert.match(shell,/SpotlightPreview view=\{view\}/);
+ assert.match(navbar,/data-ct-spotlight="soc"/);
+ assert.match(css,/prefers-reduced-motion/);
+ assert.doesNotMatch(guide,/localStorage|sessionStorage|firebase|fetch\(|XMLHttpRequest|WebSocket|eval\(/);
+});
