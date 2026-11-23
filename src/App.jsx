@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import "./App.css";
 import "./styles/design-system.css";
+import "./styles/royal-gold-theme.css";
 import { applyUIPreferences, readUIPreferences } from "./utils/uiPreferences.js";
 const Auth = lazy(() => import("./pages/Auth"));
 const Settings = lazy(() => import("./pages/Settings"));

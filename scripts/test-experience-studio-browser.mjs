@@ -21,9 +21,40 @@ try{
   try{
    await page.goto(origin+"/tests/fixtures/experience-studio.html",{waitUntil:"domcontentloaded"});
    await page.locator(".ct-studio-preview").waitFor({state:"visible"});
-   assert.equal(await page.locator(".ct-studio-preset").count(),3);
-   assert.equal(await page.locator(".ct-studio-theme").count(),3);
+   assert.equal(await page.locator(".ct-studio-preset").count(),4);
+   assert.equal(await page.locator(".ct-studio-theme").count(),4);
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false,"initial studio fits "+viewport.width+"px");
+
+   await page.getByRole("button",{name:/Royal Gold/}).click();
+   assert.equal(await page.evaluate(()=>document.documentElement.dataset.ctTheme),"gold");
+   assert.equal(await page.getByRole("button",{name:"البنفسجي"}).isDisabled(),true);
+   assert.equal(await page.getByRole("button",{name:"السيان"}).isDisabled(),true);
+   assert.equal(await page.evaluate(()=>document.documentElement.dataset.ctAccent),"brand");
+   const goldBg=await page.locator(".ct-studio-preview").evaluate(el=>getComputedStyle(el).backgroundColor);
+   await page.reload({waitUntil:"domcontentloaded"});
+   await page.locator(".ct-studio-preview").waitFor({state:"visible"});
+   assert.equal(await page.evaluate(()=>document.documentElement.dataset.ctTheme),"gold","gold persists across reload");
+   assert.equal(await page.locator(".ct-studio-preview").evaluate(el=>getComputedStyle(el).backgroundColor),goldBg);
+   await page.evaluate(()=>{
+     const wrap=document.createElement("div");
+     wrap.setAttribute("data-gold-test-fixture","");
+     wrap.style.cssText="position:fixed;left:0;top:0;opacity:0;pointer-events:none;width:100px;height:100px;overflow:hidden;";
+     wrap.innerHTML='<div class="inv-screen"><section class="inv-review"><div class="inv-review-choices"><div>test</div></div></section></div><div class="soc-page"><section class="soc-learning-feedback">test</section></div>';
+     document.body.append(wrap);
+   });
+   const currentGold=await page.evaluate(()=>{
+      const names=[".inv-review",".inv-review-choices > div",".soc-learning-feedback"];
+      return names.map(selector=>{const cs=getComputedStyle(document.querySelector(selector));return {selector,bg:cs.backgroundColor,image:cs.backgroundImage};});
+   });
+   assert(currentGold[0].image!=="none","analyst review uses gold gradient instead of original green");
+   for(const item of currentGold.slice(1)){
+     const arr=item.bg.match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+     assert(arr,"computed background missing: "+JSON.stringify(item));
+     const [red,green,blue]=arr.slice(1).map(Number);
+     assert(red>green&&green>blue,"unexpected teal/green card: "+JSON.stringify(item));
+   }
+   await page.evaluate(()=>document.querySelector("[data-gold-test-fixture]")?.remove());
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false,"Royal Gold fits "+viewport.width+"px");
    const original=await page.locator(".ct-studio-preview").evaluate(el=>getComputedStyle(el).backgroundColor);
    await page.getByRole("button",{name:/Midnight/}).click();
    assert.equal(await page.evaluate(()=>document.documentElement.dataset.ctTheme),"midnight");

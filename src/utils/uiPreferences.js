@@ -8,9 +8,10 @@ export const UI_PRESETS = Object.freeze([
   {id:"signature",title:"الهوية الأصلية",description:"دفء ذهبي ومساحة واضحة للتحقيق",theme:"dark",accent:"brand",density:"comfortable",motion:"system",contrast:"standard",textSize:"normal"},
   {id:"focus",title:"وضع التركيز",description:"أزرق ليلي ومحتوى مكثف وحركة أقل",theme:"midnight",accent:"cyan",density:"compact",motion:"reduce",contrast:"standard",textSize:"normal"},
   {id:"reading",title:"قراءة مريحة",description:"خلفية فاتحة وتباين أعلى وخط أوضح",theme:"light",accent:"brand",density:"comfortable",motion:"reduce",contrast:"high",textSize:"large"},
+  {id:"royal-gold",title:"الذهبي الملكي",description:"تدرجات بني ذهبي فاخر من لوحة الألوان المختارة",theme:"gold",accent:"brand",density:"comfortable",motion:"system",contrast:"standard",textSize:"normal"},
 ]);
 const allowed=Object.freeze({
-  theme:["dark","light","midnight"],
+  theme:["dark","light","midnight","gold"],
   accent:["brand","cyan","violet"],
   textSize:["normal","large","xlarge"],
   density:["comfortable","compact"],
@@ -20,9 +21,12 @@ const allowed=Object.freeze({
 });
 export function normalizeUIPreferences(input) {
   const source=input&&typeof input==="object"&&!Array.isArray(input)?input:{};
-  return Object.fromEntries(Object.entries(DEFAULT_UI_PREFERENCES).map(([key,fallback])=>[
+  const normalized=Object.fromEntries(Object.entries(DEFAULT_UI_PREFERENCES).map(([key,fallback])=>[
     key,allowed[key].includes(source[key])?source[key]:fallback
   ]));
+  // Royal gold is a seven-color palette, not an accent swatch variation.
+  if(normalized.theme==="gold")normalized.accent="brand";
+  return normalized;
 }
 export function applyUIPreset(current,id) {
   const preset=UI_PRESETS.find(item=>item.id===id);

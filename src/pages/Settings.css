@@ -96,3 +96,10 @@ html[data-ct-density="compact"] .ct-studio :is(.ct-studio-panel,.ct-studio-previ
 html[data-ct-text="large"] .ct-studio{font-size:1.09em}
 html[data-ct-text="xlarge"] .ct-studio{font-size:1.2em}
 html[data-ct-contrast="high"] .ct-studio{--studio-muted:var(--studio-fg);--studio-border:var(--studio-accent)}
+
+/* Four first-class appearance choices, including Royal Gold. */
+.ct-studio-presets,.ct-studio-theme-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.ct-studio-gold-note{border-inline-start:3px solid #EBB84A;background:color-mix(in srgb,#7A5E12 27%,transparent);color:#FFF3D8!important;border-radius:9px;padding:10px 13px;font-size:12px;line-height:1.9;margin:0 0 18px}
+.ct-studio-swatch:disabled{cursor:not-allowed;opacity:.42;filter:grayscale(.8)}
+@media(max-width:760px){.ct-studio-presets,.ct-studio-theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:360px){.ct-studio-presets{grid-template-columns:repeat(2,minmax(0,1fr))}.ct-studio-preset{display:flex}.ct-studio-preset-art{grid-row:auto}.ct-studio-preset strong,.ct-studio-preset small{grid-column:auto}}
