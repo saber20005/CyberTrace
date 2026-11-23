@@ -48,9 +48,11 @@ try{
    });
    assert(currentGold[0].image!=="none","analyst review uses gold gradient instead of original green");
    for(const item of currentGold.slice(1)){
-     const arr=item.bg.match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)/);
-     assert(arr,"computed background missing: "+JSON.stringify(item));
-     const [red,green,blue]=arr.slice(1).map(Number);
+     const rgb=item.bg.match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+     const color4=item.bg.match(/color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)/);
+     assert(rgb||color4,"computed background missing: "+JSON.stringify(item));
+     const [red,green,blue]=(rgb||color4).slice(1).map(Number);
+     // Computed CSS Color 4 may report normalized 0..1 components.
      assert(red>green&&green>blue,"unexpected teal/green card: "+JSON.stringify(item));
    }
    await page.evaluate(()=>document.querySelector("[data-gold-test-fixture]")?.remove());
