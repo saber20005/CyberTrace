@@ -121,3 +121,37 @@
  .library-page .case-actions { display:grid;grid-template-columns:minmax(0,1fr); }
  .library-page .learning-skill-grid { grid-template-columns:minmax(0,1fr); }
 }
+
+/* Deliberately restrained Magic Card-style spotlight.
+   Uses native CSS + one delegated mouse handler; no Tailwind or motion runtime.
+   Keep case text/buttons above the overlay and preserve keyboard navigation. */
+.library-page .case-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.library-page .case-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  background: radial-gradient(
+    circle 180px at var(--ct-case-glow-x, 50%) var(--ct-case-glow-y, 25%),
+    color-mix(in srgb, var(--ct-gold) 15%, transparent) 0%,
+    color-mix(in srgb, var(--ct-gold) 4%, transparent) 48%,
+    transparent 100%
+  );
+  transition: opacity 180ms ease-out;
+}
+.library-page .case-card > * { position: relative; z-index: 1; }
+.library-page .case-card:hover::before,
+.library-page .case-card:focus-within::before { opacity: 1; }
+.library-page .case-card:focus-within {
+  border-color: var(--ct-gold);
+}
+@media (prefers-reduced-motion: reduce) {
+  .library-page .case-card::before { transition: none; }
+}

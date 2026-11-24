@@ -12,6 +12,17 @@ import { buildLearningPlan } from "../utils/learningPlan";
 import { WORKSPACE_CASE_IDS } from "../data/investigationWorkspace.js";
 import "./InvestigationLibrary.css";
 
+// One delegated pointer handler for the visible catalogue; no state updates,
+ // request loops, third-party animation packages, or work on touch gestures.
+function moveCaseCardGlow(event) {
+  if (event.pointerType !== "mouse") return;
+  const card = event.target instanceof Element ? event.target.closest(".case-card") : null;
+  if (!card || !event.currentTarget.contains(card)) return;
+  const box = card.getBoundingClientRect();
+  card.style.setProperty("--ct-case-glow-x", `${Math.round(event.clientX - box.left)}px`);
+  card.style.setProperty("--ct-case-glow-y", `${Math.round(event.clientY - box.top)}px`);
+}
+
 const dateFormat = new Intl.DateTimeFormat("ar", { day: "numeric", month: "short", year: "numeric" });
 const suggestionLabels = {
   new: "خطوتك التالية",
@@ -152,7 +163,7 @@ function InvestigationLibrary({ embedded = false, browseState, onBrowseStateChan
             <label><span>المجال</span><select aria-label="المجال" value={category} onChange={event => { setCategory(event.target.value); setPage(1); }}><option value="all">كل المجالات</option>{CATEGORIES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
             <label><span>حالة الإنجاز</span><select aria-label="حالة الإنجاز" value={status} onChange={event => { setStatus(event.target.value); setPage(1); }}><option value="all">كل التحقيقات</option><option value="new">لم تكتمل بعد</option><option value="completed">مكتملة</option></select></label>
           </div>
-          {visibleCases.length ? <div className="case-grid">
+          {visibleCases.length ? <div className="case-grid" onPointerMove={moveCaseCardGlow}>
             {paged.items.map(caseData => {
               const details = getCaseDetails(caseData);
               const result = results[caseData.id];
