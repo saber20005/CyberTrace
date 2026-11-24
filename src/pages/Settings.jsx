@@ -23,7 +23,7 @@ const LEVELS=[["unset","غير محدد"],["beginner","مبتدئ"],["intermedia
 function SelectSetting({name,value,options,onChange}){
  return <label className="ct-studio-select"><span>{name}</span><select value={value} onChange={e=>onChange(e.target.value)}>{options.map(([id,label])=><option key={id} value={id}>{label}</option>)}</select></label>;
 }
-export default function Settings({onHome,embedded=false}){
+export default function Settings({onHome,embedded=false,syncPanel=null}){
  const [settings,setSettings]=useState(readUIPreferences);
  const [message,setMessage]=useState("");
  function apply(next,text){
@@ -55,6 +55,7 @@ export default function Settings({onHome,embedded=false}){
       <p className="ct-studio-description">هذا تفضيل شخصي فقط؛ لا يُغيّر صلاحياتك أو النقاط أو أهلية الشهادات.</p>
       <div className="ct-studio-privacy"><strong>لا توجد مزامنة لهذه التفضيلات</strong><p>تُحفظ في هذا المتصفح وحده. لن نُغيّر تقدم التحقيقات، Firebase أو ربط BLACKBOX.</p></div>
      </section>
+     {syncPanel}
     </div>
     <aside className="ct-studio-preview-column" aria-label="معاينة الإعدادات"><div className="ct-studio-preview-sticky"><div className="ct-studio-preview-label"><div><span>LIVE PREVIEW</span><h2>المعاينة المباشرة</h2></div><span className="ct-studio-live"><i/> مباشر</span></div>
      <div className="ct-studio-preview">

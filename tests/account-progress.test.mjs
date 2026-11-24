@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { setProgressOwner, progressKey, importLegacyProgress } from "../src/utils/progressScope.js";
+import { setProgressOwner, progressKey, importLegacyProgress, legacyProgressNeedsImport } from "../src/utils/progressScope.js";
 const original = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
 test("progress keys are isolated across accounts and guests", () => {
   setProgressOwner("account-A"); const a=progressKey("cybertrace_xp");
@@ -14,12 +14,15 @@ test("legacy data is never imported without explicit invocation and existing acc
   try {
     setProgressOwner("A"); const key=progressKey("cybertrace_xp");
     assert.equal(data.get(key),undefined);
+    assert.equal(legacyProgressNeedsImport(),true, "unclaimed legacy progress must prompt for explicit import");
     assert.equal(importLegacyProgress(),true);
+    assert.equal(legacyProgressNeedsImport(),false, "imported progress must not show the banner again");
     assert.equal(data.get(key),"310");
     data.set("cybertrace_xp","999");
     assert.equal(importLegacyProgress(),false);
     assert.equal(data.get(key),"310");
     setProgressOwner("B");
     assert.equal(data.get(progressKey("cybertrace_xp")),undefined);
+    assert.equal(legacyProgressNeedsImport(),true, "another account is not assumed to own the old data");
   } finally { if(original) Object.defineProperty(globalThis,"localStorage",original); else delete globalThis.localStorage; }
 });
