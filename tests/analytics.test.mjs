@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createAnalytics } from '../src/utils/analytics.js';
+import { readFileSync } from 'node:fs';
 
 const ID = 'G-ABC1234567';
 
@@ -156,5 +157,22 @@ test('default analytics host allowlist accepts the primary domain but rejects pr
   const preview = browser({ url: 'https://cyber-trace-psi.vercel.app/?view=library' });
   const previewApi = createAnalytics({ window: preview.window, document: preview.document, navigator: preview.navigator, measurementId: ID });
   assert.equal(previewApi.trackPageView(), false);
+  assert.equal(preview.scripts.length, 0);
+});
+
+
+test('production CyberTrace HTML enables the owner-supplied GA4 Measurement ID once', () => {
+  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const tags = [...html.matchAll(/<meta\s+name="google-analytics-id"\s+content="([^"]+)"\s*\/>/g)];
+  assert.equal(tags.length, 1, 'the site must have exactly one public GA4 measurement tag');
+  assert.equal(tags[0][1], 'G-B9KJQGYNY9');
+  const fixture = browser({ url: 'https://cybertracelab.dev/?view=library', id: tags[0][1] });
+  const api = createAnalytics({ window: fixture.window, document: fixture.document, navigator: fixture.navigator, site: 'CyberTrace' });
+  assert.equal(api.trackPageView(), true, 'the public CyberTrace domain must enable analytics');
+  assert.equal(fixture.scripts.length, 1);
+  assert.match(fixture.scripts[0].src, /[?&]id=G-B9KJQGYNY9$/);
+  const preview = browser({ url: 'https://cyber-trace-preview.vercel.app/?view=library', id: tags[0][1] });
+  const previewApi = createAnalytics({ window: preview.window, document: preview.document, navigator: preview.navigator, site: 'CyberTrace' });
+  assert.equal(previewApi.trackPageView(), false, 'preview visits must not inflate production metrics');
   assert.equal(preview.scripts.length, 0);
 });
