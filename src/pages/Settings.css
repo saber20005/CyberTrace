@@ -103,3 +103,8 @@ html[data-ct-contrast="high"] .ct-studio{--studio-muted:var(--ct-muted);--studio
 .ct-studio-swatch:disabled{cursor:not-allowed;opacity:.42;filter:grayscale(.8)}
 @media(max-width:760px){.ct-studio-presets,.ct-studio-theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:360px){.ct-studio-presets{grid-template-columns:repeat(2,minmax(0,1fr))}.ct-studio-preset{display:flex}.ct-studio-preset-art{grid-row:auto}.ct-studio-preset strong,.ct-studio-preset small{grid-column:auto}}
+
+/* Manual cloud controls remain accessible here after the home/library prompts vanish. */
+.ct-studio-panel[aria-label="إدارة مزامنة CyberTrace"] p{color:var(--studio-muted);line-height:1.8;overflow-wrap:anywhere}
+.ct-studio-panel[aria-label="إدارة مزامنة CyberTrace"] button{border:1px solid var(--studio-border);background:var(--studio-bg);color:var(--studio-fg);min-height:44px;max-width:100%;border-radius:12px;padding:10px 16px;font:inherit;cursor:pointer}
+.ct-studio-panel[aria-label="إدارة مزامنة CyberTrace"] button:disabled{opacity:.6;cursor:wait}
