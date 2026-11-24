@@ -140,6 +140,17 @@ try {
       await page.getByLabel('المجال', { exact: true }).selectOption('identity');
       await page.getByLabel('حالة الإنجاز', { exact: true }).selectOption('new');
       const card = page.locator('.case-card[data-case-id="INC-0417"]');
+      await card.hover({position:{x:40,y:48}});
+      const glow = await card.evaluate(el => ({
+        pseudo:getComputedStyle(el,'::before').content,
+        pointer:getComputedStyle(el,'::before').pointerEvents,
+        position:getComputedStyle(el).position,
+        x:el.style.getPropertyValue('--ct-case-glow-x')
+      }));
+      assert.notEqual(glow.pseudo,'none','case card renders a soft decorative spotlight');
+      assert.equal(glow.pointer,'none','case glow never intercepts clicks');
+      assert.equal(glow.position,'relative','glow does not alter card layout');
+      assert.equal(glow.x,'40px','desktop pointer position guides glow without React state');
       const start = card.locator(".case-start");
       await start.scrollIntoViewIfNeeded();
       await start.focus();
