@@ -4,7 +4,7 @@ import "./SpotlightPreview.css";
 
 // This demo lives on the real navigation surfaces but never changes progress or cases.
 const STEPS = [
- {selector:".ct-home-navbar .ct-primary-route",title:"افتح مكتبة التحقيقات",description:"اضغط «التحقيقات» في الشريط الأصلي. سينقلك الضوء إلى الأدوات التي تستخدمها للبحث عن الأدلة."},
+ {selector:'.ct-app-dock [data-dock-view="library"], .ct-home-navbar .ct-primary-route',title:"افتح مكتبة التحقيقات",description:"اضغط «التحقيقات» في الشريط الأصلي. سينقلك الضوء إلى الأدوات التي تستخدمها للبحث عن الأدلة."},
  {selector:'.library-filters input[type="search"]',title:"ابحث في ملفات الحوادث",description:"اضغط حقل البحث الحقيقي. يمكنك البحث لاحقًا برقم القضية أو نوع الحادثة؛ لا نفتح أي تحقيق ولا نغيّر نتيجته."},
  {selector:".ct-home-navbar .ct-more > summary",title:"افتح قائمة العمليات",description:"اضغط «المزيد» لترى الأدوات الإضافية، ثم اختر مناوبات SOC من القائمة."},
  {selector:'[data-ct-spotlight="soc"]',title:"انتقل إلى مركز SOC",description:"اضغط «مناوبات SOC» لتصل إلى التنبيهات الفعلية للموقع. الجولة لا ترسل أي استجابة ولا تُسجّل درجات."}
@@ -31,7 +31,7 @@ export default function SpotlightPreview({view}){
  useEffect(()=>{
   if(!enabled||!active||finished)return undefined;
   const update=()=>{
-   const target=document.querySelector(STEPS[index].selector);
+   const target=[...document.querySelectorAll(STEPS[index].selector)].find(node=>node.getBoundingClientRect().width>0);
    const r=target?.getBoundingClientRect();
    if(!target||!r||r.width<1||r.height<1){targetRef.current=null;setMissing(true);return;}
    const style=getComputedStyle(target);

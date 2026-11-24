@@ -36,6 +36,8 @@ try{
    for(const view of ["home","library","journeys","soc","certificates","joint-certificate","verify-certificate","pro","verified-soc","settings","auth","admin"]){
     await navigate(view);
     assert.equal(await page.locator('.ct-home-navbar').count(),1,view+' has one shared navigation');
+    assert.equal(await page.locator('.ct-app-dock').count(),1,view+' has one persistent app dock');
+    assert.equal(await page.locator('.ct-quick-dock').count(),0,view+' has no competing shortcut disclosure');
     assert.equal(await page.locator('main').count(),1,view+' keeps one main landmark');
     assert.equal(await page.locator('.ct-site-footer').count(),1,view+' keeps one shared footer');
     assert.equal(await page.locator('.library-footer').count(),0,view+' has no duplicated library footer');
@@ -61,13 +63,15 @@ try{
   await page.locator('#ct-tour-heading').waitFor({state:'visible'});
   await page.getByRole('button',{name:/تخطي الجولة/}).click();
   await page.locator('.ct-site-shell[data-ct-view=home]').waitFor({state:'visible'});
-  const dock = page.locator('.ct-quick-dock');
-  await dock.locator('summary').focus(); await page.keyboard.press('Enter');
-  assert.equal(await dock.evaluate(node => node.open), true);
-  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, 'expanded shortcut panel fits large text');
+  const dock = page.locator('.ct-app-dock');
+  assert.equal(await dock.getByRole('button').count(),5,'four persistent destinations and raised search');
+  const opener=dock.locator('[data-dock-view="search"]');
+  await opener.focus(); await page.keyboard.press('Enter');
+  await page.locator('.ct-search-dialog[open]').waitFor({state:'visible'});
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, 'modal search fits large text');
   await page.keyboard.press('Escape');
-  assert.equal(await dock.evaluate(node => node.open), false);
-  assert.equal(await dock.locator('summary').evaluate(node => node === document.activeElement), true, 'Escape restores the shortcut opener');
+  await page.locator('.ct-search-dialog').waitFor({state:'hidden'});
+  assert.equal(await opener.evaluate(node => node === document.activeElement), true, 'Escape restores the search opener');
   // Actual navigation controls exercise the centralized callbacks, including
   // the formerly missing settings and journeys actions from the library.
   await navigate('library');
@@ -90,6 +94,7 @@ try{
   await page.waitForFunction(()=>document.querySelector('[data-testid="completed-count"]')?.textContent.trim().startsWith('0'));
   await navigate('investigation',{case:'INC-0417'});
   assert.equal(await page.locator('.ct-home-navbar').count(),0,'focus mode leaves case tools in control');
+  assert.equal(await page.locator('.ct-app-dock').count(),0,'focus mode hides the permanent dock');
   await page.getByRole('button',{name:/ابدأ التحليل/}).click();await page.locator('.inv-options').waitFor({state:'visible'});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'evidence fits expanded text');
   await page.locator('.inv-back').click();await page.locator('.ct-home-navbar').waitFor({state:'visible'});

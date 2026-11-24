@@ -41,7 +41,9 @@ test('home integration uses one navbar component, keeping existing auth and rout
   assert.match(app,/onLogout=\{handleLogout\}/);
   assert.match(app,/onBlackBoxLink=\{blackBox\.openLink\}/);
   assert.match(app,/onAuth=\{\(\) => navigate\(\{ view: "auth" \}\)\}/);
-  assert.match(app,/<QuickDock active="home"/);
+  const shell=read('../src/components/SiteShell.jsx');
+  assert.match(shell,/<AppNavigation/);
+  assert.doesNotMatch(app,/<QuickDock/);
   assert.match(app,/signOut\(auth\)/);
 });
 

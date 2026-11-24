@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from "react";
+import { flushSync } from "react-dom";
+import { animateNavigation } from "./utils/navigationMotion.js";
 import "./App.css";
 import "./styles/design-system.css";
 import "./styles/page-layout.css";
@@ -9,7 +11,13 @@ const Auth = lazy(() => import("./pages/Auth"));
 const Settings = lazy(() => import("./pages/Settings"));
 const WelcomeTour = lazy(() => import("./pages/WelcomeTour"));
 const Admin = lazy(() => import("./pages/Admin"));
-const Investigation = lazy(() => import("./pages/Investigation"));
+let loadedInvestigation;
+let investigationModule;
+const loadInvestigation = () => investigationModule ||= import("./pages/Investigation").then(module => {
+  loadedInvestigation = module.default;
+  return module;
+});
+const Investigation = lazy(loadInvestigation);
 const InvestigationLibrary = lazy(() => import("./pages/InvestigationLibrary"));
 const Pro = lazy(() => import("./pages/Pro"));
 const Certificates = lazy(() => import("./pages/Certificates"));
@@ -32,7 +40,12 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { startCloudSync, enableCloudSync, cloudSyncEnabled } from "./utils/cloudProgress";
 import { useBlackBox } from "./blackbox/useBlackBox";
 
-import QuickDock from "./components/QuickDock";
+// Keep one component type for the life of an attempt. A cold fallback may
+// resolve after its first render; background progress must not replace it.
+function InvestigationAttempt(props) {
+  const [Screen] = useState(() => loadedInvestigation || Investigation);
+  return <Screen {...props} />;
+}
 
 function routeAtLocation() {
   return {
@@ -61,12 +74,15 @@ function App() {
   const syncNowRef = useRef(null);
   const [progressVersion, setProgressVersion] = useState(0);
   const initialVisitTracked = useRef(false);
+  const [libraryBrowse, setLibraryBrowse] = useState(null);
+  const navigationSession = useRef(crypto.randomUUID());
   const { view, returnView } = route;
   const selectedCase = CASES.find(item => item.id === route.caseId);
   const partner = getBlackBoxLearningLink();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setLibraryBrowse(null);
       setProgressOwner(firebaseUser?.uid ?? null);
       window.dispatchEvent(new Event("cybertrace-progress-synced"));
       setSyncStatus("");
@@ -96,6 +112,8 @@ function App() {
   }, [user, syncEnabled]);
 
   useEffect(() => {
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
     const initial = routeAtLocation();
     window.history.replaceState(window.history.state, "", createRouteURL(initial, window.location.href, { preserveHash: true }));
     if (initial.view === "investigation" && !initialVisitTracked.current) {
@@ -105,13 +123,17 @@ function App() {
     const restore = () => {
       const next = routeAtLocation();
       window.history.replaceState(window.history.state, "", createRouteURL(next, window.location.href, { preserveHash: true }));
-      setRoute(next);
-      setInvestigationRun(run => run + 1);
+      animateNavigation(() => {
+        flushSync(() => { setRoute(next); setInvestigationRun(run => run + 1); });
+        if (!window.location.hash) window.scrollTo(0, 0);
+      });
       if (next.view === "investigation") trackStart(next, "history");
-      if (!window.location.hash) window.scrollTo(0, 0);
     };
     window.addEventListener("popstate", restore);
-    return () => window.removeEventListener("popstate", restore);
+    return () => {
+      window.removeEventListener("popstate", restore);
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
   }, []);
 
   useEffect(() => {
@@ -120,10 +142,17 @@ function App() {
   }, [route]);
 
   const navigate = next => {
-    window.history.pushState({ cybertraceReturn: next.returnView || "library" }, "", createRouteURL(next, window.location.href));
-    setRoute(next);
-    setInvestigationRun(run => run + 1);
-    window.scrollTo(0, 0);
+    const nextURL = createRouteURL(next, window.location.href);
+    if (view === next.view && view !== "investigation" && nextURL.href === window.location.href) return;
+    if (view === "library") {
+      const source = document.activeElement?.closest(".case-card");
+      setLibraryBrowse(saved => ({ ...saved, scrollY: window.scrollY, focusCaseId: source?.dataset.caseId || saved?.focusCaseId || null }));
+    }
+    window.history.pushState({ cybertraceReturn: next.returnView || "library", cybertraceNavigationSession: navigationSession.current, cybertraceHasReturnEntry: next.view === "investigation" && view === next.returnView }, "", nextURL);
+    animateNavigation(() => {
+      flushSync(() => { setRoute(next); setInvestigationRun(run => run + 1); });
+      window.scrollTo(0, 0);
+    }, { caseId: next.view === "investigation" ? next.caseId : undefined, prepare: next.view === "investigation" ? loadInvestigation : undefined });
   };
   const goHome = () => navigate({ view: "home" });
   const goLibrary = () => navigate({ view: "library" });
@@ -174,6 +203,8 @@ function App() {
 
   const frame = children => <SiteShell view={view} user={user}
     onHome={goHome} onLibrary={goLibrary}
+    onSearchNavigate={target => navigate({ view: target })}
+    onSearchCase={item => startInvestigation(item, view === "home" ? "home" : "library", "search")}
     onJourneys={() => navigate({ view: "journeys" })}
     onSoc={() => navigate({ view: "soc" })}
     onCertificates={() => navigate({ view: "certificates" })}
@@ -232,7 +263,7 @@ function App() {
   }
 
   if (view === "library") {
-    return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary embedded key={`${user?.uid ?? "guest"}:${progressVersion}`} cloudSyncPanel={cloudSyncPanel} cases={CASES} onCertificates={() => navigate({ view: "certificates" })} onStart={(caseData) => startInvestigation(caseData, "library")} onJourneys={() => navigate({ view: "journeys" })} onSettings={() => navigate({ view: "settings" })} onHome={goHome} onSoc={() => navigate({ view: "soc" })} onPro={() => navigate({ view: "pro" })}
+    return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ تحميل مكتبة التحقيقات..." />}><InvestigationLibrary embedded browseState={libraryBrowse} onBrowseStateChange={setLibraryBrowse} key={user?.uid ?? "guest"} cloudSyncPanel={cloudSyncPanel} cases={CASES} onCertificates={() => navigate({ view: "certificates" })} onStart={(caseData) => startInvestigation(caseData, "library")} onJourneys={() => navigate({ view: "journeys" })} onSettings={() => navigate({ view: "settings" })} onHome={goHome} onSoc={() => navigate({ view: "soc" })} onPro={() => navigate({ view: "pro" })}
         user={user} onAuth={() => navigate({ view: "auth" })} onLogout={handleLogout}
         onBlackBoxLink={blackBox.openLink} blackBoxEnabled={blackBox.status.enabled}
         blackBoxConnected={Boolean(blackBox.status.user)} /></Suspense>);
@@ -240,10 +271,10 @@ function App() {
 
   if (view === "investigation" && selectedCase) {
     return frame(
-      <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل التحقيق..." />}><Investigation
+      <Suspense fallback={<LoadingScreen inline message="جارٍ تحميل التحقيق..." />}><InvestigationAttempt
         key={`${investigationRun}:${user?.uid ?? "guest"}`}
         caseData={selectedCase}
-        onBack={returnView === "library" ? goLibrary : goHome}
+        onBack={() => { if (window.history.state?.cybertraceHasReturnEntry === true && window.history.state?.cybertraceNavigationSession === navigationSession.current) window.history.back(); else if (returnView === "library") goLibrary(); else goHome(); }}
         backLabel={returnView === "library" ? "العودة لمكتبة التحقيقات" : "العودة للرئيسية"}
         onNext={() => startInvestigation(null, returnView, "next_case")}
       /></Suspense>
@@ -447,8 +478,7 @@ function App() {
           <small>تعليمات المختبر والأدوات تُنفّذ في بيئتك المحلية.</small>
         </section>
       </main>
-      <QuickDock active="home" onHome={goHome} onLibrary={goLibrary}
-        onSoc={() => navigate({ view: "soc" })} onCertificates={() => navigate({ view: "certificates" })} />
+
 
 
     </div>

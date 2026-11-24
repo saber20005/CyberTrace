@@ -42,4 +42,5 @@ jobs:
           node scripts/test-experience-studio-browser.mjs
           node scripts/test-first-visit-tour-browser.mjs
           node scripts/test-page-presentation-browser.mjs
+          node scripts/test-app-navigation-browser.mjs
           node scripts/test-home-navbar-browser.mjs
