@@ -140,17 +140,6 @@ try {
       await page.getByLabel('المجال', { exact: true }).selectOption('identity');
       await page.getByLabel('حالة الإنجاز', { exact: true }).selectOption('new');
       const card = page.locator('.case-card[data-case-id="INC-0417"]');
-      await card.hover({position:{x:40,y:48}});
-      const glow = await card.evaluate(el => ({
-        pseudo:getComputedStyle(el,'::before').content,
-        pointer:getComputedStyle(el,'::before').pointerEvents,
-        position:getComputedStyle(el).position,
-        x:el.style.getPropertyValue('--ct-case-glow-x')
-      }));
-      assert.notEqual(glow.pseudo,'none','case card renders a soft decorative spotlight');
-      assert.equal(glow.pointer,'none','case glow never intercepts clicks');
-      assert.equal(glow.position,'relative','glow does not alter card layout');
-      assert.ok(Math.abs(parseFloat(glow.x) - 40) <= 2,'pointer-following glow tolerates card border and fractional CSS pixels');
       const start = card.locator(".case-start");
       await start.scrollIntoViewIfNeeded();
       await start.focus();
@@ -174,6 +163,20 @@ try {
       assert.equal(await page.getByLabel('حالة الإنجاز', { exact: true }).inputValue(), 'new');
       await page.waitForFunction(() => document.activeElement?.closest('[data-case-id="INC-0417"]'));
       assert.equal(Math.abs((await page.evaluate(() => scrollY)) - previousScroll) < 140, true, "Back returns near the source card");
+      // Test the decorative pointer glow only AFTER the Back/focus restoration assertion.
+      // An earlier hover auto-scrolls the case card and changes the scroll baseline.
+      await card.hover({position:{x:40,y:48}});
+      const glow = await card.evaluate(el => ({
+        pseudo:getComputedStyle(el,'::before').content,
+        pointer:getComputedStyle(el,'::before').pointerEvents,
+        position:getComputedStyle(el).position,
+        x:el.style.getPropertyValue('--ct-case-glow-x')
+      }));
+      assert.notEqual(glow.pseudo,'none','case card renders a soft decorative spotlight');
+      assert.equal(glow.pointer,'none','case glow never intercepts clicks');
+      assert.equal(glow.position,'relative','glow does not alter card layout');
+      assert.ok(Math.abs(parseFloat(glow.x) - 40) <= 2,'pointer-following glow tolerates card border and fractional CSS pixels');
+
 
       await searchOpener.click();
       await search.waitFor({ state: "visible" });
