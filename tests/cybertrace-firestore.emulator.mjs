@@ -88,3 +88,36 @@ test("two devices restore and merge one owner's progress; same email cannot bypa
   const final=(await assertSucceeds(getDoc(firstRef))).data();
   assert.equal(final.xp,180,"unauthorized attempts must not alter the owner state");
 });
+
+test("security finding: owner can self-report a maximum score and XP, which are not trusted proof", async () => {
+  // This is an isolated emulator proof, NOT a production exploit.
+  // Firestore checks document ownership + schema, not whether training occurred.
+  const owner=env.authenticatedContext("self-report-audit").firestore();
+  const me=ref(owner,"self-report-audit");
+  const alleged=record({
+    results:{"INC-0417":{attempts:1,lastScore:70,bestScore:70,lastCompletedAt:"2026-11-23T00:00:00Z"}},
+    completed:["INC-0417"],xp:2000000,
+  });
+  await assertSucceeds(setDoc(me,alleged));
+  const stored=(await assertSucceeds(getDoc(me))).data();
+  assert.equal(stored.xp,2000000);
+  assert.equal(stored.results["INC-0417"].bestScore,70);
+  // Unauthorized users still cannot read or modify somebody else's record.
+  const other=env.authenticatedContext("another-auditor").firestore();
+  await assertFails(getDoc(ref(other,"self-report-audit")));
+  await assertFails(setDoc(ref(other,"self-report-audit"),alleged));
+});
+
+test("security boundary: CyberTrace undeclared documents are default-denied",async()=>{
+  // This verifies only the CyberTrace *reference* rules, not BLACKBOX production.
+  const owner=env.authenticatedContext("self-report-audit").firestore();
+  const attempt={uid:"self-report-audit",bestScore:70,source:"server-grading",status:"active"};
+  for(const path of [
+    "adminSettings/global",
+    "cybertraceUsers/self-report-audit/certificateAwards/fake-award",
+    "cybertraceUsers/self-report-audit/admin/claims",
+    "billing/self-report-audit",
+  ]){
+    await assertFails(setDoc(doc(owner,path),attempt));
+  }
+});

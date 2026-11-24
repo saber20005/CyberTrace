@@ -1,0 +1,44 @@
+# CyberTrace security review — 2026-11-23
+
+## Scope and evidence
+Source-review of main-branch `security/firestore.cybertrace-progress.rules`, `src/utils/cloudProgress.js`, `api/_lib/firebaseToken.mjs`, `api/admin/summary.mjs`, `src/pages/Admin.jsx`, and `tests/admin-api.test.mjs`. Added a **Firestore emulator-only** regression in `tests/cybertrace-firestore.emulator.mjs`. Also reviewed the BLACKBOX repo's Firestore and certificate separation. No live account, real user data, real external target, or production Firestore write was touched.
+
+**Critical distinction:** `security/firestore.cybertrace-progress.rules` is explicitly labeled a *reference* ruleset. Running it in the emulator does **not** prove that its current version has been deployed to Firebase project `cybertrace-48ab0`.
+
+## Remediation implemented on the draft security branch (2026-11-23)
+
+- **Patched dependency chains without a Firebase major downgrade.** Root `package.json` pins npm overrides `@grpc/grpc-js@1.13.7`, `re2js@2.8.7`, and `zod@4.6.6`; Vite and ESLint are updated within their existing major versions. Regenerated and committed `package-lock.json` in isolated CI without executing package lifecycle scripts.
+- **Audit before**: `npm audit --omit=dev` reported 5 HIGH entries; the full tree reported 12 entries (9 HIGH, 3 MODERATE).
+- **Audit after**: the dependency-inventory workflow on the patched lockfile reported **0 vulnerabilities in the production dependency tree** and **0 in the full dependency tree** at time of scan. This measures the advisory database and does not guarantee that the application has no security flaws.
+- **Regression protection**: added `tests/dependency-security-baseline.test.mjs` to prevent reintroducing patched vulnerable versions. Hardened `.github/workflows/security-advisory-inventory.yml` to fail on HIGH/CRITICAL advisories and audit errors.
+- Removed the temporary lockfile-generating GitHub Actions job after its one-time commit; no persistent write-enabled CI workflow remains.
+- **Unchanged**: browser-saved XP and scores remain self-reported, not server-proven; changing them to authoritative assessment requires an independent backend and deliberate migration. The live Firebase rules/Auth/App Check deployment has not been inspected.
+- **Release**: fix is in draft PR #84 only until review and explicit merge approval; verify the final CI run and protected Vercel preview before release.
+
+## Findings
+
+| ID | Severity | Observation / proof | Implication |
+|---|---|---|---|
+| CT-01 | High **integrity limitation**, not verified privilege escalation | Under the checked-in reference rules, an authenticated owner is allowed to submit their own arbitrary in-range XP and score for a known investigation. The new `security finding: owner can self-report` emulator test demonstrates this without hitting production. | XP, case completion and client-issued PDFs are self-reported; never use them as *verified* awards, competitive rankings, paid qualifications or prerequisites for trusted certificates. |
+| CT-02 | High **verification gap** | Deployed Firebase Auth/App Check settings and deployed Firestore rules have not been inspected via an authorized Firebase admin connection. Checked-in rules are only references; ownership checks and deny-by-default are evidenced in the emulator alone. | Production security claims remain unproven; compare deployed rulesets and publish only after backup and administrator review. |
+| CT-03 | **High advisory exposure, runtime reachability unconfirmed** | The isolated npm inventory (`security-advisory-inventory.yml`, workflow run `45243353573`) found **5 high advisory entries** in the production dependency tree: `firebase`, `@firebase/firestore`, `@firebase/firestore-compat`, `@grpc/grpc-js`, `re2js`; full tree **12**: 9 high + 3 moderate. Some are related transitive entries, not five separate proven vulnerabilities. | Investigate bundled/reachable code and fix upgrade paths individually. `npm audit` suggests an unsafe major downgrade to Firebase 9.14.0; **do not run `npm audit fix --force`** blindly. |
+| CT-04 | Hardened in code / deployment unverified | The read-only admin summary rejects missing Bearer tokens and method misuse, verifies Firebase RS256 signature/audience/issuer/expiry and requires `admin === true`. Tests cover incorrect audience and unsigned input. | This is better than hiding an admin page client-side. Check actual Firebase claim provisioning, revocation procedures and callable/IAM policies separately; don't infer security from page appearance. |
+
+### Dependency advisory detail (2026-11-23)
+The runtime-tree findings include `@grpc/grpc-js` authentication-context/error-handling advisories and a `re2js` lookbehind performance DoS advisory. Production-tree inclusion does **not** demonstrate that these APIs are reachable in the shipped browser bundles. Development-only high advisories include Vite/editor integration and source-map processing; assess the actual developer/CI environment separately. Full logs: [Dependency audit workflow](https://github.com/saber20005/CyberTrace/actions/runs/45243353573). Do not replace Firebase with a different major version based solely on the audit auto-fix suggestion.
+
+## Positive controls supported by source
+- `cloudProgress.js` scopes progress to signed-in UID; a second account is denied by the *reference* Firestore rule. Its cloud merges are user preferences/progress, not proof of assessment.
+- CyberTrace Firebase web API keys in the frontend are **public identifiers**, not inherently secret credentials. Review their permitted API/service restrictions, but do not describe their mere presence as key theft.
+- `api/admin/summary.mjs` fails closed to `metrics:null` until trusted aggregates exist, rather than treating untrusted client scores as an admin KPI.
+- `security/firestore.cybertrace-progress.rules` is owner-scoped, schema constrained, and default-denies undeclared collections in the isolated emulator.
+
+## Release/verification gates before calling the platform secure
+1. With authorized Firebase admin access, export **deployed** rules for both distinct projects and compare with repo rules. Run the same two-user/guest denial tests in an isolated emulator using exported production rules; do not overwrite live rules blindly.
+2. Run the new emulator proof in CI; require that user A cannot access user B, unknown paths are denied, and client self-scores remain labeled unverified.
+3. Confirm every certificate or premium entitlement is derived exclusively from backend-owned assessments, not `cybertraceUsers/*/state/progress`, localStorage, client-supplied grade or email. Keep issuance disabled until reviewed.
+4. Inspect App Check enforcement, Firebase Auth authorized domains, custom admin-claim lifecycle, Cloud Functions IAM, Vercel environment exposure, logging, alerting and quotas in owner consoles. Source alone cannot verify these.
+5. Generate a dependency advisory inventory with versions, reachable runtime paths and remediation PRs. If deploying an automated pentest tool (such as Strix), use a local disposable test deployment with synthetic data, strict scope/rate caps, and explicit approval before any active tests on production.
+
+## Current audit status
+**Code review and draft test coverage:** completed. **Live-production authorization proof, dependency triage and active pentesting:** not completed. No production security changes or exploits are claimed.
