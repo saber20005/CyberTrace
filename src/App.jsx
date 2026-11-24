@@ -38,6 +38,7 @@ import { auth } from "./firebase";
 import { setProgressOwner, legacyProgressNeedsImport, importLegacyProgress } from "./utils/progressScope";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { startCloudSync, enableCloudSync, cloudSyncEnabled } from "./utils/cloudProgress";
+import { nextSyncVerified, showSyncPrompt } from "./utils/cloudSyncPresentation.js";
 import { useBlackBox } from "./blackbox/useBlackBox";
 
 // Keep one component type for the life of an attempt. A cold fallback may
@@ -110,8 +111,7 @@ function App() {
     if (!user || !syncEnabled) return undefined;
     const stop = startCloudSync(user.uid, (message, result = {}) => {
       setSyncStatus(message);
-      if (result.verified) setSyncVerified(true);
-      else if (result.failed) setSyncVerified(false);
+      setSyncVerified(previous => nextSyncVerified(previous, result));
     });
     syncNowRef.current = stop.syncNow;
     return () => {
@@ -199,7 +199,7 @@ function App() {
       : <button type="button" onClick={enableSync}>تفعيل مزامنة هذا الحساب</button>}
     <p style={{fontSize:".85rem",opacity:".8"}}>هذه المزامنة تخص CyberTrace فقط. نتائج BLACKBOX منفصلة ولا تُنقل تلقائيًا.</p>
   </> : null;
-  const cloudSyncPanel = user && !syncVerified ? <section aria-label="مزامنة تقدم CyberTrace" style={{margin:"1rem auto",padding:"1rem",maxWidth:900,border:"1px solid #4d728d",borderRadius:12}}>
+  const cloudSyncPanel = showSyncPrompt(user, syncVerified) ? <section aria-label="مزامنة تقدم CyberTrace" style={{margin:"1rem auto",padding:"1rem",maxWidth:900,border:"1px solid #4d728d",borderRadius:12}}>
     <strong>مزامنة تقدم CyberTrace بين الأجهزة</strong>
     {syncControls}
   </section> : null;
