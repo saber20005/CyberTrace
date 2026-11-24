@@ -35,7 +35,7 @@ import { createRouteURL, getBlackBoxLearningLink, readRoute } from "./utils/rout
 import { applyPageMetadata, describePage } from "./utils/pageMetadata";
 import { trackEvent, trackPageView } from "./utils/analytics";
 import { auth } from "./firebase";
-import { setProgressOwner, legacyProgressAvailable, importLegacyProgress } from "./utils/progressScope";
+import { setProgressOwner, legacyProgressNeedsImport, importLegacyProgress } from "./utils/progressScope";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { startCloudSync, enableCloudSync, cloudSyncEnabled } from "./utils/cloudProgress";
 import { useBlackBox } from "./blackbox/useBlackBox";
@@ -71,6 +71,7 @@ function App() {
   const [syncStatus, setSyncStatus] = useState("");
   const [syncEnabled, setSyncEnabled] = useState(false);
   const [syncBusy, setSyncBusy] = useState(false);
+  const [syncVerified, setSyncVerified] = useState(false);
   const syncNowRef = useRef(null);
   const [progressVersion, setProgressVersion] = useState(0);
   const initialVisitTracked = useRef(false);
@@ -86,16 +87,20 @@ function App() {
       setProgressOwner(firebaseUser?.uid ?? null);
       window.dispatchEvent(new Event("cybertrace-progress-synced"));
       setSyncStatus("");
+      setSyncVerified(false);
       setSyncEnabled(Boolean(firebaseUser && cloudSyncEnabled(firebaseUser.uid)));
       setUser(firebaseUser);
-      setLegacyNotice(Boolean(firebaseUser && legacyProgressAvailable()));
+      setLegacyNotice(Boolean(firebaseUser && legacyProgressNeedsImport()));
       setAuthReady(true);
     });
     return unsubscribe;
   }, []);
 
   useEffect(() => {
-    const refresh = () => setProgressVersion(n => n + 1);
+    const refresh = () => {
+      setProgressVersion(n => n + 1);
+      setLegacyNotice(legacyProgressNeedsImport());
+    };
     window.addEventListener("cybertrace-progress-synced", refresh);
     return () => window.removeEventListener("cybertrace-progress-synced", refresh);
   }, []);
@@ -103,7 +108,11 @@ function App() {
   useEffect(() => {
     syncNowRef.current = null;
     if (!user || !syncEnabled) return undefined;
-    const stop = startCloudSync(user.uid, setSyncStatus);
+    const stop = startCloudSync(user.uid, (message, result = {}) => {
+      setSyncStatus(message);
+      if (result.verified) setSyncVerified(true);
+      else if (result.failed) setSyncVerified(false);
+    });
     syncNowRef.current = stop.syncNow;
     return () => {
       syncNowRef.current = null;
@@ -167,6 +176,7 @@ function App() {
     try {
       enableCloudSync(user.uid);
       setSyncStatus("جارٍ فتح اتصال CyberTrace السحابي...");
+      setSyncVerified(false);
       setSyncEnabled(true);
     } catch (error) { setSyncStatus("تعذّر تفعيل المزامنة: " + error.message); }
   };
@@ -176,17 +186,26 @@ function App() {
     if (!syncNowRef.current) { setSyncStatus("لم يجهز اتصال CyberTrace؛ تأكد من تسجيل الدخول وتفعيل المزامنة."); return; }
     setSyncBusy(true);
     try { await syncNowRef.current(); }
-    catch (error) { setSyncStatus("فشلت المزامنة: " + (error.code || error.message)); }
+    catch (error) { setSyncStatus("فشلت المزامنة: " + (error.code || error.message)); setSyncVerified(false); }
     finally { setSyncBusy(false); }
   };
 
-  const cloudSyncPanel = user ? <section aria-label="مزامنة تقدم CyberTrace" style={{margin:"1rem auto",padding:"1rem",maxWidth:900,border:"1px solid #4d728d",borderRadius:12}}>
-    <strong>مزامنة تقدم CyberTrace بين الأجهزة</strong>
+  // Keep synchronization active in the background. Only the large prompt
+  // disappears after a real server-confirmed save or authoritative read.
+  const syncControls = user ? <>
     <p role="status" aria-live="polite">{syncStatus || (syncEnabled ? "جارٍ الاتصال بسجل حسابك..." : "نتائج هذا الجهاز محلية. فعّل مزامنة هذا الحساب لاستعادتها على جهاز آخر.")}</p>
     {syncEnabled
       ? <button type="button" disabled={syncBusy} onClick={() => { void syncNow(); }}>{syncBusy ? "جارٍ التحقق..." : "مزامنة تقدم CyberTrace الآن"}</button>
       : <button type="button" onClick={enableSync}>تفعيل مزامنة هذا الحساب</button>}
     <p style={{fontSize:".85rem",opacity:".8"}}>هذه المزامنة تخص CyberTrace فقط. نتائج BLACKBOX منفصلة ولا تُنقل تلقائيًا.</p>
+  </> : null;
+  const cloudSyncPanel = user && !syncVerified ? <section aria-label="مزامنة تقدم CyberTrace" style={{margin:"1rem auto",padding:"1rem",maxWidth:900,border:"1px solid #4d728d",borderRadius:12}}>
+    <strong>مزامنة تقدم CyberTrace بين الأجهزة</strong>
+    {syncControls}
+  </section> : null;
+  const settingsSyncPanel = user ? <section className="ct-studio-panel" aria-label="إدارة مزامنة CyberTrace">
+    <div className="ct-studio-panel-top"><div><span className="ct-studio-step">05 / ACCOUNT</span><h2>مزامنة تقدم الحساب</h2></div></div>
+    {syncControls}
   </section> : null;
 
   const handleLogout = async () => {
@@ -234,7 +253,7 @@ function App() {
     /></Suspense>;
   }
 
-  if (view === "settings") return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ تحميل الإعدادات..." />}><Settings embedded onHome={goHome} /></Suspense>);
+  if (view === "settings") return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ تحميل الإعدادات..." />}><Settings embedded onHome={goHome} syncPanel={settingsSyncPanel} /></Suspense>);
 
   if (view === "admin") {
     return frame(<Suspense fallback={<LoadingScreen inline message="جارٍ التحقق من صلاحيات الإدارة..." />}><Admin embedded user={user} onHome={goHome} /></Suspense>);
