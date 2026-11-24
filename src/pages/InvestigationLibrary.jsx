@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { paginateItems, LIBRARY_PAGE_SIZE } from "../utils/pagination";
 import QuickDock from "../components/QuickDock";
 import HomeNavbar from "../components/HomeNavbar";
@@ -20,18 +20,42 @@ const suggestionLabels = {
   daily: "اقتراح اليوم",
 };
 
-function InvestigationLibrary({ embedded = false, onJourneys, onSettings, cases, onStart, onHome, onSoc, onPro, onCertificates, cloudSyncPanel, user, onAuth, onLogout, onBlackBoxLink, blackBoxEnabled, blackBoxConnected }) {
-  const [query, setQuery] = useState("");
-  const [difficulty, setDifficulty] = useState("all");
-  const [category, setCategory] = useState("all");
-  const [status, setStatus] = useState("all");
-  const [page, setPage] = useState(1);
+function InvestigationLibrary({ embedded = false, browseState, onBrowseStateChange, onJourneys, onSettings, cases, onStart, onHome, onSoc, onPro, onCertificates, cloudSyncPanel, user, onAuth, onLogout, onBlackBoxLink, blackBoxEnabled, blackBoxConnected }) {
+  const [query, setQuery] = useState(browseState?.query || "");
+  const [difficulty, setDifficulty] = useState(browseState?.difficulty || "all");
+  const [category, setCategory] = useState(browseState?.category || "all");
+  const [status, setStatus] = useState(browseState?.status || "all");
+  const [page, setPage] = useState(browseState?.page || 1);
   const heading = useRef(null);
-  const [results] = useState(getCaseResults);
-  const [completedIds] = useState(getCompletedCaseIds);
-  const [level] = useState(() => getLevelInfo(getXP()));
+  // App refreshes this view when scoped progress changes. Keep its DOM mounted
+  // so a background sync cannot reset filters, scroll, or an active input.
+  const results = getCaseResults();
+  const completedIds = getCompletedCaseIds();
+  const level = getLevelInfo(getXP());
 
-  useEffect(() => { heading.current?.focus(); }, []);
+  const initialBrowse = useRef(browseState);
+  const snapshotChange = useRef(onBrowseStateChange);
+  useEffect(() => { snapshotChange.current = onBrowseStateChange; }, [onBrowseStateChange]);
+  useEffect(() => {
+    snapshotChange.current?.({ ...initialBrowse.current, query, difficulty, category, status, page });
+  }, [query, difficulty, category, status, page]);
+  useLayoutEffect(() => {
+    const saved = initialBrowse.current;
+    if (!saved?.focusCaseId && !saved?.scrollY) { if (!embedded) heading.current?.focus(); return undefined; }
+    const frame = requestAnimationFrame(() => {
+      // A user may already have started interacting after a deferred route load.
+      const active = document.activeElement;
+      if (active !== document.body && active?.id !== "ct-page-content" && active !== heading.current) return;
+      const card = [...document.querySelectorAll(".case-card")].find(item => item.dataset.caseId === saved.focusCaseId);
+      card?.querySelector(".case-start")?.focus({ preventScroll: true });
+      window.scrollTo(0, saved.scrollY || 0);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [embedded]);
+  const launch = item => {
+    snapshotChange.current?.({ query, difficulty, category, status, page, scrollY: window.scrollY, focusCaseId: item?.id || null });
+    onStart(item);
+  };
 
   const completed = new Set(completedIds);
   const completedCount = cases.filter(c => completed.has(c.id)).length;
@@ -72,7 +96,7 @@ function InvestigationLibrary({ embedded = false, onJourneys, onSettings, cases,
             <p className="library-intro">اختر الحادثة التي تريد حلّها، أو ابدأ مهمة عشوائية من دورتك الحالية. كل قرار فرصة لتطوير مهاراتك.</p>
             <div className="library-share"><ShareLink url={getShareURL({ view: "library" })} label="نسخ رابط المكتبة" /></div>
           </div>
-          <button className="primary-button library-random" onClick={() => onStart(null)}>ابدأ تحقيقًا عشوائيًا <span aria-hidden="true">←</span></button>
+          <button className="primary-button library-random" onClick={() => launch(null)}>ابدأ تحقيقًا عشوائيًا <span aria-hidden="true">←</span></button>
         </section>
         <section className="library-stats" aria-label="ملخص تقدّمك">
           <article><span>تحقيقات مكتملة</span><strong data-testid="completed-count">{completedCount}<small> / {cases.length}</small></strong><p>من مكتبة التدريب</p></article>
@@ -98,7 +122,7 @@ function InvestigationLibrary({ embedded = false, onJourneys, onSettings, cases,
                 <div className="learning-suggestion-meta"><span>{details.categoryLabel}</span><span>{details.difficultyLabel}</span></div>
                 <h3>{details.title}</h3>
                 <p>{item.reason}</p>
-                <button type="button" className="case-start" onClick={() => onStart(item.caseData)} aria-label={`${item.type === "new" ? "بدء" : "فتح"} التحقيق المقترح: ${details.title}`}>
+                <button type="button" className="case-start" onClick={() => launch(item.caseData)} aria-label={`${item.type === "new" ? "بدء" : "فتح"} التحقيق المقترح: ${details.title}`}>
                   {item.type === "review" || item.type === "record" ? "أعد التحقيق" : "ابدأ التحقيق"}<span aria-hidden="true">←</span>
                 </button>
               </article>;
@@ -142,7 +166,7 @@ function InvestigationLibrary({ embedded = false, onJourneys, onSettings, cases,
                   {result ? <><dl><div><dt>أفضل نتيجة</dt><dd>{result.bestScore} / 70</dd></div><div><dt>آخر نتيجة</dt><dd>{result.lastScore} / 70</dd></div><div><dt>المحاولات</dt><dd>{result.attempts}</dd></div></dl><p>آخر إكمال: <time dateTime={result.lastCompletedAt}>{dateFormat.format(new Date(result.lastCompletedAt))}</time></p></> : <p>{isCompleted ? "مكتملة سابقًا. أعد التحقيق لتسجيل نتيجتك وتتبّع تحسّنك." : "حلّل السجلات، حدّد الدليل، ثم اتخذ قرارك."}</p>}
                 </div>
                 <div className="case-actions">
-                  <button className="case-start" onClick={() => onStart(caseData)} aria-label={`${isCompleted ? "إعادة" : "بدء"} تحقيق: ${details.title}`}>{isCompleted ? "أعد التحقيق" : "ابدأ التحقيق"}<span aria-hidden="true">←</span></button>
+                  <button className="case-start" onClick={() => launch(caseData)} aria-label={`${isCompleted ? "إعادة" : "بدء"} تحقيق: ${details.title}`}>{isCompleted ? "أعد التحقيق" : "ابدأ التحقيق"}<span aria-hidden="true">←</span></button>
                   <ShareLink url={getShareURL({ view: "investigation", caseId: caseData.id })} label={`نسخ رابط ${caseData.id}`} />
                 </div>
               </article>;
@@ -157,8 +181,8 @@ function InvestigationLibrary({ embedded = false, onJourneys, onSettings, cases,
           </nav>}
         </section>
       </main>
-      <QuickDock active="library" onHome={onHome} onLibrary={() => { setPage(1); document.getElementById("cases-title")?.scrollIntoView({ behavior: "smooth" }); }}
-        onJourneys={onJourneys} onSettings={onSettings} onSoc={onSoc} onCertificates={onCertificates} />
+      {!embedded && <QuickDock active="library" onHome={onHome} onLibrary={() => { setPage(1); document.getElementById("cases-title")?.scrollIntoView({ behavior: "smooth" }); }}
+        onJourneys={onJourneys} onSettings={onSettings} onSoc={onSoc} onCertificates={onCertificates} />}
       {!embedded && <footer className="library-footer"><span>CyberTrace / Training Operations</span><a className="library-partner-link" href={partner.url} target="_blank" rel="noopener" onClick={() => trackEvent("partner_click", { destination: "blackbox", context: "library" })}>مسارات التدريب العملي في BlackBox-Lab ↗</a><p>تدرّب. حقّق. اتخذ القرار.</p></footer>}
     </div>
   );
