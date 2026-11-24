@@ -150,7 +150,7 @@ try {
       assert.notEqual(glow.pseudo,'none','case card renders a soft decorative spotlight');
       assert.equal(glow.pointer,'none','case glow never intercepts clicks');
       assert.equal(glow.position,'relative','glow does not alter card layout');
-      assert.equal(glow.x,'40px','desktop pointer position guides glow without React state');
+      assert.ok(Math.abs(parseFloat(glow.x) - 40) <= 2,'pointer-following glow tolerates card border and fractional CSS pixels');
       const start = card.locator(".case-start");
       await start.scrollIntoViewIfNeeded();
       await start.focus();
