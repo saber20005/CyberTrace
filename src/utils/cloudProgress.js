@@ -50,10 +50,10 @@ export function startCloudSync(uid, onStatus) {
         const merged = mergeCloudProgress(remote ?? {}, latestLocal);
         if (needsCloudWrite(snap.exists(), remote, latestLocal)) tx.set(ref, merged);
       });
-      if (active && owner()) onStatus("تم التحقق من تقدم CyberTrace وحفظه في حسابك.");
+      if (active && owner()) onStatus("تم التحقق من تقدم CyberTrace وحفظه في حسابك.", { verified: true });
       return active && owner();
     } catch (error) {
-      if (active && owner()) onStatus("فشلت مزامنة CyberTrace: " + (error.code || error.message));
+      if (active && owner()) onStatus("فشلت مزامنة CyberTrace: " + (error.code || error.message), { failed: true });
       return false;
     } finally {
       busy = false;
@@ -61,7 +61,7 @@ export function startCloudSync(uid, onStatus) {
     }
   };
   const syncNow = async () => {
-    if (!active || !owner()) { onStatus("تغيّر حساب CyberTrace؛ سجّل الدخول ثم حاول مجددًا."); return false; }
+    if (!active || !owner()) { onStatus("تغيّر حساب CyberTrace؛ سجّل الدخول ثم حاول مجددًا.", { failed: true }); return false; }
     onStatus("جارٍ فحص التقدم السحابي من الخادم...");
     try {
       // A manual retry must reach the server rather than silently using an offline cache.
@@ -72,12 +72,12 @@ export function startCloudSync(uid, onStatus) {
       // The explicit retry already performed an authoritative server read;
       // don't immediately buy another transaction read when nothing changed.
       if (snap.exists() && !needsCloudWrite(true, snap.data(), localSnapshot())) {
-        onStatus("تقدّم CyberTrace محفوظ ومحدّث بالفعل على الخادم.");
+        onStatus("تقدّم CyberTrace محفوظ ومحدّث بالفعل على الخادم.", { verified: true });
         return true;
       }
       return await publish();
     } catch (error) {
-      if (active && owner()) onStatus("تعذّر الاتصال بمزامنة CyberTrace: " + (error.code || error.message));
+      if (active && owner()) onStatus("تعذّر الاتصال بمزامنة CyberTrace: " + (error.code || error.message), { failed: true });
       return false;
     }
   };
@@ -88,13 +88,15 @@ export function startCloudSync(uid, onStatus) {
     try {
       if (snap.exists()) storeLocal(snap.data());
       remoteReady = !snap.metadata.fromCache;
-      onStatus(remoteReady ? "الاتصال السحابي جاهز؛ يمكنك مزامنة تقدمك الآن." : "تظهر نسخة محلية مؤقتًا؛ بانتظار تأكيد الاتصال بالخادم.");
+      onStatus(remoteReady ? "الاتصال السحابي جاهز؛ يمكنك مزامنة تقدمك الآن." : "تظهر نسخة محلية مؤقتًا؛ بانتظار تأكيد الاتصال بالخادم.", remoteReady ? {} : { failed: true });
       // Firestore can send metadata-only and local-echo snapshots. Do not
       // trigger a transaction when the server already holds the merged data.
-      if (remoteReady && !snap.metadata.hasPendingWrites &&
-          needsCloudWrite(snap.exists(), snap.exists() ? snap.data() : null, localSnapshot())) void publish();
-    } catch (error) { onStatus(error.message); }
-  }, error => { if (active && owner()) onStatus("تعذّر قراءة تقدم CyberTrace: " + (error.code || error.message)); });
+      if (remoteReady && !snap.metadata.hasPendingWrites) {
+        if (needsCloudWrite(snap.exists(), snap.exists() ? snap.data() : null, localSnapshot())) void publish();
+        else if (snap.exists()) onStatus("تقدّم CyberTrace محفوظ ومحدّث بالفعل على الخادم.", { verified: true });
+      }
+    } catch (error) { onStatus(error.message, { failed: true }); }
+  }, error => { if (active && owner()) onStatus("تعذّر قراءة تقدم CyberTrace: " + (error.code || error.message), { failed: true }); });
   const stop = () => {
     active = false;
     unsubscribe();
