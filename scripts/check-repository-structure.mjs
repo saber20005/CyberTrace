@@ -3,9 +3,10 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import process from "node:process";
+import { auditFirebaseRuleSources } from "./firebase-rule-source-guard.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const failures = [];
+const failures = auditFirebaseRuleSources(root);
 const keepDirs = new Set([".github", "api", "docs", "public", "scripts", "security", "src", "tests"]);
 const keepFiles = new Set([
   ".gitignore", "README.md", "eslint.config.js", "index.html",
