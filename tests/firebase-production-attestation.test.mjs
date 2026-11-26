@@ -16,7 +16,7 @@ test("Read-only identity uses scoped GitHub WIF and emits only SHA metadata",()=
   assert.match(workflow,/workload_identity_provider:\s*\$\{\{\s*vars\.FIREBASE_RULES_WIF_PROVIDER\s*\}\}/);
   assert.match(workflow,/service_account:\s*\$\{\{\s*vars\.FIREBASE_RULES_VIEWER_SA\s*\}\}/);
   assert.match(workflow,/create_credentials_file:\s*false/);
-  assert.match(workflow,/--project=cybertrace-48ab0\s+--file=security/firestore\.cybertrace-progress\.rules\s+--reference-only/);
+  assert.match(workflow,/--project=cybertrace-48ab0\s+--file=security\/firestore\.cybertrace-progress\.rules\s+--reference-only/);
   assert.match(workflow,/Repository source SHA-256/);
   assert.match(workflow,/Active source SHA-256/);
 });
