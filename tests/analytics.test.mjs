@@ -109,6 +109,59 @@ test('page views deduplicate repeated renders and StrictMode calls while trackin
   assert.equal(events(fixture, 'page_view').length, 2);
 });
 
+test('learner funnel pages remain distinct from home and repeated renders stay deduplicated', () => {
+  const fixture = browser({ url: 'https://test.example/' });
+  const api = analytics(fixture);
+  assert.equal(api.trackPageView(), true);
+  const views = ['welcome', 'journeys', 'soc', 'certificates', 'joint-certificate', 'verify-certificate', 'settings', 'pro', 'verified-soc', 'auth', 'library'];
+  for (const view of views) {
+    fixture.window.location = new URL(`https://test.example/?view=${view}&notes=PRIVATE_NOTE#PRIVATE_HASH`);
+    assert.equal(api.trackPageView(), true, `${view} must have its own page view`);
+    assert.equal(api.trackPageView(), false, `${view} rerender must not duplicate the page view`);
+    assert.equal(new URL(events(fixture, 'page_view').at(-1)[2].page_location).searchParams.get('view'), view);
+  }
+  fixture.window.location = new URL('https://test.example/');
+  assert.equal(api.trackPageView(), true, 'returning home is a new navigation');
+  assert.equal(events(fixture, 'page_view').length, views.length + 2);
+  assert.equal(JSON.stringify(events(fixture)).includes('PRIVATE_'), false);
+});
+
+test('SOC shift attribution accepts only known public shifts and never forwards a certificate or owner ID', () => {
+  const fixture = browser({ url: 'https://test.example/?view=soc&shift=SOC-SHIFT-02&uid=PRIVATE_OWNER&token=PRIVATE_TOKEN' });
+  const api = analytics(fixture);
+  assert.equal(api.trackPageView(), true);
+  let location = new URL(events(fixture, 'page_view').at(-1)[2].page_location);
+  assert.equal(location.searchParams.get('shift'), 'SOC-SHIFT-02');
+  fixture.window.location = new URL('https://test.example/?view=soc&shift=SOC-SHIFT-03');
+  assert.equal(api.trackPageView(), true, 'another public shift is a separate page');
+  fixture.window.location = new URL('https://test.example/?view=verify-certificate&id=0123456789abcdef0123456789abcdef&email=private@example.test');
+  assert.equal(api.trackPageView(), true);
+  location = new URL(events(fixture, 'page_view').at(-1)[2].page_location);
+  assert.equal(location.searchParams.get('view'), 'verify-certificate');
+  assert.equal(location.searchParams.has('id'), false);
+  for (const value of ['PRIVATE_', '0123456789abcdef0123456789abcdef', 'private@example.test']) {
+    assert.equal(JSON.stringify(events(fixture)).includes(value), false, value);
+  }
+});
+
+test('ambiguous and arbitrary route identifiers do not enter analytics locations', () => {
+  for (const query of [
+    'view=journeys&view=auth&case=INC-0417&case=INC-0512',
+    'view=soc&shift=SOC-SHIFT-02&shift=SOC-SHIFT-03',
+    'view=soc&shift=PRIVATE_SHIFT',
+    'view=PRIVATE_VIEW&case=PRIVATE_CASE',
+  ]) {
+    const fixture = browser({ url: 'https://test.example/?' + query });
+    const api = analytics(fixture);
+    assert.equal(api.trackPageView(), true);
+    const location = new URL(events(fixture, 'page_view')[0][2].page_location);
+    assert.equal(location.searchParams.has('case'), false);
+    assert.equal(location.searchParams.has('shift'), false);
+    if (query.includes('view=journeys') || query.includes('PRIVATE_VIEW')) assert.equal(location.searchParams.has('view'), false);
+    assert.equal(JSON.stringify(events(fixture)).includes('PRIVATE_'), false);
+  }
+});
+
 test('preview hosts and browser privacy signals prevent all analytics initialization', () => {
   for (const privacy of [{ doNotTrack: '1' }, { globalPrivacyControl: true }]) {
     const fixture = browser({ privacy });

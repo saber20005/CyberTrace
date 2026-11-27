@@ -9,6 +9,7 @@ const idleStatus = {
   error: null,
   message: "",
   receipts: {},
+  practical: { ownerUid: null, phase: "idle", fromCache: false, completed: {}, error: null },
 };
 
 export const BlackBoxContext = createContext({
@@ -21,6 +22,8 @@ export const BlackBoxContext = createContext({
   recordCompletion: async () => false,
   importHistory: async () => ({ imported: 0, skipped: 0, pending: 0 }),
   retryPending: async () => false,
+  watchPracticalProgress: () => () => {},
+  retryPracticalProgress: () => {},
 });
 
 export function useBlackBox() {

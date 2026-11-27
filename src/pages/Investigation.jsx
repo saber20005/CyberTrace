@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { addXP } from "../utils/xp";
-import { shuffleArray } from "../utils/shuffle";
+import { progressKey } from "../utils/progressScope";
+import { createPendingAttempt, createPendingAttemptStore } from "../utils/pendingInvestigation";
 import { recordCaseResult } from "../utils/caseProgress";
 import { getCaseDetails } from "../data/caseCatalog";
 import { createInvestigationReport, getInvestigationReview } from "../utils/investigationReport";
@@ -14,14 +15,30 @@ import InvestigationWorkspace from "../components/InvestigationWorkspace";
 import { getWorkspaceCase } from "../data/investigationWorkspace";
 import "./Investigation.css";
 
-function Investigation({ caseData, onBack, onNext, backLabel = "العودة لمكتبة التحقيقات" }) {
+function Investigation(props) {
+  return <InvestigationAttempt key={progressKey("attempt") + ":" + props.caseData.id} {...props} />;
+}
+
+function InvestigationAttempt({ caseData, onBack, onNext, backLabel = "العودة لمكتبة التحقيقات" }) {
   const blackBox = useBlackBox();
-  const [step, setStep] = useState(0); // 0: brief, 1: evidence, 2: decision, 3: result
-  const [selectedEvidence, setSelectedEvidence] = useState(null);
-  const [evidenceChecked, setEvidenceChecked] = useState(false);
-  const [selectedDecision, setSelectedDecision] = useState(null);
-  const [decisionChecked, setDecisionChecked] = useState(false);
-  const [wrongEvidenceIds, setWrongEvidenceIds] = useState([]);
+  const [{ store, initial, resumed }] = useState(() => {
+    const store = createPendingAttemptStore(caseData);
+    const saved = store.load();
+    return { store, initial: saved ?? createPendingAttempt(caseData), resumed: Boolean(saved) };
+  });
+  const [attempt, setAttempt] = useState(initial);
+  const [attemptStatus, setAttemptStatus] = useState(resumed ? "استُعيدت محاولتك غير المكتملة على هذا المتصفح." : "");
+  const { step, evidenceChecked, wrongEvidenceIds } = attempt;
+  const selectedEvidence = caseData.evidenceOptions.find(option => option.id === attempt.selectedEvidenceId) ?? null;
+  const selectedDecision = caseData.decisions.find(option => option.id === attempt.selectedDecisionId) ?? null;
+  const decisionChecked = step === 3;
+  const changeAttempt = next => {
+    if (!store.isCurrent()) return;
+    setAttempt(next);
+    setAttemptStatus(store.save(next)
+      ? "محاولتك محفوظة على هذا المتصفح؛ يمكنك العودة إليها لاحقًا."
+      : "تعذّر حفظ المحاولة على هذا الجهاز؛ أبقِ الصفحة مفتوحة حتى تكملها.");
+  };
   const [awardInfo, setAwardInfo] = useState(null);
   const [resultInfo, setResultInfo] = useState(null);
   const [reportStatus, setReportStatus] = useState("");
@@ -30,12 +47,8 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
   const partner = getBlackBoxLearningLink(caseData.id);
   const workspace = getWorkspaceCase(caseData.id);
   const hasAdvancedWorkspace = Boolean(workspace);
-  const [evidenceOptions, setEvidenceOptions] = useState(() =>
-    shuffleArray(caseData.evidenceOptions)
-  );
-  const [decisionOptions, setDecisionOptions] = useState(() =>
-    shuffleArray(caseData.decisions)
-  );
+  const evidenceOptions = attempt.evidenceOrder.map(id => caseData.evidenceOptions.find(option => option.id === id));
+  const decisionOptions = attempt.decisionOrder.map(id => caseData.decisions.find(option => option.id === id));
 
   const investigationScore = Math.max(40, 100 - 10 * (wrongEvidenceIds.length));
   const evidencePoints = selectedEvidence?.correct ? 30 : 10;
@@ -69,41 +82,37 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
 
   const confirmEvidence = () => {
     if (!selectedEvidence) return;
-    if (!selectedEvidence.correct) setWrongEvidenceIds(ids => ids.includes(selectedEvidence.id) ? ids : [...ids, selectedEvidence.id]);
-    setEvidenceChecked(true);
+    changeAttempt({ ...attempt, evidenceChecked: true,
+      wrongEvidenceIds: !selectedEvidence.correct && !wrongEvidenceIds.includes(selectedEvidence.id)
+        ? [...wrongEvidenceIds, selectedEvidence.id] : wrongEvidenceIds });
   };
 
   const confirmDecision = () => {
     if (!selectedDecision || decisionChecked) return;
     // Decisions are graded by their canonical case points, including partial credit.
     // Finalize the chosen action rather than forcing a perfect answer.
-    setDecisionChecked(true);
     completeInvestigation();
   };
 
   const completeInvestigation = () => {
-    if (awarded.current || !selectedEvidence?.correct || !evidenceChecked || !selectedDecision || !Number.isInteger(selectedDecision.points) || selectedDecision.points < 0 || selectedDecision.points > 40) return;
+    if (!store.isCurrent() || awarded.current || !selectedEvidence?.correct || !evidenceChecked || !selectedDecision || !Number.isInteger(selectedDecision.points) || selectedDecision.points < 0 || selectedDecision.points > 40) return;
     awarded.current = true;
+    store.clear();
+    setAttemptStatus("");
     setAwardInfo(addXP(totalScore));
     setResultInfo(recordCaseResult(caseData.id, totalScore));
     void blackBox.recordCompletion(caseData.id, totalScore).catch(() => {});
     trackEvent("training_complete", { case_id: caseData.id, score: totalScore });
-    setStep(3);
+    setAttempt({ ...attempt, step: 3 });
   };
 
   const restart = () => {
-    setStep(0);
-    setSelectedEvidence(null);
-    setEvidenceChecked(false);
-    setSelectedDecision(null);
-    setDecisionChecked(false);
-    setWrongEvidenceIds([]);
+    store.clear();
+    changeAttempt(createPendingAttempt(caseData));
     setAwardInfo(null);
     setResultInfo(null);
     setReportStatus("");
     awarded.current = false;
-    setEvidenceOptions(shuffleArray(caseData.evidenceOptions));
-    setDecisionOptions(shuffleArray(caseData.decisions));
     trackEvent("training_start", { case_id: caseData.id, difficulty: details.difficulty, source: "retry" });
   };
 
@@ -137,6 +146,10 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
           </div>
 
           <div className="inv-body">
+            {step < 3 && attemptStatus && <p className="inv-attempt-status" role="status">{attemptStatus}</p>}
+            {step > 0 && step < 3 && <button type="button" className="inv-restart-pending" onClick={() => {
+              if (window.confirm("هل تريد بدء هذه المحاولة من جديد؟ تبقى ملاحظاتك ونتائجك المكتملة محفوظة.")) restart();
+            }}>بدء محاولة جديدة</button>}
             {step === 0 && (
               <div className="inv-step">
                 <p className="inv-line">
@@ -155,7 +168,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                 <p className="inv-description">{caseData.brief}</p>
                 {hasAdvancedWorkspace && <p className="inv-accuracy">هذا التحقيق يتضمن مركز تحليل متقدمًا يضم {workspace.events.length} سجلًا متسلسلًا ودفتر فرضيات ومقارنة بين الأدلة المثبّتة. يظل نظام نقاطك الحالي دون تغيير.</p>}
 
-                <button className="primary-button" onClick={() => setStep(1)}>
+                <button className="primary-button" onClick={() => changeAttempt({ ...attempt, step: 1 })}>
                   ابدأ التحليل <span>←</span>
                 </button>
               </div>
@@ -167,17 +180,18 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                   <span className="green">$</span> {caseData.logCommand}
                 </p>
 
-                {hasAdvancedWorkspace ? <InvestigationWorkspace caseId={caseData.id} /> : <div className="inv-log">
-                  {caseData.logLines.map((line, i) => (
-                    <p key={i} className="inv-log-line">
-                      {line}
-                    </p>
-                  ))}
-                </div>}
-
-                <p className="inv-question">
+                <p className="inv-question" id="evidence-task">
                   <span className="yellow">!</span> {caseData.evidenceQuestion}
                 </p>
+                {hasAdvancedWorkspace && details.difficulty === "beginner" && <p className="inv-task-guidance">اقرأ السجل الأساسي أدناه، ثم اختر الدليل. يمكنك فتح أدوات التحليل الإضافية للمقارنة وتدوين فرضيتك.</p>}
+
+                {hasAdvancedWorkspace && details.difficulty !== "beginner" ? <InvestigationWorkspace caseId={caseData.id} /> : <div className="inv-log" tabIndex={0} role="region" aria-label="السجل الأساسي للتحقيق">
+                  {caseData.logLines.map((line, i) => <p key={i} className="inv-log-line">{line}</p>)}
+                </div>}
+                {hasAdvancedWorkspace && details.difficulty === "beginner" && <details className="inv-workspace-disclosure">
+                  <summary>أدوات تحليل إضافية: الخط الزمني ودفتر الفرضيات</summary>
+                  <InvestigationWorkspace caseId={caseData.id} />
+                </details>}
 
                 <p className="inv-accuracy" role="status">دقة تحليل الأدلة: {investigationScore}/100 · كل خيار دليل خاطئ مختلف −10 · الحد الأدنى 40</p>
                 <div className="inv-options">
@@ -195,8 +209,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                       }`}
                       aria-pressed={selectedEvidence?.id === opt.id}
                       onClick={() => {
-                        setSelectedEvidence(opt);
-                        setEvidenceChecked(false);
+                        changeAttempt({ ...attempt, selectedEvidenceId: opt.id, evidenceChecked: false });
                       }}
                     >
                       {opt.label}
@@ -220,7 +233,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                         ? caseData.evidenceFeedbackCorrect
                         : caseData.evidenceFeedbackIncorrect}
                     </p>
-                    {selectedEvidence.correct && <button className="primary-button" onClick={() => setStep(2)}>
+                    {selectedEvidence.correct && <button className="primary-button" onClick={() => changeAttempt({ ...attempt, step: 2 })}>
                       المتابعة إلى القرار <span>←</span>
                     </button>}
                   </>
@@ -247,7 +260,7 @@ function Investigation({ caseData, onBack, onNext, backLabel = "العودة ل�
                         selectedDecision?.id === d.id ? "selected" : ""
                       } ${decisionChecked && selectedDecision?.id === d.id ? "incorrect" : ""}`}
                       aria-pressed={selectedDecision?.id === d.id}
-                      onClick={() => { setSelectedDecision(d); setDecisionChecked(false); }}
+                      onClick={() => changeAttempt({ ...attempt, selectedDecisionId: d.id })}
                     >
                       {d.label}
                     </button>

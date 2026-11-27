@@ -44,3 +44,4 @@ jobs:
           node scripts/test-page-presentation-browser.mjs
           node scripts/test-app-navigation-browser.mjs
           node scripts/test-home-navbar-browser.mjs
+          node scripts/test-investigation-attempt-browser.mjs

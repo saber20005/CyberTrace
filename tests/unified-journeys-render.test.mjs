@@ -19,7 +19,7 @@ test("rendered suite cards and owner switching stay private, accessible and read
   store.set(progressKey("cybertrace_completed_cases"),JSON.stringify(["INC-0417","INC-1201"]));
   const a=render();
   assert.equal((a.match(/<details class="ct-suite-card"/g)||[]).length,4);
-  assert.equal((a.match(/<li>/g)||[]).length,16);
+  assert.equal((a.match(/<li(?:\s|>)/g)||[]).length,16);
   assert.equal((a.match(/open=""/g)||[]).length,1);
   assert.match(a,/2 \/ 2/);
   assert.match(a,/إكمال سابق محفوظ دون درجة/);
@@ -43,4 +43,19 @@ test("rendered suite cards and owner switching stay private, accessible and read
   await vite.close();
   if(prior===undefined)delete globalThis.localStorage;else globalThis.localStorage=prior;
  }
+});
+
+test('rendered combined journeys keep account source, unknown/cache states and practical independence explicit',async()=>{
+ const prior=globalThis.localStorage;globalThis.localStorage={getItem:()=>null};
+ const vite=await createServer({server:{middlewareMode:true},appType:'custom',logLevel:'silent'});
+ try{
+  const [{default:UnifiedJourneys},{BlackBoxContext}]=await Promise.all([vite.ssrLoadModule('/src/pages/UnifiedJourneys.jsx'),vite.ssrLoadModule('/src/blackbox/useBlackBox.js')]);
+  const completed=Object.fromEntries([0,1,2].map(i=>['logs-'+i,'2026-11-26T14:00:00Z']));
+  const render=practical=>renderToStaticMarkup(createElement(BlackBoxContext.Provider,{value:{status:{enabled:true,user:{uid:'current-owner'},practical},watchPracticalProgress:()=>()=>{},retryPracticalProgress(){},openLink(){}}},createElement(UnifiedJourneys,{})));
+  const ready=render({ownerUid:'current-owner',phase:'ready',completed,fromCache:false});
+  assert.match(ready.replace(/<[^>]+>/g,''),/خطوات مسجّلة: 1 \/ 4/);assert.match(ready,/جميع مراحل المسار مؤكدة من حسابك/);assert.doesNotMatch(ready,/current-owner|uid=|token=|email=/);
+  const other=render({ownerUid:'previous-owner',phase:'ready',completed,fromCache:false});assert.doesNotMatch(other,/جميع مراحل المسار مؤكدة من حسابك/);assert.match(other,/حالة الإكمال غير معروفة هنا/);
+  assert.match(render({ownerUid:'current-owner',phase:'ready',completed,fromCache:true}),/نسخة محفوظة/);
+  const error=render({ownerUid:'current-owner',phase:'error',completed:{},fromCache:false});assert.match(error,/إعادة تحميل التقدم/);assert.match(error,/غير معروفة الآن/);
+ }finally{await vite.close();if(prior===undefined)delete globalThis.localStorage;else globalThis.localStorage=prior;}
 });

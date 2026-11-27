@@ -1,5 +1,6 @@
 import { blackBoxConfig } from "./config.js";
 import { createBlackBoxBackend } from "./backend.js";
+import { emptyPracticalProgress, normalizePracticalCompleted } from "./practicalProgress.js";
 import { CASE_IDS, MAX_CASE_SCORE, normalizeReceipt } from "../data/linkedSkills.js";
 
 const knownCases = new Set(CASE_IDS);
@@ -22,6 +23,7 @@ export function createBlackBoxBridge(options = {}) {
   let authStop, receiptStop, receiptGeneration = 0, user = null, receipts = {}, phase = enabled ? "loading" : "disabled";
   let syncing = false, error = null, errorSource = null, message = enabled ? "جارٍ إعداد الربط مع BlackBox…" : "ربط التقدم مع BlackBox قيد الإعداد. يمكنك مواصلة التدريب.";
   let syncTask, acceptingUsers = true, authEpoch = 0, authInFlight;
+  let practical = emptyPracticalProgress(), practicalStop, practicalGeneration = 0, practicalWatchers = 0;
 
   function entriesFor(uid) {
     const entries = new Map();
@@ -41,7 +43,7 @@ export function createBlackBoxBridge(options = {}) {
     });
   }
   const pendingCount = uid => uid ? new Set(entriesFor(uid).map(entry => entry.caseId)).size : 0;
-  const snapshot = () => ({ enabled, user: user ? { uid: user.uid, email: user.email ?? "", displayName: user.displayName ?? "" } : null, phase, pending: pendingCount(user?.uid), memoryOnly: Boolean(user && entriesFor(user.uid).some(entry => undurable.has(entry.key))), syncing, error, message, receipts: clone(receipts) });
+  const snapshot = () => ({ enabled, user: user ? { uid: user.uid, email: user.email ?? "", displayName: user.displayName ?? "" } : null, phase, pending: pendingCount(user?.uid), memoryOnly: Boolean(user && entriesFor(user.uid).some(entry => undurable.has(entry.key))), syncing, error, message, receipts: clone(receipts), practical: clone(practical) });
   const notify = () => { if (!disposed) options.onStatus?.(snapshot()); };
   function fail(reason, source, fallback) {
     error = reason?.code || "bridge/unavailable";
@@ -74,6 +76,33 @@ export function createBlackBoxBridge(options = {}) {
     const stop = receiptStop;
     receiptStop = undefined;
     try { stop?.(); } catch { /* Optional listener cleanup cannot prevent switching accounts. */ }
+  }
+  function stopPractical() {
+    practicalGeneration += 1;
+    const stop = practicalStop; practicalStop = undefined;
+    try { stop?.(); } catch { /* Account clearing must survive optional cleanup errors. */ }
+    practical = emptyPracticalProgress();
+  }
+  function observePractical(scope, uid) {
+    if (!practicalWatchers || !backend.watchPracticalProgress) return;
+    const subscription = ++practicalGeneration;
+    const isCurrent = () => current(scope, uid) && subscription === practicalGeneration && practicalWatchers > 0;
+    practical = { ...emptyPracticalProgress(), ownerUid: uid, phase: "loading" }; notify();
+    const failed = reason => {
+      if (!isCurrent()) return;
+      practical = { ...emptyPracticalProgress(), ownerUid: uid, phase: "error", error: reason?.code || "bridge/practical-unavailable" }; notify();
+    };
+    try {
+      const stop = backend.watchPracticalProgress(uid, data => {
+        if (!isCurrent()) return;
+        try {
+          const completed = normalizePracticalCompleted(data?.completed);
+          if (completed === null || typeof data?.fromCache !== "boolean" || typeof data?.exists !== "boolean" || (!data.exists && Object.keys(completed).length > 0)) throw problem("bridge/invalid-practical-progress", "تعذّر التحقق من تقدم المختبر.");
+          practical = { ownerUid: uid, phase: data.fromCache && !data.exists ? "unknown" : "ready", fromCache: data.fromCache, completed, error: null }; notify();
+        } catch (reason) { failed(reason); }
+      }, failed);
+      if (isCurrent()) practicalStop = stop; else stop?.();
+    } catch (reason) { failed(reason); }
   }
   function current(scope, uid) { return !disposed && scope === generation && user?.uid === uid; }
   async function ensureBackend() {
@@ -115,6 +144,7 @@ export function createBlackBoxBridge(options = {}) {
     if (nextUid === (user?.uid ?? null) && phase !== "loading") { if (nextUser) user = nextUser; notify(); return; }
     generation += 1;
     stopReceipts();
+    stopPractical();
     user = nextUser;
     receipts = {};
     syncing = false;
@@ -124,6 +154,7 @@ export function createBlackBoxBridge(options = {}) {
     notify();
     if (user) {
       observeReceipts(generation, user.uid);
+      observePractical(generation, user.uid);
       void retryPending();
     }
   }
@@ -196,7 +227,7 @@ export function createBlackBoxBridge(options = {}) {
     catch (reason) { if (!disposed && intent === authEpoch) fail(reason, "auth", "تعذّر تسجيل الدخول إلى BlackBox. تحقق من البيانات وحاول مجددًا."); throw reason; }
     finally { if (authInFlight === operation) authInFlight = undefined; }
   }
-  const online = () => { if (user) { stopReceipts(); observeReceipts(generation, user.uid); void retryPending(); } };
+  const online = () => { if (user) { stopReceipts(); observeReceipts(generation, user.uid); stopPractical(); observePractical(generation, user.uid); void retryPending(); } };
   const api = {
     async start() {
       if (started || disposed) return;
@@ -256,8 +287,22 @@ export function createBlackBoxBridge(options = {}) {
       }
       return retryPending();
     },
+    watchPracticalProgress() {
+      if (disposed || !enabled) return () => {};
+      practicalWatchers += 1;
+      if (practicalWatchers === 1 && user) observePractical(generation, user.uid);
+      let stopped = false;
+      return () => {
+        if (stopped) return; stopped = true;
+        practicalWatchers = Math.max(0, practicalWatchers - 1);
+        if (!practicalWatchers) { stopPractical(); notify(); }
+      };
+    },
+    retryPracticalProgress() {
+      if (!disposed && user && practicalWatchers) { stopPractical(); observePractical(generation, user.uid); }
+    },
     getStatus: snapshot,
-    dispose() { disposed = true; acceptingUsers = false; authEpoch += 1; generation += 1; authStop?.(); stopReceipts(); globalThis.removeEventListener?.("online", online); },
+    dispose() { disposed = true; acceptingUsers = false; authEpoch += 1; generation += 1; authStop?.(); stopReceipts(); stopPractical(); globalThis.removeEventListener?.("online", online); },
   };
   return api;
 }

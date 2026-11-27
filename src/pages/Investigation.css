@@ -445,3 +445,11 @@
   .inv-screen .inv-actions :is(.primary-button,.secondary-button) { width: 100%; }
   .inv-screen .inv-personal-record { grid-template-columns: minmax(0,1fr) minmax(0,1fr); padding: 12px; }
 }
+
+.inv-attempt-status { margin: 0 0 12px; color: var(--ct-muted); font-size: .8125rem; line-height: 1.8; }
+.inv-restart-pending { display: block; margin: 0 0 18px; padding: 4px 0; border: 0; background: transparent; color: var(--ct-muted); font-size: .8125rem; text-decoration: underline; text-underline-offset: .25em; }
+.inv-task-guidance { margin: -4px 0 18px; font-size: .875rem; line-height: 1.9; color: var(--ct-muted); }
+.inv-workspace-disclosure { margin: 0 0 22px; border: 1px solid var(--ct-border); border-radius: 10px; min-width: 0; }
+.inv-workspace-disclosure > summary { cursor: pointer; padding: 14px 16px; min-height: 48px; font-size: .875rem; color: var(--ct-gold); }
+.inv-workspace-disclosure[open] > summary { border-bottom: 1px solid var(--ct-border); }
+.inv-workspace-disclosure > .iw-workspace { margin: 0; border: 0; border-radius: 0; }
