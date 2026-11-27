@@ -1,0 +1,13 @@
+# Admin account metrics — release checklist
+
+The dashboard returns aggregates only from this site's own Firebase Authentication project. Counts include existing accounts (including disabled), new existing accounts today, distinct accounts with last sign-in today/rolling 7 or 30 days, linked Google and password providers, and disabled accounts. Calendar day: Asia/Amman. Provider counts overlap. Deletions and snapshot races affect counts; these are not historic registration or event totals.
+
+Individual login counts remain null. Enable user activity logging only with owner approval after reviewing cost/retention: https://cloud.google.com/identity-platform/docs/activity-logging . Validate real successful password and Google sign-in examples and failed attempts, linking, MFA, token refresh and sign-up before deriving event counts. Never treat a request or a provider link as a successful login. Do not expose raw activity logs, UIDs, emails, tokens, IP addresses, or passwords in the UI.
+
+Release gates: run CI, verify guest and non-admin denial, revoke/remove admin role and test stale token denial, check project isolation, compare counts to Firebase console, check mobile and desktop, ensure no loss of progress. Default is disabled. Do not enable logging or change IAM automatically; never publish service-account keys. No changes to existing Auth flow or Firestore Rules.
+
+## CyberTrace (cybertrace-48ab0)
+- Existing /admin UI calls GET /api/admin/auth-metrics. Only Production with ADMIN_AUTH_METRICS_ENABLED=true can query Google. Do not set flags on Preview.
+- Configure a dedicated read-only service account in cybertrace-48ab0 with firebaseauth.users.get only; do not grant access to password hashes. Follow https://vercel.com/docs/oidc/gcp . Enable Vercel OIDC and configure a Google WIF provider with condition restricting issuer, team, this exact project, and production environment. Grant Workload Identity User only to that specific identity on the service account. Enable required STS/IAM Credentials/Identity Toolkit APIs. Verify audience and issuer in console before allowing access.
+- Production-only server config: ADMIN_METRICS_WIF_AUDIENCE (//iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL/providers/PROVIDER), ADMIN_METRICS_SERVICE_ACCOUNT (service account email in cybertrace-48ab0), ADMIN_AUTH_METRICS_ENABLED=true. No VITE_ prefix or static service account key. No IAM grant or flags have been applied by this PR. Verify live OIDC exchange, account lookup and pagination before release.
+- Admin token signature verified, then latest admin role/disabled status and revocation boundary checked on every request. 60-second per-instance aggregate cache. The existing summary endpoint is unchanged.
