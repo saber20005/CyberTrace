@@ -5,17 +5,18 @@ import { blackBoxConfig } from "./config";
 import { createBlackBoxBridge } from "./controller";
 import { BlackBoxContext } from "./useBlackBox";
 import BlackBoxLink from "./BlackBoxLink";
+import { emptyPracticalProgress } from "./practicalProgress.js";
 
 function initialStatus() {
   return {
     enabled: Boolean(blackBoxConfig.enabled), user: null,
     phase: blackBoxConfig.enabled ? "loading" : "disabled",
-    pending: 0, syncing: false, error: null, message: "", receipts: {},
+    pending: 0, syncing: false, error: null, message: "", receipts: {}, practical: emptyPracticalProgress(),
   };
 }
 
 function pausedStatus(status) {
-  return { ...status, user: null, receipts: {}, pending: 0, syncing: false,
+  return { ...status, user: null, receipts: {}, practical: emptyPracticalProgress(), pending: 0, syncing: false,
     phase: status.phase === "loading" ? "loading" : "guest",
     message: "اختر حساب BlackBox لنتائجك الجديدة. نتائج الانتظار تبقى مرتبطة بحسابها السابق." };
 }
@@ -23,6 +24,7 @@ function pausedStatus(status) {
 export default function BlackBoxProvider({ children }) {
   const [status, setStatus] = useState(initialStatus);
   const [modalVersion, setModalVersion] = useState(0);
+  const [practicalReaders, setPracticalReaders] = useState(0);
   const controller = useRef(null);
   const dialog = useRef(null);
   const authEpoch = useRef(0);
@@ -55,6 +57,17 @@ export default function BlackBoxProvider({ children }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!practicalReaders) return undefined;
+    return controller.current?.watchPracticalProgress();
+  }, [practicalReaders]);
+  const watchPracticalProgress = useCallback(() => {
+    setPracticalReaders(count => count + 1);
+    let stopped = false;
+    return () => { if (!stopped) { stopped = true; setPracticalReaders(count => Math.max(0, count - 1)); } };
+  }, []);
+  const retryPracticalProgress = useCallback(() => controller.current?.retryPracticalProgress(), []);
+
   const openLink = useCallback(() => {
     if (!blackBoxConfig.enabled) return;
     setModalVersion(version => version + 1);
@@ -86,8 +99,8 @@ export default function BlackBoxProvider({ children }) {
   const recordCompletion = useCallback((caseId, score) => paused.current ? Promise.resolve(false) : controller.current?.recordCompletion(caseId, score) ?? Promise.resolve(false), []);
   const importHistory = useCallback(results => paused.current ? Promise.resolve({ imported: 0, skipped: 0, pending: 0 }) : controller.current?.importHistory(results) ?? Promise.resolve({ imported: 0, skipped: 0, pending: 0 }), []);
   const retryPending = useCallback(() => paused.current ? Promise.resolve(false) : controller.current?.retryPending() ?? Promise.resolve(false), []);
-  const value = useMemo(() => ({ status, modalVersion, openLink, signInEmail, signInGoogle, disconnect, recordCompletion, importHistory, retryPending }),
-    [status, modalVersion, openLink, signInEmail, signInGoogle, disconnect, recordCompletion, importHistory, retryPending]);
+  const value = useMemo(() => ({ status, modalVersion, openLink, signInEmail, signInGoogle, disconnect, recordCompletion, importHistory, retryPending, watchPracticalProgress, retryPracticalProgress }),
+    [status, modalVersion, openLink, signInEmail, signInGoogle, disconnect, recordCompletion, importHistory, retryPending, watchPracticalProgress, retryPracticalProgress]);
 
   return <BlackBoxContext.Provider value={value}>
     {children}

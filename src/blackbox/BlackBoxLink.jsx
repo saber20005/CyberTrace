@@ -80,7 +80,7 @@ export default function BlackBoxLink({ dialogRef }) {
             ? `أُضيفت ${result.imported} نتائج إلى قائمة الإرسال، وما زالت ${result.pending} نتائج تنتظر تأكيد BLACKBOX. ${status.message || "تحقق من الاتصال وقواعد Firestore."}`
             : result.imported
               ? `عولج إرسال ${result.imported} نتائج إلى BLACKBOX، وتم تجاوز ${result.skipped} نتائج لأنها موجودة مسبقًا أو غير مؤهلة.`
-              : `لم تُرسَل نتائج جديدة: تم تجاوز ${result.skipped} نتائج لأنها موجودة مسبقًا أو غير مؤهلة. السجلان الإضافيان في BLACKBOX لا يمكن استعادتهما إلى CyberTrace بهذا الزر.`, "import")}>إرسال نتائج هذا المتصفح إلى BLACKBOX</button>
+              : `لم تُرسَل نتائج جديدة: تم تجاوز ${result.skipped} نتائج لأنها موجودة مسبقًا أو غير مؤهلة. هذا الزر يرسل نتائج CyberTrace إلى BLACKBOX ولا يستعيد سجل BLACKBOX إلى هذا المتصفح.`, "import")}>إرسال نتائج هذا المتصفح إلى BLACKBOX</button>
           {importFeedback && <p className={`bb-link-message bb-link-inline-feedback ${importFeedback.error ? "has-error" : ""}`} role={importFeedback.error ? "alert" : "status"} aria-live="polite">{importFeedback.text}</p>}
         </div>
         <div className="bb-link-action-row"><button type="button" id="blackboxRetryPending" className="bb-link-secondary" disabled={busy} onClick={() => run(bridge.retryPending, result => result

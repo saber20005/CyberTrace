@@ -1,6 +1,7 @@
 import * as appSDK from "firebase/app";
 import * as authSDK from "firebase/auth";
 import { blackBoxConfig } from "./config.js";
+import { projectPracticalDocument } from "./practicalProgress.js";
 import { CASE_IDS, MAX_CASE_SCORE, normalizeReceipt } from "../data/linkedSkills.js";
 
 const knownCases = new Set(CASE_IDS);
@@ -49,6 +50,19 @@ export async function createBlackBoxBackend(config = blackBoxConfig) {
             receipts[document.id] = receipt;
           }
           onData({ receipts, fromCache: snapshot.metadata.fromCache });
+        } catch (error) { onError(error); }
+      }, onError);
+    },
+    watchPracticalProgress(uid, onData, onError) {
+      checkOwner(uid);
+      const reference = storeSDK.doc(database, "blackboxUsers", uid, "state", "progress");
+      return storeSDK.onSnapshot(reference, { includeMetadataChanges: true }, snapshot => {
+        if (snapshot.metadata.hasPendingWrites) return;
+        try {
+          checkOwner(uid);
+          const projection = snapshot.exists() ? projectPracticalDocument(snapshot.data()) : { completed: {} };
+          if (!projection) throw problem("bridge/invalid-practical-progress", "تعذّر التحقق من تقدم مختبر BLACKBOX.");
+          onData({ ...projection, exists: snapshot.exists(), fromCache: snapshot.metadata.fromCache });
         } catch (error) { onError(error); }
       }, onError);
     },
